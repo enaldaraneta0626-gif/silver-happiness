@@ -26,11 +26,13 @@ body{font-family:'Outfit',sans-serif;font-size:16px;background:var(--dark);color
 
 /* PRELOADER */
 #preloader{position:fixed;inset:0;background:var(--dark);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;transition:opacity .6s ease,visibility .6s ease;}
-#preloader.done{opacity:0;visibility:hidden;pointer-events:none;}
+#preloader.done{animation:preFade .5s ease forwards;pointer-events:none;}
+@keyframes preFade{to{opacity:0;visibility:hidden;}}
 .pre-logo{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:800;color:var(--text);}
 .pre-logo .br{color:var(--cyan);}.pre-logo .dt{color:var(--blue);}
 .pre-bar-wrap{width:220px;height:2px;background:rgba(255,255,255,.08);border-radius:2px;overflow:hidden;}
-.pre-bar{height:100%;width:0%;background:var(--grad);border-radius:2px;box-shadow:0 0 10px rgba(255,107,43,.6);transition:width .08s linear;}
+@keyframes preLoad{0%{width:0%}60%{width:75%}85%{width:90%}100%{width:100%}}
+.pre-bar{height:100%;background:var(--grad);border-radius:2px;box-shadow:0 0 10px rgba(255,107,43,.6);animation:preLoad 3s cubic-bezier(.4,0,.2,1) forwards;}
 .pre-text{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.2em;min-width:160px;text-align:center;}
 .pre-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,107,43,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,107,43,.03) 1px,transparent 1px);background-size:50px 50px;pointer-events:none;}
 
@@ -514,12 +516,11 @@ footer{background:var(--dark2);padding:60px 5vw 28px;border-top:1px solid var(--
       <img class="proj-img" src="proj_fatrabbit.png" alt="Fat Rabbit"/>
       <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Fat Rabbit</div><div class="proj-tags"><span class="proj-tag">Restaurant</span><span class="proj-tag">WordPress</span><span class="proj-tag">Catering</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://fat-rabbit.ca" target="_blank" class="proj-link">Visit →</a></div></div></div>
     </div>
-    <div class="proj-card" data-tags="Landing Page,Marketing,TikTok" data-title="Golden Pig Marketing" data-url="https://goldenpigmarketing.com" data-img="proj_goldenpig.png" data-desc="Performance marketing agency website for TikTok Shop, Amazon, and DTC brands. Bold, high-energy design with strong conversion-focused layout.">
+    <div class="proj-card" data-tags="Landing Page,Marketing,TikTok" data-title="Golden Pig Marketing" data-url="https://goldenpigmarketing.com" data-img="proj_goldenpig.png" data-desc="Performance marketing agency for TikTok Shop, Amazon, and DTC brands. Bold high-energy design with strong conversion-focused layout.">
       <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">goldenpigmarketing.com</span></div>
       <img class="proj-img" src="proj_goldenpig.png" alt="Golden Pig Marketing"/>
-      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Golden Pig Marketing</div><div class="proj-tags"><span class="proj-tag">Landing Page</span><span class="proj-tag">Marketing</span><span class="proj-tag">TikTok</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://goldenpigmarketing.com" target="_blank" class="proj-link">Visit →</a></div></div></div>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Golden Pig Marketing</div><div class="proj-tags"><span class="proj-tag">Landing Page</span><span class="proj-tag">Marketing</span><span class="proj-tag">TikTok</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">&#10562; Preview</button><a href="https://goldenpigmarketing.com" target="_blank" class="proj-link">Visit &rarr;</a></div></div></div>
     </div>
-
     <div class="proj-card cta-card">
       <div class="proj-placeholder" style="border:1px dashed rgba(255,107,43,.2);background:rgba(255,107,43,.02);"><span class="proj-placeholder-icon" style="opacity:.5;">✨</span><span class="proj-placeholder-text" style="color:var(--cyan);">Your Project Here</span></div>
       <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Your Project</div><div class="proj-tags"><span class="proj-tag">Let's Build It</span></div><a href="#contact" class="proj-link" style="margin-top:8px;display:inline-block;">Start Now →</a></div></div>
@@ -632,7 +633,7 @@ footer{background:var(--dark2);padding:60px 5vw 28px;border-top:1px solid var(--
       <h2 class="section-title">Let's Build Something<br><span class="hl">Exceptional</span></h2>
       <p>Whether you need a high-performance website, a complete brand identity, or a full digital marketing strategy — we'd love to hear about your project. Fill in the form and we'll get back to you within 24 hours.</p>
       <div class="contact-details">
-        <div class="contact-detail"><div class="contact-detail-icon">📧</div><span>Email: <a href="/cdn-cgi/l/email-protection#ef8a818e838bc18e9d8e818a9b8edfd9ddd9af88828e8683c18c8082"><span class="__cf_email__" data-cfemail="c3a6ada2afa7eda2b1a2ada6b7a2f3f5f1f583a4aea2aaafeda0acae">[email&#160;protected]</span></a></span></div>
+        <div class="contact-detail"><div class="contact-detail-icon">📧</div><span>Email: <a href="/cdn-cgi/l/email-protection#badfd4dbd6de94dbc8dbd4dfcedb8a8c888cfaddd7dbd3d694d9d5d7"><span class="__cf_email__" data-cfemail="11747f707d753f7063707f7465702127232751767c70787d3f727e7c">[email&#160;protected]</span></a></span></div>
         <div class="contact-detail"><div class="contact-detail-icon">📱</div><span>Phone: <a href="tel:+1234567890">+XX XXX XXX XXXX</a></span></div>
         <div class="contact-detail"><div class="contact-detail-icon">📍</div><span>Based in Davao, Philippines · Working Globally</span></div>
         <div class="contact-detail"><div class="contact-detail-icon">⏱️</div><span>Response time: within 24 hours</span></div>
@@ -731,31 +732,16 @@ footer{background:var(--dark2);padding:60px 5vw 28px;border-top:1px solid var(--
 </footer>
 
 <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-/* PRELOADER — guaranteed 3 seconds minimum */
+/* PRELOADER */
 (function(){
-  var bar=document.getElementById('preBar'),
-      txt=document.getElementById('preTxt'),
-      el=document.getElementById('preloader');
+  var el=document.getElementById('preloader');
+  var txt=document.getElementById('preTxt');
+  if(!el) return;
   var msgs=['initialising...','loading assets...','compiling styles...','almost ready...','launching...'];
-  var start=Date.now(), duration=3000, pct=0;
-
-  function step(){
-    var elapsed=Date.now()-start;
-    var natural=Math.min((elapsed/duration)*100, 95);
-    pct=Math.max(pct, natural);
-    bar.style.width=pct+'%';
-    var mi=Math.min(Math.floor((pct/100)*msgs.length), msgs.length-1);
-    txt.textContent=msgs[mi];
-    if(elapsed < duration || pct < 100){
-      if(elapsed >= duration) pct=Math.min(pct+5, 100);
-      requestAnimationFrame(step);
-    } else {
-      bar.style.width='100%';
-      txt.textContent='launching...';
-      setTimeout(function(){ el.classList.add('done'); }, 400);
-    }
-  }
-  requestAnimationFrame(step);
+  var i=0;
+  var ti=setInterval(function(){ i++; if(txt&&i<msgs.length)txt.textContent=msgs[i]; if(i>=msgs.length-1)clearInterval(ti); },600);
+  setTimeout(function(){ el.classList.add('done'); },3200);
+  setTimeout(function(){ el.style.display='none'; },4000);
 })();
 
 /* CURSOR */
@@ -863,3 +849,7 @@ function closeLB(){document.getElementById('lightbox').classList.remove('open');
 function lbMove(d){lbIdx+=d;if(lbIdx>=0&&lbIdx<lbList.length)showLB();}
 document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB();});
 d
+document.addEventListener("keydown",function(e){var lb=document.getElementById("lightbox");if(!lb.classList.contains("open"))return;if(e.key==="Escape")closeLB();if(e.key==="ArrowLeft")lbMove(-1);if(e.key==="ArrowRight")lbMove(1);});
+</script>
+</body>
+</html>
