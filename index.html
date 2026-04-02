@@ -228,7 +228,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .q-author strong{color:var(--cyan);}
 
 /* TEAM */
-.team-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:20px;margin-top:52px;}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:52px;}
 .team-card{background:var(--dark3);border:1px solid var(--border);border-radius:10px;overflow:hidden;transition:border-color .3s,transform .3s,box-shadow .3s;position:relative;}
 .team-card:hover{border-color:rgba(255,107,43,.35);transform:translateY(-6px);box-shadow:0 0 30px rgba(255,107,43,.12);}
 .team-card-photo{width:100%;aspect-ratio:3/4;object-fit:cover;object-position:center top;display:block;filter:grayscale(20%);transition:filter .4s;}
@@ -645,27 +645,74 @@ footer{background:var(--dark2);padding:60px 5vw 28px;border-top:1px solid var(--
     <p style="color:rgba(205,214,244,.7);max-width:500px;margin:14px auto 0;line-height:1.8;font-size:1.02rem;">A passionate crew of developers, designers, editors, and strategists committed to delivering exceptional results.</p>
   </div>
   <div class="team-grid">
+
+    <!-- 1. Enald — Founder -->
     <div class="team-card reveal">
       <div class="founder-badge">// Founder</div>
       <img class="team-card-photo" src="photo_enald.webp" alt="Enald A."/>
-      <div class="team-info"><h3>Enald A.</h3><div class="team-role">Founder & Web Developer</div><p>Full-stack web developer & creative director with 11+ years building high-performance brands and digital experiences.</p><div class="team-socials"><a href="#">LinkedIn</a><a href="#">GitHub</a><a href="#">Twitter</a></div></div>
+      <div class="team-info">
+        <h3>Enald A.</h3>
+        <div class="team-role">Founder & Lead Developer</div>
+        <p>Full-stack web developer & creative director with 11+ years building high-performance brands and digital experiences.</p>
+        <div class="team-socials"><a href="#">LinkedIn</a><a href="#">GitHub</a><a href="#">Twitter</a></div>
+      </div>
     </div>
+
+    <!-- 2. Judy -->
+    <div class="team-card reveal">
+      <img class="team-card-photo" src="judy.jpg" alt="Judy N." style="object-position:center top;"/>
+      <div class="team-info">
+        <h3>Judy N.</h3>
+        <div class="team-role">Operations Manager &amp; Executive Assistant</div>
+        <p>The backbone of DevEdge Digital — keeping projects on track, clients informed, and the studio running like clockwork.</p>
+        <div class="team-socials"><a href="#">LinkedIn</a></div>
+      </div>
+    </div>
+
+    <!-- 3. Jade -->
+    <div class="team-card reveal">
+      <img class="team-card-photo" src="jade.webp" alt="Jade M." style="object-position:center top;"/>
+      <div class="team-info">
+        <h3>Jade M.</h3>
+        <div class="team-role">Senior Graphic Designer &amp; Senior Video Editor</div>
+        <p>Creative powerhouse specialising in brand visuals, motion graphics, and high-impact video content that stops the scroll.</p>
+        <div class="team-socials"><a href="https://www.behance.net/aldinejade" target="_blank">Portfolio &#8599;</a><a href="#">LinkedIn</a></div>
+      </div>
+    </div>
+
+    <!-- 4. Rozendo -->
     <div class="team-card reveal">
       <img class="team-card-photo" src="photo_rozendo.jpg" alt="Rozendo DR." style="object-position:center top;"/>
-      <div class="team-info"><h3>Rozendo DR.</h3><div class="team-role">Video Editor</div><p>Crafting compelling video narratives and motion graphics that bring brands to life across all digital platforms.</p><div class="team-socials"><a href="#">LinkedIn</a><a href="#">Portfolio</a></div></div>
+      <div class="team-info">
+        <h3>Rozendo DR.</h3>
+        <div class="team-role">Video Editor</div>
+        <p>Crafting compelling video narratives and motion graphics that bring brands to life across all digital platforms.</p>
+        <div class="team-socials"><a href="#">LinkedIn</a><a href="#">Portfolio</a></div>
+      </div>
     </div>
-    <div class="team-card reveal">
-      <div class="team-placeholder">🎥</div>
-      <div class="team-info"><h3>Alexis R.</h3><div class="team-role">Video Editor</div><p>Video production specialist focused on storytelling and high-impact content for social and web platforms.</p><div class="team-socials"><a href="#">LinkedIn</a><a href="#">Portfolio</a></div></div>
-    </div>
+
+    <!-- 5. Ian -->
     <div class="team-card reveal">
       <img class="team-card-photo" src="photo_ian.png" alt="Ian I." style="object-position:center top;"/>
-      <div class="team-info"><h3>Ian I.</h3><div class="team-role">Digital Marketing Strategist</div><p>Data-driven specialist driving growth through SEO, paid ads, and social campaigns that deliver measurable ROI.</p><div class="team-socials"><a href="#">LinkedIn</a><a href="#">Twitter</a></div></div>
+      <div class="team-info">
+        <h3>Ian I.</h3>
+        <div class="team-role">Digital Marketing Strategist</div>
+        <p>Data-driven specialist driving growth through SEO, paid ads, and social campaigns that deliver measurable ROI.</p>
+        <div class="team-socials"><a href="#">LinkedIn</a><a href="#">Twitter</a></div>
+      </div>
     </div>
+
+    <!-- 6. Alexis -->
     <div class="team-card reveal">
-      <div class="team-placeholder" style="font-size:4rem;">🎨</div>
-      <div class="team-info"><h3>Jade M.</h3><div class="team-role">Senior Graphic Designer &amp; Video Editor</div><p>Creative powerhouse specialising in brand visuals, motion graphics, and high-impact video content that stops the scroll.</p><div class="team-socials"><a href="https://www.behance.net/aldinejade" target="_blank">Portfolio &#8599;</a><a href="#">LinkedIn</a></div></div>
+      <div class="team-placeholder">🎥</div>
+      <div class="team-info">
+        <h3>Alexis R.</h3>
+        <div class="team-role">Video Editor</div>
+        <p>Video production specialist focused on storytelling and high-impact content for social and web platforms.</p>
+        <div class="team-socials"><a href="#">LinkedIn</a><a href="#">Portfolio</a></div>
+      </div>
     </div>
+
   </div>
 </div></div>
 
@@ -892,9 +939,9 @@ function showLB(){
 function closeLB(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
 function lbMove(d){lbIdx+=d;if(lbIdx>=0&&lbIdx<lbList.length)showLB();}
 document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB();});
-d
 document.addEventListener("keydown",function(e){var lb=document.getElementById("lightbox");if(!lb.classList.contains("open"))return;if(e.key==="Escape")closeLB();if(e.key==="ArrowLeft")lbMove(-1);if(e.key==="ArrowRight")lbMove(1);});
 </script>
+
 <!-- MASCOT -->
 <div id="mascot-wrap" title="DevBot">
   <div id="mascot-speech">// need a website?</div>
