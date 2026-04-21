@@ -904,6 +904,7 @@ document.getElementById('lightbox').addEventListener('click',function(e){if(e.ta
 document.addEventListener('keydown',function(e){var lb=document.getElementById('lightbox');if(!lb.classList.contains('open'))return;if(e.key==='Escape')closeLB();if(e.key==='ArrowLeft')lbMove(-1);if(e.key==='ArrowRight')lbMove(1);});
 
 /* CONTACT FORM */
+document.getElementById('contactForm').addEventListener('submit',function(e){
   e.preventDefault();
   var btn=document.getElementById('formBtn');
   btn.textContent='$ sending...';btn.style.opacity='.7';
