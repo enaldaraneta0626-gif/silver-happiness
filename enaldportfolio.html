@@ -196,23 +196,51 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .stack-tag:hover{border-color:rgba(0,229,160,.3);color:var(--neon);}
 
 /* PROJECTS */
-.projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:48px;}
-.proj-card{border-radius:4px;overflow:hidden;border:1px solid var(--border);position:relative;cursor:pointer;transition:transform .35s,border-color .3s,box-shadow .3s;background:var(--dark3);}
-.proj-card:hover{transform:translateY(-7px);border-color:rgba(0,229,160,.25);box-shadow:0 24px 60px rgba(0,0,0,.6),var(--glow);}
-.proj-browser-bar{background:var(--dark4);padding:9px 14px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);}
-.proj-dot{width:8px;height:8px;border-radius:50%;}
-.proj-dot.r{background:#ff5f57;}.proj-dot.y{background:#ffbd2e;}.proj-dot.g{background:#28c840;}
-.proj-url{font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--muted);margin-left:6px;}
-.proj-img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;display:block;transition:transform .4s;}
+.proj-filters{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0;}
+.proj-filter{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.1em;padding:8px 18px;background:var(--dark3);border:1px solid var(--border);color:var(--muted);border-radius:3px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
+.proj-filter:hover{border-color:var(--amber-border);color:var(--text);}
+.proj-filter.active{background:var(--grad);color:#04080f;border-color:transparent;font-weight:700;}
+.projects-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;position:relative;}
+.proj-card{border-radius:8px;overflow:hidden;border:1px solid var(--border);position:relative;cursor:pointer;transition:transform .35s cubic-bezier(.25,.46,.45,.94),border-color .3s,box-shadow .3s,opacity .4s;background:var(--dark3);}
+.proj-card:hover{transform:translateY(-8px) scale(1.01);border-color:rgba(0,229,160,.3);box-shadow:0 24px 60px rgba(0,0,0,.5),var(--glow);}
+.proj-card.hidden{opacity:0;transform:scale(.92);pointer-events:none;position:absolute;visibility:hidden;}
+.proj-browser-bar{background:var(--dark4);padding:10px 14px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);}
+.proj-dot{width:9px;height:9px;border-radius:50%;}
+.proj-dot.r{background:#FF5F57;}.proj-dot.y{background:#FFBD2E;}.proj-dot.g{background:#28C840;}
+.proj-url{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted);margin-left:8px;}
+.proj-img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;display:block;transition:transform .4s ease;}
 .proj-card:hover .proj-img{transform:scale(1.04);}
-.proj-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,8,15,.97) 0%,rgba(4,8,15,.2) 55%,transparent 100%);opacity:0;transition:opacity .3s;display:flex;align-items:flex-end;padding:16px;}
+.proj-placeholder{width:100%;aspect-ratio:16/10;background:var(--dark3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;}
+.proj-placeholder-icon{font-size:2.5rem;opacity:.3;}
+.proj-placeholder-text{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;}
+.proj-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(4,8,15,.97) 0%,rgba(4,8,15,.3) 50%,transparent 100%);opacity:0;transition:opacity .3s;display:flex;align-items:flex-end;padding:20px;}
 .proj-card:hover .proj-overlay{opacity:1;}
 .proj-info{transform:translateY(8px);transition:transform .3s;}
 .proj-card:hover .proj-info{transform:translateY(0);}
-.proj-title{font-family:'Oxanium',sans-serif;font-size:.95rem;font-weight:700;margin-bottom:5px;letter-spacing:.04em;}
-.proj-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;}
-.proj-tag{font-family:'JetBrains Mono',monospace;font-size:.55rem;padding:2px 7px;border:1px solid var(--amber-border);color:var(--amber);border-radius:2px;letter-spacing:.07em;}
-.proj-visit{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--neon);text-decoration:none;}
+.proj-title{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:700;margin-bottom:6px;}
+.proj-tags{display:flex;gap:6px;flex-wrap:wrap;}
+.proj-tag{font-family:'JetBrains Mono',monospace;font-size:.58px;padding:2px 8px;border:1px solid var(--amber-border);color:var(--amber);border-radius:2px;letter-spacing:.1em;font-size:.58rem;}
+.proj-actions{display:flex;align-items:center;gap:10px;margin-top:10px;}
+.proj-preview-btn{font-family:'JetBrains Mono',monospace;font-size:.7rem;background:var(--amber-dim);border:1px solid var(--amber-border);color:var(--amber);padding:5px 12px;border-radius:2px;cursor:pointer;transition:background .2s;letter-spacing:.08em;}
+.proj-preview-btn:hover{background:rgba(245,158,11,.22);}
+.proj-link{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--neon);text-decoration:none;letter-spacing:.1em;}
+
+/* LIGHTBOX */
+#lightbox{display:none;position:fixed;inset:0;z-index:5000;background:rgba(4,8,15,.97);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px;}
+#lightbox.open{display:flex;}
+.lb-inner{max-width:1000px;width:100%;animation:fadeU .3s ease;}
+.lb-box{background:var(--dark2);border:1px solid rgba(0,229,160,.18);border-radius:10px;overflow:hidden;}
+.lb-bar{background:var(--dark3);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
+.lb-dots{display:flex;align-items:center;gap:8px;}
+.lb-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1;padding:0 4px;transition:color .2s;}
+.lb-close:hover{color:var(--neon);}
+.lb-scroll{max-height:65vh;overflow-y:auto;}
+.lb-scroll img{width:100%;display:block;}
+.lb-footer{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid var(--border);}
+.lb-nav{display:flex;justify-content:center;gap:12px;margin-top:14px;}
+.lb-btn{background:var(--dark2);border:1px solid rgba(0,229,160,.18);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.8rem;padding:8px 20px;border-radius:3px;cursor:pointer;transition:all .2s;}
+.lb-btn:hover{border-color:var(--neon);color:var(--neon);}
+.lb-btn:disabled{opacity:.3;cursor:default;}
 
 /* PROCESS */
 .process-steps{display:flex;flex-direction:column;gap:2px;margin-top:48px;}
@@ -558,15 +586,87 @@ footer{background:var(--dark2);padding:36px var(--pad-x) 24px;border-top:1px sol
     <h2 class="section-title">Sites I've <span class="hl">Built & Launched</span></h2>
     <p style="color:rgba(222,234,245,.55);max-width:480px;line-height:1.8;font-size:.96rem;">A selection of high-performance websites designed and developed across industries.</p>
   </div>
-  <div class="projects-grid">
-    <div class="proj-card reveal"><div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">robusoventures.com</span></div><img class="proj-img" loading="lazy" src="proj_robuso.png" alt="Robuso Ventures"/><div class="proj-overlay"><div class="proj-info"><div class="proj-title">Robuso Ventures</div><div class="proj-tags"><span class="proj-tag">WordPress</span><span class="proj-tag">Investment</span></div><a href="https://robusoventures.com" target="_blank" class="proj-visit">Visit Live →</a></div></div></div>
-    <div class="proj-card reveal"><div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">freedomdirectrx.com</span></div><img class="proj-img" loading="lazy" src="proj_freedom.png" alt="Freedom Direct Rx"/><div class="proj-overlay"><div class="proj-info"><div class="proj-title">Freedom Direct Rx</div><div class="proj-tags"><span class="proj-tag">Landing Page</span><span class="proj-tag">Health</span></div><a href="https://freedomdirectrx.com" target="_blank" class="proj-visit">Visit Live →</a></div></div></div>
-    <div class="proj-card reveal"><div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">nomonomo.ca</span></div><img class="proj-img" loading="lazy" src="proj_nomo.png" alt="Nomonomo"/><div class="proj-overlay"><div class="proj-info"><div class="proj-title">Nomonomo</div><div class="proj-tags"><span class="proj-tag">Restaurant</span><span class="proj-tag">WordPress</span></div><a href="https://nomonomo.ca" target="_blank" class="proj-visit">Visit Live →</a></div></div></div>
-    <div class="proj-card reveal"><div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">getdirectloantoday.com</span></div><img class="proj-img" loading="lazy" src="proj_directloan.png" alt="Get Direct Loan Today"/><div class="proj-overlay"><div class="proj-info"><div class="proj-title">Get Direct Loan Today</div><div class="proj-tags"><span class="proj-tag">Finance</span><span class="proj-tag">Lead Gen</span></div><a href="https://getdirectloantoday.com" target="_blank" class="proj-visit">Visit Live →</a></div></div></div>
-    <div class="proj-card reveal"><div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">fat-rabbit.ca</span></div><img class="proj-img" loading="lazy" src="proj_fatrabbit.png" alt="Fat Rabbit"/><div class="proj-overlay"><div class="proj-info"><div class="proj-title">Fat Rabbit</div><div class="proj-tags"><span class="proj-tag">Restaurant</span><span class="proj-tag">WordPress</span></div><a href="https://fat-rabbit.ca" target="_blank" class="proj-visit">Visit Live →</a></div></div></div>
-    <div class="proj-card reveal"><div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">goldenpigmarketing.com</span></div><img class="proj-img" loading="lazy" src="proj_goldenpig.png" alt="Golden Pig Marketing"/><div class="proj-overlay"><div class="proj-info"><div class="proj-title">Golden Pig Marketing</div><div class="proj-tags"><span class="proj-tag">Marketing</span><span class="proj-tag">Landing Page</span></div><a href="https://goldenpigmarketing.com" target="_blank" class="proj-visit">Visit Live →</a></div></div></div>
+  <div class="proj-filters reveal" id="projFilters">
+    <button class="proj-filter active" data-filter="all">All Projects</button>
+    <button class="proj-filter" data-filter="WordPress">WordPress</button>
+    <button class="proj-filter" data-filter="Landing Page">Landing Pages</button>
+    <button class="proj-filter" data-filter="Restaurant">Restaurant</button>
+    <button class="proj-filter" data-filter="Finance">Finance</button>
+    <button class="proj-filter" data-filter="Marketing">Marketing</button>
+  </div>
+  <div class="projects-grid" id="projectsGrid">
+    <div class="proj-card" data-tags="WordPress,Investment,Lifestyle" data-title="Robuso Ventures" data-url="https://robusoventures.com" data-img="proj_robuso.png" data-desc="Toronto-based investment syndicate focused on early-stage companies in digital commerce, hospitality, and lifestyle sectors.">
+      <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">robusoventures.com</span></div>
+      <img class="proj-img" loading="lazy" src="proj_robuso.png" alt="Robuso Ventures"/>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Robuso Ventures</div><div class="proj-tags"><span class="proj-tag">WordPress</span><span class="proj-tag">Investment</span><span class="proj-tag">Lifestyle</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://robusoventures.com" target="_blank" class="proj-link">Visit →</a></div></div></div>
+    </div>
+    <div class="proj-card" data-tags="Landing Page,Health,Conversion" data-title="Freedom Direct Rx" data-url="https://freedomdirectrx.com" data-img="proj_freedom.png" data-desc="High-converting landing page for a prescription weight-loss medication service. Built for maximum conversion rate optimization.">
+      <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">freedomdirectrx.com</span></div>
+      <img class="proj-img" loading="lazy" src="proj_freedom.png" alt="Freedom Direct Rx"/>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Freedom Direct Rx</div><div class="proj-tags"><span class="proj-tag">Landing Page</span><span class="proj-tag">Health</span><span class="proj-tag">Conversion</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://freedomdirectrx.com" target="_blank" class="proj-link">Visit →</a></div></div></div>
+    </div>
+    <div class="proj-card" data-tags="Restaurant,WordPress,Branding" data-title="Nomonomo" data-url="https://nomonomo.ca" data-img="proj_nomo.png" data-desc="Atmospheric restaurant website for a Korean-Japanese bar in Vancouver, BC. Full-screen cinematic design with moody photography.">
+      <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">nomonomo.ca</span></div>
+      <img class="proj-img" loading="lazy" src="proj_nomo.png" alt="Nomonomo"/>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Nomonomo</div><div class="proj-tags"><span class="proj-tag">Restaurant</span><span class="proj-tag">Branding</span><span class="proj-tag">WordPress</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://nomonomo.ca" target="_blank" class="proj-link">Visit →</a></div></div></div>
+    </div>
+    <div class="proj-card" data-tags="WordPress,Finance,Landing Page" data-title="Get Direct Loan Today" data-url="https://getdirectloantoday.com" data-img="proj_directloan.png" data-desc="Lead generation website for a business lending company offering fast capital up to $1M in 24–48 hours.">
+      <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">getdirectloantoday.com</span></div>
+      <img class="proj-img" loading="lazy" src="proj_directloan.png" alt="Get Direct Loan Today"/>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Get Direct Loan Today</div><div class="proj-tags"><span class="proj-tag">WordPress</span><span class="proj-tag">Finance</span><span class="proj-tag">Lead Gen</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://getdirectloantoday.com" target="_blank" class="proj-link">Visit →</a></div></div></div>
+    </div>
+    <div class="proj-card" data-tags="Restaurant,WordPress,Catering" data-title="Fat Rabbit" data-url="https://fat-rabbit.ca" data-img="proj_fatrabbit.png" data-desc="Full-service website for an award-winning restaurant, butcher and catering company based in Niagara, Canada.">
+      <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">fat-rabbit.ca</span></div>
+      <img class="proj-img" loading="lazy" src="proj_fatrabbit.png" alt="Fat Rabbit"/>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Fat Rabbit</div><div class="proj-tags"><span class="proj-tag">Restaurant</span><span class="proj-tag">WordPress</span><span class="proj-tag">Catering</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://fat-rabbit.ca" target="_blank" class="proj-link">Visit →</a></div></div></div>
+    </div>
+    <div class="proj-card" data-tags="Landing Page,Marketing,TikTok" data-title="Golden Pig Marketing" data-url="https://goldenpigmarketing.com" data-img="proj_goldenpig.png" data-desc="Performance marketing agency for TikTok Shop, Amazon, and DTC brands. Bold high-energy design with strong conversion-focused layout.">
+      <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">goldenpigmarketing.com</span></div>
+      <img class="proj-img" loading="lazy" src="proj_goldenpig.png" alt="Golden Pig Marketing"/>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Golden Pig Marketing</div><div class="proj-tags"><span class="proj-tag">Landing Page</span><span class="proj-tag">Marketing</span><span class="proj-tag">TikTok</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://goldenpigmarketing.com" target="_blank" class="proj-link">Visit →</a></div></div></div>
+    </div>
+    <div class="proj-card" data-tags="WordPress,Finance,Landing Page" data-title="EasyLoanio" data-url="https://easyloanio.com/" data-img="proj_easyloanio.png" data-desc="Business funding website with a clean finance-focused layout, trust elements, and qualification flow built for lead generation.">
+      <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">easyloanio.com</span></div>
+      <img class="proj-img" loading="lazy" src="proj_easyloanio.png" alt="EasyLoanio"/>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">EasyLoanio</div><div class="proj-tags"><span class="proj-tag">WordPress</span><span class="proj-tag">Finance</span><span class="proj-tag">Lead Gen</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://easyloanio.com/" target="_blank" class="proj-link">Visit →</a></div></div></div>
+    </div>
+    <div class="proj-card" data-tags="WordPress,Marketing,Ecommerce" data-title="WhyNotPH" data-url="https://whynotph.shop/" data-img="proj_whynotph.png" data-desc="Affiliate-style product discovery site with review cards, category navigation, blog content, FAQs, and a social-proof driven layout.">
+      <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">whynotph.shop</span></div>
+      <img class="proj-img" loading="lazy" src="proj_whynotph.png" alt="WhyNotPH"/>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">WhyNotPH</div><div class="proj-tags"><span class="proj-tag">WordPress</span><span class="proj-tag">Marketing</span><span class="proj-tag">Ecommerce</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://whynotph.shop/" target="_blank" class="proj-link">Visit →</a></div></div></div>
+    </div>
+    <div class="proj-card" data-tags="WordPress,Landing Page,Health" data-title="FreedomRx Redesign" data-url="https://moved-bedbug-1.10web.cloud/" data-img="proj_movedbedbug.png" data-desc="Modern healthcare landing page redesign with treatment pages, FAQs, legal pages, and a more streamlined conversion-first structure.">
+      <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">moved-bedbug-1.10web.cloud</span></div>
+      <img class="proj-img" loading="lazy" src="proj_movedbedbug.png" alt="FreedomRx Redesign"/>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">FreedomRx Redesign</div><div class="proj-tags"><span class="proj-tag">WordPress</span><span class="proj-tag">Landing Page</span><span class="proj-tag">Health</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://moved-bedbug-1.10web.cloud/" target="_blank" class="proj-link">Visit →</a></div></div></div>
+    </div>
+    <div class="proj-card cta-card">
+      <div class="proj-placeholder" style="border:1px dashed var(--amber-border);background:var(--amber-dim);"><span class="proj-placeholder-icon" style="opacity:.5;">✨</span><span class="proj-placeholder-text" style="color:var(--amber);">Your Project Here</span></div>
+      <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Your Project</div><div class="proj-tags"><span class="proj-tag">Let's Build It</span></div><a href="#contact" class="proj-link" style="margin-top:8px;display:inline-block;">Start Now →</a></div></div>
+    </div>
   </div>
 </div></div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox">
+  <div class="lb-inner">
+    <div class="lb-box">
+      <div class="lb-bar">
+        <div class="lb-dots"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span id="lbUrl" style="font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--muted);margin-left:8px;"></span></div>
+        <button class="lb-close" onclick="closeLB()">✕</button>
+      </div>
+      <div class="lb-scroll"><img id="lbImg" src="" alt=""/></div>
+      <div class="lb-footer">
+        <div><div id="lbTitle" style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:700;margin-bottom:6px;"></div><div id="lbDesc" style="font-size:.88rem;color:rgba(222,234,245,.6);line-height:1.6;max-width:580px;"></div><div id="lbTags" style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap;"></div></div>
+        <a id="lbLink" href="#" target="_blank" class="btn-neon" style="white-space:nowrap;font-size:.8rem;padding:11px 24px;">Visit Live Site →</a>
+      </div>
+    </div>
+    <div class="lb-nav">
+      <button class="lb-btn" id="lbPrev" onclick="lbMove(-1)">← Prev</button>
+      <button class="lb-btn" id="lbNext" onclick="lbMove(1)">Next →</button>
+    </div>
+  </div>
+</div>
 
 <!-- BRANDS MARQUEE -->
 <div class="brands-marquee-wrap">
@@ -767,8 +867,43 @@ function countUp(el,t,s){var v=0,inc=t/100;var tm=setInterval(function(){v=Math.
 var sO=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting&&!e.target.dataset.done){e.target.dataset.done=1;var r=e.target.textContent,n=parseInt(r.replace(/[^0-9]/g,'')),s=r.replace(/[0-9]/g,'');countUp(e.target,n,s);}});},{threshold:.5});
 document.querySelectorAll('.stat-num').forEach(function(el){sO.observe(el);});
 
+/* PROJECT FILTERS */
+var allP=Array.from(document.querySelectorAll('#projectsGrid .proj-card:not(.cta-card)'));
+document.querySelectorAll('.proj-filter').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.proj-filter').forEach(function(b){b.classList.remove('active');});
+    btn.classList.add('active');
+    var f=btn.dataset.filter;
+    allP.forEach(function(c){c.classList.toggle('hidden',f!=='all'&&c.dataset.tags.indexOf(f)===-1);});
+  });
+});
+
+/* LIGHTBOX */
+var lbList=[],lbIdx=0;
+function openLB(btn){
+  lbList=allP.filter(function(c){return !c.classList.contains('hidden');});
+  lbIdx=lbList.indexOf(btn.closest('.proj-card'));
+  showLB();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function showLB(){
+  var c=lbList[lbIdx];
+  document.getElementById('lbImg').src=c.dataset.img;
+  document.getElementById('lbTitle').textContent=c.dataset.title;
+  document.getElementById('lbDesc').textContent=c.dataset.desc;
+  document.getElementById('lbUrl').textContent=c.querySelector('.proj-url').textContent;
+  document.getElementById('lbLink').href=c.dataset.url;
+  document.getElementById('lbTags').innerHTML=c.dataset.tags.split(',').map(function(t){return '<span class="proj-tag">'+t.trim()+'</span>';}).join('');
+  document.getElementById('lbPrev').disabled=lbIdx===0;
+  document.getElementById('lbNext').disabled=lbIdx===lbList.length-1;
+}
+function closeLB(){document.getElementById('lightbox').classList.remove('open');document.body.style.overflow='';}
+function lbMove(d){lbIdx+=d;if(lbIdx>=0&&lbIdx<lbList.length)showLB();}
+document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB();});
+document.addEventListener('keydown',function(e){var lb=document.getElementById('lightbox');if(!lb.classList.contains('open'))return;if(e.key==='Escape')closeLB();if(e.key==='ArrowLeft')lbMove(-1);if(e.key==='ArrowRight')lbMove(1);});
+
 /* CONTACT FORM */
-document.getElementById('contactForm').addEventListener('submit',function(e){
   e.preventDefault();
   var btn=document.getElementById('formBtn');
   btn.textContent='$ sending...';btn.style.opacity='.7';
