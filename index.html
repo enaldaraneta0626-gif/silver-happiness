@@ -1221,7 +1221,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 /* ============================================================
    DEVEDGE DIGITAL — AI CHAT WIDGET
    Drop this entire file just before </body> on your site.
-   Gemini now runs through a Netlify Function using GEMINI_API_KEY.
+   Replace YOUR_ANTHROPIC_API_KEY below with your real key.
    Lead emails are sent to: hello@devedge.digital
    ============================================================ */
 
@@ -1605,7 +1605,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 /* ============================================================
    DEVEDGE DIGITAL — AI CHAT WIDGET
    Drop this entire file just before </body> on your site.
-   Gemini now runs through a Netlify Function using GEMINI_API_KEY.
+   Replace YOUR_ANTHROPIC_API_KEY below with your real key.
    Lead emails are sent to: hello@devedge.digital
    ============================================================ */
 
@@ -2023,54 +2023,70 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     </div>
   </div>
 
-  <div class="de-footer">Powered by <span>Gemini AI</span> &nbsp;·&nbsp; DevEdge Digital &copy; 2026</div>
+  <div class="de-footer">Fixed Answer Mode &nbsp;·&nbsp; DevEdge Digital &copy; 2026</div>
 </div>
 
 <script>
 (function () {
   // ============================================================
-  //  CONFIG
-  //  Gemini API key is stored securely in Netlify environment variables.
-  //  Frontend calls the Netlify Function below, not Gemini directly.
+  //  CONFIG — fixed-answer mode, no AI API required
   // ============================================================
-  var CHAT_API_URL = '/.netlify/functions/gemini-chat';
   var LEAD_EMAIL = 'hello@devedge.digital';
 
   // ============================================================
-  //  SYSTEM PROMPT
+  //  FIXED RESPONSE KNOWLEDGE BASE
   // ============================================================
-  var SYSTEM = `You are DevBot, the AI assistant for DevEdge Digital — a high-performance web development and digital creative studio based in Davao, Philippines, working globally (US, Australia, Middle East, and beyond).
+  var SYSTEM = 'Fixed-answer mode enabled. DevBot uses predefined responses instead of an external AI API.';
 
-Services:
-1. Web Design & Development — WordPress, React, Next.js. Fast, responsive, conversion-optimised. 2–6 week timelines.
-2. Branding & Identity Design — Logos, brand guidelines, visual assets, print collateral.
-3. Digital Marketing — Social media, PPC, paid-ads strategy.
-4. SEO Optimisation — On-page, technical, local SEO.
-5. Video Marketing & Editing — Motion graphics, social video, brand storytelling.
+  function deFixedReply(text) {
+    var msg = (text || '').toLowerCase();
 
-Studio facts:
-- 11 years in business (since 2014)
-- 200+ projects completed, 200+ brands supported
-- $2M+ ad spend managed, 150+ landing pages built
-- Response time: within 24 hours
-- Email: hello@devedge.digital
+    function has(words) {
+      return words.some(function (w) { return msg.indexOf(w) !== -1; });
+    }
 
-Team & routing:
-- Web development → Jericho M. (Full-Stack Developer) or Enald A. (Founder & Lead Developer)
-- Branding / graphic design → Jade M. (Senior Graphic Designer & Video Editor)
-- Video editing / motion → Jade M., Rozendo DR., or Alexis R.
-- Digital marketing / SEO / paid ads → Ian I. (Digital Marketing Strategist)
-- Project management / general inquiries / operations → Judy N. (Operations Manager)
-- Multi-service / complex projects → Enald A. (Founder)
+    if (has(['price', 'pricing', 'cost', 'quote', 'estimate', 'budget', 'how much', 'package'])) {
+      return 'Pricing depends on the project scope, timeline, and deliverables. Share your project details through the quick form and our team will send you a custom quote.\n\n[SHOW_LEAD_FORM]';
+    }
 
-Personality: Friendly, professional, slightly techy. Use occasional code-style formatting. Keep responses concise (2–4 short paragraphs). Use bullet points for lists. Bold key terms.
+    if (has(['start', 'get started', 'book', 'call', 'consultation', 'inquire', 'inquiry', 'contact', 'talk to the team', 'hire', 'proposal'])) {
+      return 'Sounds good — our team can review your request and get back to you within 24 hours.\n\n[SHOW_LEAD_FORM]';
+    }
 
-CRITICAL RULES — follow these exactly:
-1. NEVER ask for the user's name, email, or any personal details in the chat. NEVER say "share your name", "what's your email", "just share your name", or anything similar.
-2. When a user wants to get started, book a call, get a quote, inquire, or contact the team — respond with a SHORT message (1–2 sentences max) then end with exactly this token on its own line: [SHOW_LEAD_FORM]
-3. The [SHOW_LEAD_FORM] token automatically triggers a contact form inside the chat — do NOT explain it or ask for info yourself.
-4. For scheduling/discovery calls: mention briefly that the team will confirm timing after reviewing the inquiry, then use [SHOW_LEAD_FORM].
-5. Only use [SHOW_LEAD_FORM] when the user clearly wants to take action — not for general questions.`;
+    if (has(['website', 'web development', 'web design', 'wordpress', 'landing page', 'shopify', 'react', 'next.js', 'cms'])) {
+      return 'We build fast, responsive, conversion-focused websites using **WordPress**, **React**, **Next.js**, Shopify, and other CMS platforms. Typical timelines range from **2–6 weeks**, depending on scope and complexity.';
+    }
+
+    if (has(['seo', 'rank', 'ranking', 'google search', 'organic', 'local seo', 'technical seo'])) {
+      return 'Our **SEO services** cover on-page SEO, technical SEO, local SEO, content optimization, metadata, page structure, and performance improvements to help your site get found more easily on search.';
+    }
+
+    if (has(['branding', 'brand', 'logo', 'identity', 'guidelines', 'visual'])) {
+      return 'We help with **branding and identity design**, including logo concepts, brand guidelines, visual assets, color systems, typography, and print-ready collateral.';
+    }
+
+    if (has(['marketing', 'ads', 'meta', 'facebook ads', 'google ads', 'ppc', 'paid ads', 'campaign'])) {
+      return 'We support **digital marketing** through paid ads strategy, Meta Ads, Google Ads, funnel planning, landing pages, tracking setup, and conversion-focused campaign assets.';
+    }
+
+    if (has(['video', 'editing', 'motion', 'reels', 'shorts', 'tiktok', 'youtube'])) {
+      return 'We provide **video marketing and editing** for social content, brand storytelling, motion graphics, short-form videos, campaign creatives, and platform-ready assets.';
+    }
+
+    if (has(['team', 'who', 'developer', 'designer', 'founder'])) {
+      return 'DevEdge Digital is a digital creative studio with specialists across web development, branding, marketing, SEO, operations, and video production. We route each project to the right team member based on the scope.';
+    }
+
+    if (has(['timeline', 'how long', 'duration', 'launch'])) {
+      return 'Most website projects take around **2–6 weeks**, depending on the number of pages, content readiness, design complexity, integrations, and revision rounds.';
+    }
+
+    if (has(['email', 'support'])) {
+      return 'You can email us directly at **hello@devedge.digital**. You can also submit the quick project form here and our team will reply within 24 hours.\n\n[SHOW_LEAD_FORM]';
+    }
+
+    return 'Thanks for reaching out to **DevEdge Digital**. We specialize in **web development**, **branding**, **SEO**, **digital marketing**, and **video editing**. Ask about a service, pricing, timeline, or starting a project.';
+  }
 
   // ============================================================
   //  STATE
@@ -2133,50 +2149,24 @@ CRITICAL RULES — follow these exactly:
     document.getElementById('deSendBtn').disabled = true;
     deShowTyping();
 
-    fetch(CHAT_API_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        message: text,
-        history: history,
-        system: SYSTEM
-      })
-    })
-    .then(function (r) {
-      return r.json();
-    })
-    .then(function (data) {
+    window.setTimeout(function () {
       deRemoveTyping();
 
-      if (data.error) {
-        throw new Error(data.error);
-      }
-
-      var reply = data.reply || 'Oops — something went wrong. Email us at **hello@devedge.digital** and we\'ll get right back to you!';
-
+      var reply = deFixedReply(text);
       history.push({ role: 'assistant', content: reply });
 
-      // Check if Gemini wants us to show the lead form
       var showForm = reply.indexOf('[SHOW_LEAD_FORM]') !== -1;
       var cleanReply = reply.replace(/\[SHOW_LEAD_FORM\]/g, '').trim();
 
       var extra = deDetectRoute(text + ' ' + reply);
       if (cleanReply) deBotMsg(cleanReply, nowTime(), extra);
       if (showForm) setTimeout(deShowLeadCapture, 400);
-    })
-    .catch(function (err) {
-      console.error('Gemini chatbot error:', err);
-      deRemoveTyping();
-      deBotMsg('Our AI assistant is temporarily unavailable. Please email **hello@devedge.digital** and we\'ll get back to you shortly.', nowTime());
-    })
-    .finally(function () {
+
       busy = false;
       document.getElementById('deSendBtn').disabled = false;
       var inp2 = document.getElementById('deInput');
       if (inp2) inp2.focus();
-    });;
+    }, 650);
   };
 
   // ============================================================
