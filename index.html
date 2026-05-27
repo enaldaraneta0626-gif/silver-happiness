@@ -1221,7 +1221,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 /* ============================================================
    DEVEDGE DIGITAL — AI CHAT WIDGET
    Drop this entire file just before </body> on your site.
-   Replace YOUR_ANTHROPIC_API_KEY below with your real key.
+   Gemini now runs through a Netlify Function using GEMINI_API_KEY.
    Lead emails are sent to: hello@devedge.digital
    ============================================================ */
 
@@ -1605,7 +1605,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 /* ============================================================
    DEVEDGE DIGITAL — AI CHAT WIDGET
    Drop this entire file just before </body> on your site.
-   Replace YOUR_ANTHROPIC_API_KEY below with your real key.
+   Gemini now runs through a Netlify Function using GEMINI_API_KEY.
    Lead emails are sent to: hello@devedge.digital
    ============================================================ */
 
@@ -2023,16 +2023,17 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     </div>
   </div>
 
-  <div class="de-footer">Powered by <span>Claude AI</span> &nbsp;·&nbsp; DevEdge Digital &copy; 2026</div>
+  <div class="de-footer">Powered by <span>Gemini AI</span> &nbsp;·&nbsp; DevEdge Digital &copy; 2026</div>
 </div>
 
 <script>
 (function () {
   // ============================================================
-  //  CONFIG — replace with your real Anthropic API key
+  //  CONFIG
+  //  Gemini API key is stored securely in Netlify environment variables.
+  //  Frontend calls the Netlify Function below, not Gemini directly.
   // ============================================================
-  var API_KEY   = 'YOUR_ANTHROPIC_API_KEY';
-  var API_URL   = 'https://api.anthropic.com/v1/messages';
+  var CHAT_API_URL = '/.netlify/functions/gemini-chat';
   var LEAD_EMAIL = 'hello@devedge.digital';
 
   // ============================================================
@@ -2132,30 +2133,32 @@ CRITICAL RULES — follow these exactly:
     document.getElementById('deSendBtn').disabled = true;
     deShowTyping();
 
-    fetch(API_URL, {
+    fetch(CHAT_API_URL, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        system: SYSTEM,
-        messages: history
+        message: text,
+        history: history,
+        system: SYSTEM
       })
     })
-    .then(function (r) { return r.json(); })
+    .then(function (r) {
+      return r.json();
+    })
     .then(function (data) {
       deRemoveTyping();
-      var reply = (data.content && data.content.find(function (b) { return b.type === 'text'; })) 
-                    ? data.content.find(function (b) { return b.type === 'text'; }).text
-                    : 'Oops — something went wrong. Email us at **hello@devedge.digital** and we\'ll get right back to you!';
+
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      var reply = data.reply || 'Oops — something went wrong. Email us at **hello@devedge.digital** and we\'ll get right back to you!';
+
       history.push({ role: 'assistant', content: reply });
 
-      // Check if Claude wants us to show the lead form
+      // Check if Gemini wants us to show the lead form
       var showForm = reply.indexOf('[SHOW_LEAD_FORM]') !== -1;
       var cleanReply = reply.replace(/\[SHOW_LEAD_FORM\]/g, '').trim();
 
@@ -2163,16 +2166,17 @@ CRITICAL RULES — follow these exactly:
       if (cleanReply) deBotMsg(cleanReply, nowTime(), extra);
       if (showForm) setTimeout(deShowLeadCapture, 400);
     })
-    .catch(function () {
+    .catch(function (err) {
+      console.error('Gemini chatbot error:', err);
       deRemoveTyping();
-      deBotMsg('Connection issue — please email us at **hello@devedge.digital** and we\'ll be in touch within 24 hours!', nowTime());
+      deBotMsg('Our AI assistant is temporarily unavailable. Please email **hello@devedge.digital** and we\'ll get back to you shortly.', nowTime());
     })
     .finally(function () {
       busy = false;
       document.getElementById('deSendBtn').disabled = false;
       var inp2 = document.getElementById('deInput');
       if (inp2) inp2.focus();
-    });
+    });;
   };
 
   // ============================================================
