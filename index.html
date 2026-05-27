@@ -1961,49 +1961,56 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
   flex-shrink: 0;
 }
 .de-footer span { color: rgba(255,107,43,0.55); }
-  @media (max-width: 600px) {
-  
-    @media (max-width: 600px) {
+/* MOBILE CHAT FIX — launcher stays visible when closed, hides only when chat is open */
+@media (max-width: 600px) {
 
   #de-chat-window {
     left: 8px !important;
     right: 8px !important;
     bottom: 10px !important;
     width: auto !important;
-    height: 84vh !important;
-    max-height: 84vh !important;
+    height: 84dvh !important;
+    max-height: calc(100dvh - 20px) !important;
     border-radius: 16px !important;
   }
 
-  /* HIDE FLOATING ORANGE X BUTTON */
+  /* Keep floating chat icon visible when closed */
   #de-chat-launcher {
+    display: flex !important;
+    width: 54px !important;
+    height: 54px !important;
+    right: 16px !important;
+    bottom: 16px !important;
+    z-index: 100000 !important;
+  }
+
+  /* Hide floating icon only while chat is open */
+  body.chat-open #de-chat-launcher {
     display: none !important;
   }
 
-  .de-chat-body {
+  .de-messages {
     padding: 14px !important;
   }
 
   .de-msg {
-    max-width: 92% !important;
+    max-width: 94% !important;
   }
 
-  /* FORM WIDTH FIX */
-  .de-lead-form,
-  .de-form-card,
-  .de-capture-form {
+  .de-lead-card {
     width: 100% !important;
     max-width: 100% !important;
+    padding: 14px !important;
   }
 
-  .de-lead-form input,
-  .de-lead-form textarea,
-  .de-lead-form select {
+  .de-linput,
+  .de-lbtn {
     width: 100% !important;
-    font-size: 15px !important;
+    max-width: 100% !important;
+    font-size: 14px !important;
   }
 
-  .de-input-wrap {
+  .de-input-area {
     padding: 10px !important;
   }
 
@@ -2014,6 +2021,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
   #deInput {
     font-size: 14px !important;
     padding: 13px !important;
+    min-height: 48px !important;
   }
 
   #deSendBtn,
@@ -2023,11 +2031,15 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     min-width: 48px !important;
   }
 
+  .de-input-tools {
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+
   .de-footer {
     font-size: 0.5rem !important;
     padding: 6px !important;
   }
-
 }
 </style>
 
@@ -2174,6 +2186,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     var bdg  = document.getElementById('deNotifBadge');
     win.classList.toggle('de-open', isOpen);
     btn.classList.toggle('de-open', isOpen);
+    document.body.classList.toggle('chat-open', isOpen);
     if (isOpen) {
       if (bdg) bdg.style.display = 'none';
       if (history.length === 0) deInitWelcome();
