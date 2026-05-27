@@ -1962,22 +1962,45 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 }
 .de-footer span { color: rgba(255,107,43,0.55); }
   @media (max-width: 600px) {
+  
+    @media (max-width: 600px) {
+
   #de-chat-window {
-    left: 10px !important;
-    right: 10px !important;
-    bottom: 78px !important;
+    left: 8px !important;
+    right: 8px !important;
+    bottom: 10px !important;
     width: auto !important;
-    height: 72vh !important;
-    max-height: 72vh !important;
-    border-radius: 14px !important;
+    height: 84vh !important;
+    max-height: 84vh !important;
+    border-radius: 16px !important;
   }
 
+  /* HIDE FLOATING ORANGE X BUTTON */
   #de-chat-launcher {
-    width: 52px !important;
-    height: 52px !important;
-    right: 16px !important;
-    bottom: 16px !important;
-    z-index: 100000 !important;
+    display: none !important;
+  }
+
+  .de-chat-body {
+    padding: 14px !important;
+  }
+
+  .de-msg {
+    max-width: 92% !important;
+  }
+
+  /* FORM WIDTH FIX */
+  .de-lead-form,
+  .de-form-card,
+  .de-capture-form {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .de-lead-form input,
+  .de-lead-form textarea,
+  .de-lead-form select {
+    width: 100% !important;
+    font-size: 15px !important;
   }
 
   .de-input-wrap {
@@ -1990,24 +2013,21 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 
   #deInput {
     font-size: 14px !important;
-    padding: 12px !important;
+    padding: 13px !important;
   }
 
   #deSendBtn,
   .de-send {
-    width: 46px !important;
-    height: 46px !important;
-    min-width: 46px !important;
-  }
-
-  .de-msg {
-    max-width: 88% !important;
+    width: 48px !important;
+    height: 48px !important;
+    min-width: 48px !important;
   }
 
   .de-footer {
-    font-size: 0.45rem !important;
-    padding: 5px !important;
+    font-size: 0.5rem !important;
+    padding: 6px !important;
   }
+
 }
 </style>
 
