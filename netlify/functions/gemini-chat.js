@@ -1,17 +1,27 @@
 exports.handler = async function (event) {
   try {
+
     if (event.httpMethod !== "POST") {
-      return { statusCode: 405, body: "Method Not Allowed" };
+      return {
+        statusCode: 405,
+        body: "Method Not Allowed"
+      };
     }
 
-    const { message, history = [], system = "" } = JSON.parse(event.body || "{}");
+    const body = JSON.parse(event.body || "{}");
+
+    const message = body.message || "";
+    const history = body.history || [];
+    const system = body.system || "";
 
     const apiKey = process.env.GEMINI_API_KEY;
 
     if (!apiKey) {
       return {
         statusCode: 500,
-        body: JSON.stringify({ error: "Missing GEMINI_API_KEY" })
+        body: JSON.stringify({
+          error: "Missing GEMINI_API_KEY"
+        })
       };
     }
 
@@ -26,11 +36,13 @@ exports.handler = async function (event) {
       }
     ];
 
-    const res = await fetch(
+    const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
       {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
           systemInstruction: {
             parts: [{ text: system }]
@@ -44,30 +56,43 @@ exports.handler = async function (event) {
       }
     );
 
-    const data = await res.json();
+    const data = await response.json();
 
-    if (!res.ok) {
+    if (!response.ok) {
+
+      console.error(data);
+
       return {
-        statusCode: res.status,
+        statusCode: response.status,
         body: JSON.stringify({
-          error: data.error?.message || "Gemini API error"
+          error: data.error?.message || "Gemini API Error"
         })
       };
     }
 
     const reply =
       data.candidates?.[0]?.content?.parts?.[0]?.text ||
-      "Oops — something went wrong. Email us at **hello@devedge.digital**.";
+      "Oops — something went wrong.";
 
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ reply })
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        reply
+      })
     };
+
   } catch (err) {
+
+    console.error(err);
+
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: err.message })
+      body: JSON.stringify({
+        error: err.message
+      })
     };
   }
 };
