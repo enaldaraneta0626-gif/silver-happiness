@@ -4,440 +4,579 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Enald Araneta — Founder & Lead Developer · DevEdge Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{width:100%;min-height:100vh;font-family:-apple-system,'Helvetica Neue',sans-serif;background:#1a1a1e;display:flex;align-items:center;justify-content:center;padding:24px 0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans',system-ui,sans-serif}
 
-.wrap{width:100%;max-width:740px;display:flex;flex-direction:column;align-items:center}
+/* ══ LOCK SCREEN ══ */
+.lock{position:fixed;inset:0;z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;transition:opacity .9s ease,transform .9s ease;cursor:pointer}
+.lock.hiding{opacity:0;transform:scale(1.04);pointer-events:none}
+.lock.gone{display:none}
+.lock-bg{position:absolute;inset:0;background:linear-gradient(160deg,#0d1a2e 0%,#1a2a4a 40%,#0a1628 100%)}
+.lock-blur{position:absolute;inset:0;backdrop-filter:blur(0px)}
 
-/* MacBook lid */
-.lid{width:100%;background:linear-gradient(180deg,#3a3a3f 0%,#2e2e33 100%);border-radius:14px 14px 0 0;padding:9px 9px 0;position:relative;box-shadow:0 40px 80px rgba(0,0,0,.6)}
-.lid::before{content:'';position:absolute;inset:0;border-radius:14px 14px 0 0;border:1px solid rgba(255,255,255,0.1);pointer-events:none}
-.bezel{background:#080808;border-radius:7px 7px 0 0;overflow:hidden;position:relative}
-.screen{width:100%;min-height:480px;position:relative;overflow:hidden;background:#000;display:flex;flex-direction:column}
+/* Lock screen video */
+.lock-video{position:absolute;inset:0;overflow:hidden;opacity:.45}
+.lock-video iframe{position:absolute;top:50%;left:50%;width:177.78vh;height:100vh;min-width:100vw;min-height:56.25vw;transform:translate(-50%,-50%);pointer-events:none;border:none}
 
-/* Notch */
-.notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:106px;height:28px;background:#080808;border-radius:0 0 16px 16px;z-index:30;display:flex;align-items:center;justify-content:center;cursor:pointer}
-.notch-cam{width:8px;height:8px;border-radius:50%;background:#1c1c1e;border:1.5px solid #2a2a2e;transition:all .3s;position:relative}
-.notch-cam.on{background:#34c759;border-color:#28a845;box-shadow:0 0 8px rgba(52,199,89,.9)}
-.notch-cam.on::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid rgba(52,199,89,.35);animation:campulse 1.5s infinite}
-@keyframes campulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.4);opacity:.4}}
+.lock-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:0;text-align:center}
+.lock-time{font-size:clamp(72px,12vw,110px);font-weight:300;color:#fff;letter-spacing:-4px;line-height:1;margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif}
+.lock-date{font-size:18px;font-weight:400;color:rgba(255,255,255,.75);margin-bottom:48px;letter-spacing:.02em}
+.lock-avatar-wrap{position:relative;margin-bottom:16px}
+.lock-avatar{width:88px;height:88px;border-radius:50%;border:3px solid rgba(255,255,255,.7);overflow:hidden;background:linear-gradient(145deg,#2B6FFF,#1a4fd8);display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;box-shadow:0 8px 32px rgba(0,0,0,.4)}
+.lock-avatar img{width:100%;height:100%;object-fit:cover;object-position:center top}
+.lock-name{font-size:18px;font-weight:600;color:#fff;margin-bottom:32px;letter-spacing:-.2px}
+.lock-click{font-size:13px;color:rgba(255,255,255,.55);letter-spacing:.06em;font-weight:400;animation:breathe 3s ease infinite}
+@keyframes breathe{0%,100%{opacity:.55}50%{opacity:.9}}
+.lock-arrow{font-size:22px;color:rgba(255,255,255,.4);margin-top:6px;animation:bounceup 2s ease infinite}
+@keyframes bounceup{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
 
-/* Cam preview */
-.cam-pop{position:absolute;top:32px;left:50%;transform:translateX(-50%);z-index:55;background:rgba(12,12,16,.95);border:0.5px solid rgba(255,255,255,.14);border-radius:12px;padding:10px;display:none;backdrop-filter:blur(20px);box-shadow:0 8px 32px rgba(0,0,0,.6)}
-.cam-pop.show{display:block}
-.cam-pop video{width:184px;height:138px;border-radius:8px;background:#111;object-fit:cover;display:block}
-.cam-pop-label{font-size:9.5px;color:rgba(255,255,255,.45);text-align:center;margin-top:5px;letter-spacing:.04em}
-.cam-pop-close{position:absolute;top:6px;right:8px;color:rgba(255,255,255,.4);font-size:13px;cursor:pointer;line-height:1}
-.cam-pop-close:hover{color:#fff}
+/* ══ DESKTOP ══ */
+.desktop-root{position:fixed;inset:0;z-index:1;opacity:0;transition:opacity .8s ease;pointer-events:none}
+.desktop-root.visible{opacity:1;pointer-events:all}
 
-/* Video bg */
-.video-bg{position:absolute;inset:0;z-index:0;overflow:hidden;background:#050f08}
-.video-bg iframe{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:177.78%;height:100%;min-width:100%;pointer-events:none;border:none}
+/* Video BG */
+.video-bg{position:absolute;inset:0;z-index:0;overflow:hidden;background:#050f08;transition:opacity .7s ease}
+.video-bg iframe{position:absolute;top:50%;left:50%;width:177.78vh;height:100vh;min-width:100vw;min-height:56.25vw;transform:translate(-50%,-50%);pointer-events:none;border:none}
+.video-bg.fade{opacity:0}
+
+/* Music widget */
+.music-widget{position:fixed;bottom:90px;right:16px;z-index:60;background:rgba(28,28,32,.88);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.14);border-radius:14px;padding:10px 12px;width:210px;display:flex;gap:9px;align-items:center;box-shadow:0 4px 24px rgba(0,0,0,.4);transition:opacity .3s,transform .3s}
+.music-widget.hidden{opacity:0;transform:translateY(8px);pointer-events:none}
+.music-art{width:36px;height:36px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px}
+.music-info{flex:1;min-width:0}
+.music-title{font-size:11px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-artist{font-size:9.5px;color:rgba(255,255,255,.45);margin-top:1px}
+.music-controls{display:flex;align-items:center;gap:6px;margin-top:5px}
+.mc-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.7);font-size:14px;padding:0;line-height:1;transition:color .15s;display:flex;align-items:center}
+.mc-btn:hover{color:#fff}
+.music-progress{height:2px;background:rgba(255,255,255,.15);border-radius:1px;margin-top:5px;cursor:pointer;position:relative}
+.music-prog-fill{height:100%;border-radius:1px;background:linear-gradient(90deg,#ff453a,#ff9f0a);width:0%;transition:width .5s linear}
+.music-close{background:none;border:none;color:rgba(255,255,255,.3);font-size:12px;cursor:pointer;position:absolute;top:7px;right:9px;line-height:1}
+.music-close:hover{color:#fff}
+
+/* Wallpaper panel */
+.wp-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:500;width:360px;background:rgba(244,244,248,.94);backdrop-filter:blur(32px);border:.5px solid rgba(255,255,255,.7);border-radius:14px;overflow:hidden;box-shadow:0 28px 72px rgba(0,0,0,.55);display:none}
+.wp-panel.show{display:block}
+.wp-bar2{height:38px;background:rgba(235,235,240,.96);border-bottom:.5px solid rgba(0,0,0,.07);display:flex;align-items:center;padding:0 14px;gap:8px}
+.wp-tls{display:flex;gap:7px}
+.wp-tl{width:13px;height:13px;border-radius:50%;cursor:pointer}
+.wp-tl-r{background:#ff5f57}.wp-tl-y{background:#ffbd2e}.wp-tl-g{background:#28c840}
+.wp-title2{font-size:12px;font-weight:600;color:rgba(0,0,0,.4);flex:1;text-align:center}
+.wp-label{font-size:10px;font-weight:700;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:.09em;margin-bottom:12px}
+.wp-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.wp-thumb{border-radius:10px;overflow:hidden;cursor:pointer;border:3px solid transparent;transition:border-color .2s,transform .15s;aspect-ratio:16/9;position:relative}
+.wp-thumb:hover{transform:scale(1.04)}
+.wp-thumb.active{border-color:#0a84ff}
+.wt1{background:linear-gradient(135deg,#0d3d1e,#8ab050,#c8b840)}
+.wt2{background:linear-gradient(135deg,#1a0a3d,#8060c0,#c090ff)}
+.wt3{background:linear-gradient(135deg,#003d4d,#20a0b0,#60d0e0)}
+.wt4{background:linear-gradient(135deg,#3d1a00,#d07030,#f0a060)}
+.wp-thumb-label{position:absolute;bottom:0;left:0;right:0;padding:5px 8px;background:linear-gradient(transparent,rgba(0,0,0,.6));font-size:9.5px;font-weight:500;color:rgba(255,255,255,.9)}
 
 /* Menubar */
-.menubar{position:relative;z-index:25;height:28px;background:rgba(0,0,0,.32);backdrop-filter:blur(18px);display:flex;align-items:center;justify-content:space-between;padding:0 14px;flex-shrink:0}
-.mb-l,.mb-r{display:flex;align-items:center;gap:0}
-.mbi{font-size:11.5px;color:rgba(255,255,255,.9);padding:0 7px;height:28px;display:flex;align-items:center;border-radius:4px;cursor:pointer;position:relative;white-space:nowrap;gap:4px}
+.menubar{position:fixed;top:0;left:0;right:0;z-index:50;height:28px;background:rgba(0,0,0,.3);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);display:flex;align-items:center;justify-content:space-between;padding:0 16px}
+.mb-l,.mb-r{display:flex;align-items:center}
+.mbi{font-size:11.5px;color:rgba(255,255,255,.92);padding:0 8px;height:28px;display:flex;align-items:center;border-radius:4px;cursor:pointer;position:relative;white-space:nowrap;gap:4px;transition:background .1s;font-family:'Plus Jakarta Sans',sans-serif;font-weight:500}
 .mbi:hover,.mbi.open{background:rgba(255,255,255,.16)}
+.mbi.bold{font-weight:700}
 .mbi.dim{color:rgba(255,255,255,.62);font-size:12px}
-.mbi.bold{font-weight:600}
-
-/* Dropdowns */
-.dd{position:absolute;top:28px;left:0;min-width:196px;background:rgba(24,24,28,.97);backdrop-filter:blur(28px);border:0.5px solid rgba(255,255,255,.13);border-radius:9px;padding:4px;box-shadow:0 12px 40px rgba(0,0,0,.55);display:none;z-index:200}
+.dd{position:absolute;top:28px;left:0;min-width:210px;background:rgba(22,22,26,.97);backdrop-filter:blur(28px);border:.5px solid rgba(255,255,255,.12);border-radius:10px;padding:4px;box-shadow:0 18px 52px rgba(0,0,0,.65);display:none;z-index:300}
 .dd.right{left:auto;right:0}
 .dd.show{display:block}
-.ddi{padding:5px 12px;font-size:12px;color:rgba(255,255,255,.84);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:18px;white-space:nowrap}
-.ddi:hover{background:rgba(91,92,255,.65);color:#fff}
-.ddi.off{color:rgba(255,255,255,.28);cursor:default}
+.ddi{padding:5px 12px;font-size:12px;color:rgba(255,255,255,.84);border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:18px;white-space:nowrap;font-family:'Plus Jakarta Sans',sans-serif;font-weight:400}
+.ddi:hover{background:rgba(10,132,255,.75);color:#fff}
+.ddi.off{color:rgba(255,255,255,.26);cursor:default}
 .ddi.off:hover{background:none}
-.ddi .ks{font-size:11px;color:rgba(255,255,255,.35)}
-.dd-sep{height:.5px;background:rgba(255,255,255,.09);margin:3px 4px}
+.ks{font-size:11px;color:rgba(255,255,255,.28)}
+.dd-sep{height:.5px;background:rgba(255,255,255,.08);margin:3px 4px}
+
+/* Toast */
+.toast{position:fixed;top:36px;right:14px;background:rgba(28,28,32,.97);backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.12);border-radius:13px;padding:11px 15px;min-width:190px;font-size:11px;color:rgba(255,255,255,.84);z-index:400;display:none;box-shadow:0 8px 32px rgba(0,0,0,.55);font-family:'Plus Jakarta Sans',sans-serif}
+.toast.show{display:block}
+.toast-t{font-weight:600;margin-bottom:2px;font-size:11.5px}
+.toast-b{color:rgba(255,255,255,.45);font-size:10.5px}
 
 /* Spotlight */
-.spotlight{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:70;display:none;backdrop-filter:blur(6px);align-items:flex-start;justify-content:center;padding-top:64px}
+.spotlight{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:150;display:none;align-items:flex-start;justify-content:center;padding-top:80px;backdrop-filter:blur(8px)}
 .spotlight.show{display:flex}
-.sp-box{width:340px;background:rgba(36,36,42,.97);border:0.5px solid rgba(255,255,255,.17);border-radius:13px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.7)}
-.sp-row{display:flex;align-items:center;gap:9px;padding:10px 14px}
-.sp-row i{font-size:15px;color:rgba(255,255,255,.38)}
-.sp-input{background:none;border:none;outline:none;font-size:16px;color:#fff;flex:1;font-family:-apple-system,sans-serif}
-.sp-input::placeholder{color:rgba(255,255,255,.28)}
-.sp-results{border-top:.5px solid rgba(255,255,255,.09);max-height:190px;overflow-y:auto}
-.sp-item{padding:8px 14px;font-size:12px;color:rgba(255,255,255,.75);cursor:pointer;display:flex;align-items:center;gap:10px}
-.sp-item:hover,.sp-item.hl{background:rgba(91,92,255,.6);color:#fff}
-.sp-ico{width:24px;height:24px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0}
+.sp-box{width:360px;background:rgba(36,36,42,.97);border:.5px solid rgba(255,255,255,.16);border-radius:14px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.8)}
+.sp-row{display:flex;align-items:center;gap:9px;padding:11px 15px}
+.sp-row i{font-size:16px;color:rgba(255,255,255,.34)}
+.sp-input{background:none;border:none;outline:none;font-size:17px;color:#fff;flex:1;font-family:'Plus Jakarta Sans',sans-serif;font-weight:400}
+.sp-input::placeholder{color:rgba(255,255,255,.24)}
+.sp-results{border-top:.5px solid rgba(255,255,255,.08);max-height:210px;overflow-y:auto}
+.sp-item{padding:9px 14px;font-size:12.5px;color:rgba(255,255,255,.75);cursor:pointer;display:flex;align-items:center;gap:10px;font-family:'Plus Jakarta Sans',sans-serif}
+.sp-item:hover,.sp-item.hl{background:rgba(10,132,255,.7);color:#fff}
+.sp-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
 
-/* Notification toast */
-.toast{position:absolute;top:34px;right:12px;background:rgba(24,24,28,.97);backdrop-filter:blur(20px);border:.5px solid rgba(255,255,255,.13);border-radius:10px;padding:10px 14px;min-width:172px;font-size:11px;color:rgba(255,255,255,.84);z-index:100;display:none;box-shadow:0 4px 20px rgba(0,0,0,.5)}
-.toast.show{display:block}
-.toast-title{font-weight:600;margin-bottom:2px;font-size:11.5px}
-.toast-body{color:rgba(255,255,255,.5);font-size:10.5px}
+/* Notch */
+.notch-btn{position:fixed;top:0;left:50%;transform:translateX(-50%);width:120px;height:28px;z-index:55;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ncam{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.18);transition:all .3s;position:relative}
+.ncam.on{background:#34c759;border-color:#28a845;box-shadow:0 0 9px rgba(52,199,89,.9)}
+.ncam.on::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:2px solid rgba(52,199,89,.28);animation:cpulse 1.5s infinite}
+@keyframes cpulse{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.6);opacity:0}}
+.cam-pop{position:fixed;top:36px;left:50%;transform:translateX(-50%);z-index:180;background:rgba(12,12,16,.95);border:.5px solid rgba(255,255,255,.13);border-radius:14px;padding:10px;display:none;backdrop-filter:blur(20px);box-shadow:0 12px 48px rgba(0,0,0,.75)}
+.cam-pop.show{display:block}
+.cam-pop video{width:200px;height:150px;border-radius:9px;background:#111;object-fit:cover;display:block}
+.cam-pop-label{font-size:9.5px;color:rgba(255,255,255,.38);text-align:center;margin-top:5px}
+.cam-close{position:absolute;top:7px;right:9px;color:rgba(255,255,255,.35);font-size:13px;cursor:pointer}
 
-/* Desktop */
-.desktop{position:relative;z-index:2;flex:1;padding:8px 0 72px;min-height:390px}
-
-/* Windows */
-.win{position:absolute;top:10px;left:14px;right:14px;background:rgba(246,246,250,.91);backdrop-filter:blur(28px);border:.5px solid rgba(255,255,255,.65);border-radius:12px;overflow:hidden;box-shadow:0 10px 44px rgba(0,0,0,.45);display:none;z-index:10}
-.win.show{display:block}
-.win-bar{height:34px;background:rgba(238,238,244,.94);border-bottom:.5px solid rgba(0,0,0,.08);display:flex;align-items:center;padding:0 12px;gap:8px}
-.tls{display:flex;gap:6px}
-.tl{width:12px;height:12px;border-radius:50%;cursor:pointer;flex-shrink:0}
+/* ══ WINDOWS ══ */
+.win{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:min(560px,calc(100vw - 32px));background:rgba(244,244,248,.93);backdrop-filter:blur(32px);border:.5px solid rgba(255,255,255,.7);border-radius:14px;overflow:hidden;box-shadow:0 28px 72px rgba(0,0,0,.55);display:none;z-index:100;max-height:calc(100vh - 100px);flex-direction:column}
+.win.show{display:flex;animation:winpop .22s cubic-bezier(.34,1.56,.64,1)}
+@keyframes winpop{from{opacity:0;transform:translate(-50%,-50%) scale(.9)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+.win-bar{height:38px;background:rgba(235,235,240,.96);border-bottom:.5px solid rgba(0,0,0,.07);display:flex;align-items:center;padding:0 14px;gap:8px;flex-shrink:0}
+.tls{display:flex;gap:7px}
+.tl{width:13px;height:13px;border-radius:50%;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0;transition:font-size .15s}
+.tl:hover{font-size:8px;color:rgba(0,0,0,.45)}
 .tl-r{background:#ff5f57}.tl-y{background:#ffbd2e}.tl-g{background:#28c840}
-.wtitle{font-size:12px;font-weight:500;color:rgba(0,0,0,.42);flex:1;text-align:center}
-.wbody{padding:16px 18px}
+.wtitle{font-size:12px;font-weight:600;color:rgba(0,0,0,.4);flex:1;text-align:center}
+.wbody{padding:18px 20px;overflow-y:auto;flex:1}
 
-/* About */
-.prof-row{display:flex;align-items:center;gap:14px}
-.ava{width:54px;height:54px;border-radius:50%;background:linear-gradient(145deg,#2B6FFF,#1a4fd8);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:700;color:#fff;border:2.5px solid rgba(255,255,255,.9);flex-shrink:0;overflow:hidden}
+/* Window content styles */
+.pname{font-size:19px;font-weight:700;color:#1d1d1f;letter-spacing:-.4px}
+.prole{font-size:12px;color:rgba(0,0,0,.46);margin-top:2px;font-weight:400}
+.bio{font-size:12.5px;color:rgba(0,0,0,.55);margin-top:14px;line-height:1.8}
+.ava{width:58px;height:58px;border-radius:50%;background:linear-gradient(145deg,#2B6FFF,#1a4fd8);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;border:2.5px solid rgba(255,255,255,.95);flex-shrink:0;overflow:hidden;box-shadow:0 4px 14px rgba(43,111,255,.35)}
 .ava img{width:100%;height:100%;object-fit:cover;object-position:center top}
-.pname{font-size:17px;font-weight:600;color:#1d1d1f;letter-spacing:-.3px}
-.prole{font-size:11.5px;color:rgba(0,0,0,.46);margin-top:2px}
-.obadge{display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:rgba(52,199,89,.11);border:.5px solid rgba(52,199,89,.3);border-radius:20px;padding:3px 10px;font-size:10.5px;color:#1a7f35;font-weight:500}
-.gdot{width:6px;height:6px;border-radius:50%;background:#34c759;animation:gpulse 2s infinite}
-@keyframes gpulse{0%,100%{box-shadow:0 0 0 0 rgba(52,199,89,.4)}50%{box-shadow:0 0 0 4px rgba(52,199,89,0)}}
-.bio{font-size:11.5px;color:rgba(0,0,0,.55);margin-top:13px;line-height:1.75}
-.stat-chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
-.stat-chip{background:rgba(43,111,255,.08);border:.5px solid rgba(43,111,255,.2);border-radius:20px;padding:3px 10px;font-size:10px;color:#1a4fd8;font-weight:500}
-
-/* Skills */
-.skill-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
-.sc{background:rgba(0,0,0,.04);border:.5px solid rgba(0,0,0,.06);border-radius:9px;padding:8px 4px;text-align:center}
-.sc svg{display:block;margin:0 auto 4px}
-.sc-n{font-size:9px;color:rgba(0,0,0,.45);line-height:1.3}
-
-/* Stack rows */
+.prof-row{display:flex;align-items:center;gap:14px}
+.obadge{display:inline-flex;align-items:center;gap:5px;margin-top:8px;background:rgba(52,199,89,.1);border:.5px solid rgba(52,199,89,.28);border-radius:20px;padding:3px 11px;font-size:10.5px;color:#1a7f35;font-weight:600}
+.gdot{width:6px;height:6px;border-radius:50%;background:#34c759}
+.stat-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.sc-chip{background:rgba(10,132,255,.08);border:.5px solid rgba(10,132,255,.18);border-radius:20px;padding:3px 11px;font-size:10px;color:#0a5fd8;font-weight:600}
 .stack-list{display:flex;flex-direction:column;gap:6px}
-.stack-row{display:flex;align-items:flex-start;gap:0;background:rgba(0,0,0,.025);border:.5px solid rgba(0,0,0,.06);border-radius:8px;overflow:hidden}
-.stack-cat{font-size:9.5px;font-weight:600;color:rgba(43,111,255,.85);padding:7px 10px;min-width:90px;border-right:.5px solid rgba(0,0,0,.06);background:rgba(43,111,255,.04);display:flex;align-items:flex-start;padding-top:8px;letter-spacing:.04em;text-transform:uppercase;line-height:1.3}
-.stack-tags{display:flex;flex-wrap:wrap;gap:4px;padding:6px 8px;align-items:center}
-.stag{font-size:9.5px;padding:2px 7px;background:rgba(0,0,0,.04);border:.5px solid rgba(0,0,0,.08);border-radius:4px;color:rgba(0,0,0,.55)}
-
-/* Projects */
+.srow{display:flex;align-items:flex-start;background:rgba(0,0,0,.025);border:.5px solid rgba(0,0,0,.06);border-radius:9px;overflow:hidden}
+.scat{font-size:8.5px;font-weight:700;color:rgba(10,132,255,.9);padding:8px 10px;min-width:88px;border-right:.5px solid rgba(0,0,0,.06);background:rgba(10,132,255,.04);display:flex;align-items:flex-start;padding-top:9px;letter-spacing:.06em;text-transform:uppercase;flex-shrink:0}
+.stags{display:flex;flex-wrap:wrap;gap:4px;padding:7px 9px;align-items:center}
+.stag{font-size:9.5px;padding:2px 8px;background:rgba(0,0,0,.04);border:.5px solid rgba(0,0,0,.07);border-radius:5px;color:rgba(0,0,0,.54);font-weight:500}
 .plist{display:flex;flex-direction:column;gap:7px}
-.prow{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:9px;background:rgba(0,0,0,.03);border:.5px solid rgba(0,0,0,.05)}
-.pi{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
-.pn{font-size:12px;font-weight:500;color:#1d1d1f}
-.pd{font-size:10px;color:rgba(0,0,0,.42);margin-top:1px}
-.ptag{margin-left:auto;font-size:9.5px;padding:2px 7px;border-radius:20px;font-weight:500;flex-shrink:0;white-space:nowrap}
-.plink{font-size:9.5px;color:rgba(43,111,255,.8);text-decoration:none;flex-shrink:0;margin-left:4px}
+.prow{display:flex;align-items:center;gap:10px;padding:9px 11px;border-radius:10px;background:rgba(0,0,0,.03);border:.5px solid rgba(0,0,0,.05)}
+.pi{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pn{font-size:12.5px;font-weight:600;color:#1d1d1f}
+.pd{font-size:10px;color:rgba(0,0,0,.42);margin-top:1px;font-weight:400}
+.plink{margin-left:auto;font-size:10.5px;color:#0a82ff;text-decoration:none;flex-shrink:0;white-space:nowrap;font-weight:600}
+.explist{display:flex;flex-direction:column;gap:14px}
+.exprow{display:flex;gap:12px;align-items:flex-start}
+.edot{width:10px;height:10px;border-radius:50%;margin-top:3px;flex-shrink:0;box-shadow:0 0 0 3px rgba(255,255,255,.7)}
+.eco{font-size:13px;font-weight:700;color:#1d1d1f}
+.erol{font-size:11px;color:rgba(0,0,0,.5);margin-top:2px}
+.eyr{font-size:9.5px;color:rgba(0,0,0,.34);margin-top:3px;font-weight:500}
+.tlist{display:flex;flex-direction:column;gap:10px}
+.tcard{padding:14px 15px;border-radius:11px;background:rgba(0,0,0,.03);border:.5px solid rgba(0,0,0,.05)}
+.tq{font-size:12px;color:rgba(0,0,0,.6);line-height:1.75;font-style:italic;margin-bottom:10px}
+.tfoot{display:flex;align-items:center;gap:9px;border-top:.5px solid rgba(0,0,0,.06);padding-top:9px}
+.tava{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0}
+.tname{font-size:11.5px;font-weight:700;color:#1d1d1f}
+.trole{font-size:9.5px;color:rgba(0,0,0,.4)}
+.tstars{color:#ff9f0a;font-size:10px;letter-spacing:1px;margin-bottom:6px}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.ci{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:10px;background:rgba(0,0,0,.03);border:.5px solid rgba(0,0,0,.05)}
+.ci-ico{width:30px;height:30px;border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ci-label{font-size:9px;color:rgba(0,0,0,.38);margin-bottom:1px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.ci-val{font-size:11px;font-weight:500;color:#1d1d1f;word-break:break-all}
 
-/* Experience */
-.explist{display:flex;flex-direction:column;gap:10px}
-.exprow{display:flex;gap:10px;align-items:flex-start}
-.expdot{width:8px;height:8px;border-radius:50%;margin-top:4px;flex-shrink:0}
-.exp-co{font-size:12px;font-weight:600;color:#1d1d1f}
-.exp-role{font-size:10.5px;color:rgba(0,0,0,.5);margin-top:1px}
-.exp-yr{font-size:9.5px;color:rgba(0,0,0,.35);margin-top:2px}
+/* ══ DOCK — fixed alignment ══ */
+.dock-wrap{
+  position:fixed;
+  bottom:14px;
+  left:0;right:0;
+  display:flex;
+  justify-content:center;
+  z-index:50;
+  /* No overflow clipping — tooltip must escape */
+  overflow:visible;
+}
+.dock{
+  background:rgba(255,255,255,.18);
+  backdrop-filter:blur(32px);-webkit-backdrop-filter:blur(32px);
+  border:.5px solid rgba(255,255,255,.4);
+  border-radius:22px;
+  padding:10px 14px 8px;
+  display:flex;
+  align-items:flex-end; /* bottom-align all icons */
+  gap:8px;
+  box-shadow:0 4px 36px rgba(0,0,0,.28),inset 0 .5px 0 rgba(255,255,255,.55),inset 0 -1px 0 rgba(0,0,0,.08);
+  /* critical: allow tooltip to overflow */
+  overflow:visible;
+}
+.di{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  cursor:pointer;
+  position:relative;
+  /* fixed width so all icons same column */
+  width:52px;
+  flex-shrink:0;
+}
 
-/* Education */
-.edu-row{display:flex;gap:10px;align-items:center;padding:10px;background:rgba(0,0,0,.025);border-radius:9px;border:.5px solid rgba(0,0,0,.05)}
-.edu-icon{width:36px;height:36px;border-radius:9px;background:linear-gradient(145deg,#3b82f6,#1d4ed8);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
-
-/* References */
-.ref-row{display:flex;gap:10px;align-items:flex-start;padding:10px;background:rgba(0,0,0,.025);border-radius:9px;border:.5px solid rgba(0,0,0,.05);margin-bottom:8px}
-.ref-ava{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
-
-/* Contact */
-.cg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.ci{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:9px;background:rgba(0,0,0,.03);border:.5px solid rgba(0,0,0,.06)}
-.ci-ico{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
-.ci-label{font-size:9.5px;color:rgba(0,0,0,.42)}
-.ci-val{font-size:10.5px;font-weight:500;color:#1d1d1f;word-break:break-all}
-
-/* Dock */
-.dock-wrap{position:absolute;bottom:8px;left:0;right:0;display:flex;justify-content:center;z-index:20}
-.dock{background:rgba(255,255,255,.2);backdrop-filter:blur(24px);border:.5px solid rgba(255,255,255,.42);border-radius:18px;padding:7px 10px 5px;display:flex;align-items:flex-end;gap:6px;box-shadow:0 2px 24px rgba(0,0,0,.25),inset 0 .5px 0 rgba(255,255,255,.6)}
-.di{display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;position:relative}
-.diico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;transition:transform .15s ease}
-.di:hover .diico{transform:scale(1.28) translateY(-6px)}
-.di.active .diico{transform:scale(1.08)}
-.di-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.7)}
-.dsep{width:.5px;height:34px;background:rgba(255,255,255,.28);margin:0 3px;align-self:center}
-.di-tip{position:absolute;bottom:54px;left:50%;transform:translateX(-50%);background:rgba(18,18,22,.92);color:#fff;font-size:10px;font-weight:500;padding:3px 8px;border-radius:6px;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .12s;border:.5px solid rgba(255,255,255,.1)}
+/* Tooltip — above the dock, never clipped */
+.di-tip{
+  position:absolute;
+  bottom:calc(100% + 10px); /* above the icon + gap */
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(16,16,20,.92);
+  color:#fff;
+  font-size:11px;
+  font-weight:600;
+  padding:5px 10px;
+  border-radius:7px;
+  white-space:nowrap;
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .15s;
+  border:.5px solid rgba(255,255,255,.12);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  /* ensure tooltip is on top */
+  z-index:9999;
+}
+.di-tip::after{
+  content:'';
+  position:absolute;
+  top:100%;left:50%;transform:translateX(-50%);
+  border:5px solid transparent;
+  border-top-color:rgba(16,16,20,.92);
+}
 .di:hover .di-tip{opacity:1}
 
-/* MacBook base */
-.base{width:100%;max-width:740px;height:18px;background:linear-gradient(180deg,#3a3a3f,#1e1e22);border-radius:0 0 4px 4px;display:flex;align-items:center;justify-content:center}
-.hinge{width:56px;height:3px;background:rgba(0,0,0,.4);border-radius:2px}
+.di-dot{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.75)}
+.diico{
+  width:52px;height:52px;
+  border-radius:13px;
+  display:flex;align-items:center;justify-content:center;
+  transition:transform .18s cubic-bezier(.34,1.56,.64,1);
+  position:relative;overflow:hidden;
+  flex-shrink:0;
+}
+.di:hover .diico{transform:scale(1.28) translateY(-10px)}
+.di.active .diico{transform:scale(1.08)}
+/* Gloss */
+.diico::after{content:'';position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(255,255,255,.3) 0%,rgba(255,255,255,0) 100%);border-radius:13px 13px 0 0;pointer-events:none}
+.dsep{width:.5px;height:40px;background:rgba(255,255,255,.25);margin:0 2px;align-self:center;flex-shrink:0}
 </style>
-<!-- Tabler icons -->
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
 </head>
 <body>
 
-<div class="wrap">
-  <div class="lid">
-    <div class="bezel">
-      <div class="screen">
+<!-- ══ LOCK SCREEN ══ -->
+<div class="lock" id="lock" onclick="unlockDesktop()">
+  <div class="lock-bg"></div>
+  <div class="lock-video">
+    <iframe src="https://player.vimeo.com/video/1196373769?h=3c224b66d7&badge=0&autopause=0&autoplay=1&loop=1&muted=1&background=1&controls=0&player_id=0&app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" title="lockbg"></iframe>
+  </div>
+  <div class="lock-content">
+    <div class="lock-time" id="lock-time">9:41</div>
+    <div class="lock-date" id="lock-date">Friday, May 29</div>
+    <div class="lock-avatar-wrap">
+      <div class="lock-avatar"><img src="https://devedge.digital/enaldportfolio/photo_enald.webp" alt="Enald" onerror="this.outerHTML='EA'"/></div>
+    </div>
+    <div class="lock-name">Enald Araneta</div>
+    <div class="lock-click">Click anywhere to enter portfolio</div>
+    <div class="lock-arrow">↑</div>
+  </div>
+</div>
 
-        <!-- Video wallpaper -->
-        <div class="video-bg">
-          <div style="padding:56.25% 0 0 0;position:relative;height:0;overflow:hidden">
-            <iframe src="https://player.vimeo.com/video/1196373769?h=3c224b66d7&badge=0&autopause=0&autoplay=1&loop=1&muted=1&background=1&controls=0&player_id=0&app_id=58479"
-              frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media"
-              referrerpolicy="strict-origin-when-cross-origin"
-              style="position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none"
-              title="wallpaper"></iframe>
-          </div>
+<!-- ══ DESKTOP ══ -->
+<div class="desktop-root" id="desktop">
+
+  <!-- Video BGs -->
+  <div class="video-bg" id="vbg-0">
+    <iframe src="https://player.vimeo.com/video/1196373769?h=3c224b66d7&badge=0&autopause=0&autoplay=1&loop=1&muted=1&background=1&controls=0&player_id=0&app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" title="wp0"></iframe>
+  </div>
+  <div class="video-bg fade" id="vbg-1" style="display:none"><iframe src="" data-src="https://player.vimeo.com/video/1196392540?h=aa625cf642&badge=0&autopause=0&autoplay=1&loop=1&muted=1&background=1&controls=0&player_id=0&app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" title="wp1"></iframe></div>
+  <div class="video-bg fade" id="vbg-2" style="display:none"><iframe src="" data-src="https://player.vimeo.com/video/1196392541?h=71cf12092a&badge=0&autopause=0&autoplay=1&loop=1&muted=1&background=1&controls=0&player_id=0&app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" title="wp2"></iframe></div>
+  <div class="video-bg fade" id="vbg-3" style="display:none"><iframe src="" data-src="https://player.vimeo.com/video/1196392539?h=db417c8d72&badge=0&autopause=0&autoplay=1&loop=1&muted=1&background=1&controls=0&player_id=0&app_id=58479" frameborder="0" allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media" referrerpolicy="strict-origin-when-cross-origin" title="wp3"></iframe></div>
+
+  <!-- Wallpaper panel -->
+  <div class="wp-panel" id="wp-panel">
+    <div class="wp-bar2">
+      <div class="wp-tls"><div class="wp-tl wp-tl-r" onclick="closeWP()"></div><div class="wp-tl wp-tl-y"></div><div class="wp-tl wp-tl-g"></div></div>
+      <div class="wp-title2">Wallpaper</div>
+    </div>
+    <div style="padding:18px">
+      <div class="wp-label">Dynamic Wallpapers</div>
+      <div class="wp-grid">
+        <div class="wp-thumb active wt1" id="wpt-0" onclick="switchWP(0)"><div class="wp-thumb-label">Sonoma Vineyard</div></div>
+        <div class="wp-thumb wt2" id="wpt-1" onclick="switchWP(1)"><div class="wp-thumb-label">Aurora Night</div></div>
+        <div class="wp-thumb wt3" id="wpt-2" onclick="switchWP(2)"><div class="wp-thumb-label">Ocean Mist</div></div>
+        <div class="wp-thumb wt4" id="wpt-3" onclick="switchWP(3)"><div class="wp-thumb-label">Desert Glow</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Music widget -->
+  <div class="music-widget hidden" id="music-widget">
+    <button class="music-close" onclick="hideMusicWidget()">&#x2715;</button>
+    <div class="music-art" id="music-art">🎵</div>
+    <div style="flex:1;min-width:0">
+      <div class="music-info">
+        <div class="music-title" id="music-title">Loading…</div>
+        <div class="music-artist" id="music-artist">—</div>
+      </div>
+      <div class="music-controls">
+        <button class="mc-btn" onclick="prevTrack()" title="Previous"><i class="ti ti-player-skip-back"></i></button>
+        <button class="mc-btn" id="play-btn" onclick="togglePlay()" title="Play/Pause"><i class="ti ti-player-play"></i></button>
+        <button class="mc-btn" onclick="nextTrack()" title="Next"><i class="ti ti-player-skip-forward"></i></button>
+        <button class="mc-btn" onclick="toggleMute()" id="mute-btn" title="Mute" style="margin-left:auto"><i class="ti ti-volume"></i></button>
+      </div>
+      <div class="music-progress" id="music-progress" onclick="seekMusic(event)">
+        <div class="music-prog-fill" id="music-prog-fill"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notch -->
+  <div class="notch-btn" onclick="toggleCam()"><div class="ncam" id="ncam"></div></div>
+  <div class="cam-pop" id="cam-pop">
+    <span class="cam-close" onclick="closeCam()">&#x2715;</span>
+    <video id="cam-video" autoplay playsinline muted></video>
+    <div class="cam-pop-label" id="cam-label">FaceTime HD Camera</div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"><div class="toast-t" id="toast-t"></div><div class="toast-b" id="toast-b"></div></div>
+
+  <!-- Spotlight -->
+  <div class="spotlight" id="spotlight" onclick="if(event.target===this)closeSp()">
+    <div class="sp-box">
+      <div class="sp-row"><i class="ti ti-search"></i><input class="sp-input" id="sp-input" placeholder="Spotlight Search" oninput="doSearch(this.value)" onkeydown="spKey(event)"/></div>
+      <div class="sp-results" id="sp-results"></div>
+    </div>
+  </div>
+
+  <!-- Menubar -->
+  <div class="menubar">
+    <div class="mb-l">
+      <span class="mbi" style="font-size:16px" onclick="toggleDD('dd-apple')">&#63743;
+        <div class="dd" id="dd-apple">
+          <div class="ddi" onclick="showToast('macOS Sequoia','Version 15.4 · MacBook Air M3')">About this Mac</div>
+          <div class="dd-sep"></div>
+          <div class="ddi" onclick="openWP()">System Settings… <span class="ks">⌘,</span></div>
+          <div class="dd-sep"></div>
+          <div class="ddi" onclick="showToast('Sleep','Display sleeping…')">Sleep</div>
+          <div class="ddi" onclick="lockScreen()">Lock Screen <span class="ks">⌃⌘Q</span></div>
         </div>
-
-        <!-- Notch -->
-        <div class="notch" id="notch" onclick="toggleCam()" title="Click to toggle camera">
-          <div class="notch-cam" id="notch-cam"></div>
+      </span>
+      <span class="mbi bold" onclick="toggleDD('dd-finder')">Finder
+        <div class="dd" id="dd-finder">
+          <div class="ddi off">About Finder</div>
+          <div class="dd-sep"></div>
+          <div class="ddi" onclick="closeAllWins()">Close All Windows <span class="ks">⌘W</span></div>
         </div>
-
-        <!-- Camera popup -->
-        <div class="cam-pop" id="cam-pop">
-          <span class="cam-pop-close" onclick="closeCam()">&#x2715;</span>
-          <video id="cam-video" autoplay playsinline muted></video>
-          <div class="cam-pop-label" id="cam-label">FaceTime HD Camera</div>
+      </span>
+      <span class="mbi" onclick="toggleDD('dd-view')">View
+        <div class="dd" id="dd-view">
+          <div class="ddi" onclick="openWP()">Change Wallpaper…</div>
+          <div class="ddi" onclick="showMusicWidget()">Show Music Player</div>
         </div>
-
-        <!-- Toast notification -->
-        <div class="toast" id="toast"><div class="toast-title" id="toast-t"></div><div class="toast-body" id="toast-b"></div></div>
-
-        <!-- Menubar -->
-        <div class="menubar">
-          <div class="mb-l">
-            <span class="mbi" style="font-size:16px" onclick="toggleDD('dd-apple')">&#63743;
-              <div class="dd" id="dd-apple">
-                <div class="ddi" onclick="showToast('macOS Sequoia','Version 15.4 · MacBook Air M3')">About this Mac</div>
-                <div class="dd-sep"></div>
-                <div class="ddi off">System Settings…</div>
-                <div class="dd-sep"></div>
-                <div class="ddi" onclick="showToast('Sleep','Display is sleeping…')">Sleep</div>
-                <div class="ddi" onclick="showToast('Restart','Restarting…')">Restart…</div>
-                <div class="ddi" onclick="showToast('Shut Down','Shutting down…')">Shut Down…</div>
-              </div>
-            </span>
-            <span class="mbi bold" onclick="toggleDD('dd-finder')">Finder
-              <div class="dd" id="dd-finder">
-                <div class="ddi off">About Finder</div>
-                <div class="dd-sep"></div>
-                <div class="ddi off">Preferences… <span class="ks">⌘,</span></div>
-                <div class="dd-sep"></div>
-                <div class="ddi off">Empty Trash… <span class="ks">⇧⌘⌫</span></div>
-              </div>
-            </span>
-            <span class="mbi" onclick="toggleDD('dd-file')">File
-              <div class="dd" id="dd-file">
-                <div class="ddi off">New Finder Window <span class="ks">⌘N</span></div>
-                <div class="ddi off">New Folder <span class="ks">⇧⌘N</span></div>
-                <div class="dd-sep"></div>
-                <div class="ddi" onclick="closeAllWins()">Close All Windows <span class="ks">⌘W</span></div>
-              </div>
-            </span>
-            <span class="mbi" onclick="toggleDD('dd-view')">View
-              <div class="dd" id="dd-view">
-                <div class="ddi off">as Icons <span class="ks">⌘1</span></div>
-                <div class="ddi off">as List <span class="ks">⌘2</span></div>
-                <div class="ddi off">as Gallery <span class="ks">⌘4</span></div>
-              </div>
-            </span>
-            <span class="mbi" onclick="toggleDD('dd-win')">Window
-              <div class="dd" id="dd-win">
-                <div class="ddi off">Minimize <span class="ks">⌘M</span></div>
-                <div class="ddi" onclick="closeAllWins()">Close All</div>
-              </div>
-            </span>
-          </div>
-          <div class="mb-r">
-            <span class="mbi dim" onclick="toggleDD('dd-wifi')" style="font-size:13px"><i class="ti ti-wifi"></i>
-              <div class="dd right" id="dd-wifi">
-                <div class="ddi off" style="font-size:10.5px;color:rgba(255,255,255,.35)">Wi-Fi</div>
-                <div class="dd-sep"></div>
-                <div class="ddi" id="wifi-btn" onclick="toggleWifi()">Turn Wi-Fi Off</div>
-                <div class="dd-sep"></div>
-                <div class="ddi off">&#x2713;&nbsp; HomeNetwork_5G</div>
-                <div class="ddi off">Office_WiFi</div>
-              </div>
-            </span>
-            <span class="mbi dim" onclick="toggleDD('dd-batt')" style="font-size:13px"><i class="ti ti-battery-2"></i>
-              <div class="dd right" id="dd-batt">
-                <div class="ddi off" id="batt-pct">Battery: —%</div>
-                <div class="dd-sep"></div>
-                <div class="ddi off">Power Source: Power Adapter</div>
-              </div>
-            </span>
-            <span class="mbi dim" onclick="openSpotlight()" style="font-size:13px"><i class="ti ti-search"></i></span>
-            <span class="mbi dim" id="clock" style="font-size:11px;min-width:94px;justify-content:flex-end"></span>
-          </div>
+      </span>
+      <span class="mbi" onclick="toggleDD('dd-win')">Window
+        <div class="dd" id="dd-win">
+          <div class="ddi off">Minimize <span class="ks">⌘M</span></div>
+          <div class="ddi" onclick="closeAllWins()">Close All</div>
         </div>
-
-        <!-- Spotlight -->
-        <div class="spotlight" id="spotlight" onclick="if(event.target===this)closeSpotlight()">
-          <div class="sp-box">
-            <div class="sp-row"><i class="ti ti-search"></i><input class="sp-input" id="sp-input" placeholder="Spotlight Search" oninput="doSearch(this.value)" onkeydown="spKey(event)"/></div>
-            <div class="sp-results" id="sp-results"></div>
-          </div>
+      </span>
+    </div>
+    <div class="mb-r">
+      <span class="mbi dim" onclick="showMusicWidget();closeAllDDs()" style="font-size:13px" title="Music"><i class="ti ti-music"></i></span>
+      <span class="mbi dim" onclick="toggleDD('dd-wifi')" style="font-size:13px"><i class="ti ti-wifi"></i>
+        <div class="dd right" id="dd-wifi">
+          <div class="ddi off" style="font-size:10.5px;color:rgba(255,255,255,.28)">Wi-Fi</div>
+          <div class="dd-sep"></div>
+          <div class="ddi" id="wifi-btn" onclick="toggleWifi()">Turn Wi-Fi Off</div>
+          <div class="dd-sep"></div>
+          <div class="ddi off">&#x2713;&nbsp;HomeNetwork_5G</div>
         </div>
+      </span>
+      <span class="mbi dim" onclick="toggleDD('dd-batt')" style="font-size:13px"><i class="ti ti-battery-2"></i>
+        <div class="dd right" id="dd-batt">
+          <div class="ddi off" id="batt-pct">Battery: —%</div>
+          <div class="dd-sep"></div>
+          <div class="ddi off">Power Source: Power Adapter</div>
+        </div>
+      </span>
+      <span class="mbi dim" onclick="openSp()" style="font-size:13px"><i class="ti ti-search"></i></span>
+      <span class="mbi dim" id="clock" style="font-size:11px;min-width:100px;justify-content:flex-end;font-weight:500"></span>
+    </div>
+  </div>
 
-        <!-- Desktop (windows mount here) -->
-        <div class="desktop">
+  <!-- ══ WINDOWS ══ -->
+  <div id="win-about" class="win"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('about')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">About Me</span></div><div class="wbody"><div class="prof-row"><div class="ava"><img src="https://devedge.digital/enaldportfolio/photo_enald.webp" alt="Enald" onerror="this.outerHTML='EA'"/></div><div><div class="pname">Enald Araneta</div><div class="prole">Founder & Lead Developer · DevEdge Digital</div><div class="obadge"><div class="gdot"></div>Open to new projects</div></div></div><div class="bio">Founder of DevEdge Digital since 2014. 11+ years turning ambitious ideas into high-performance digital experiences — from full-stack development to brand identity. I've built 200+ brands and websites for clients across Canada, the US, Australia, and beyond.</div><div class="stat-chips"><span class="sc-chip">11+ Years</span><span class="sc-chip">200+ Projects</span><span class="sc-chip">200+ Brands</span><span class="sc-chip">$2M+ Ad Spend</span><span class="sc-chip">150+ Landing Pages</span></div></div></div>
 
-          <!-- About window -->
-          <div id="win-about" class="win">
-            <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('about')"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div><span class="wtitle">About Me</span></div>
-            <div class="wbody">
-              <div class="prof-row">
-                <div class="ava"><img src="https://devedge.digital/enaldportfolio/photo_enald.webp" alt="Enald" onerror="this.parentElement.textContent='EA'"/></div>
-                <div>
-                  <div class="pname">Enald Araneta</div>
-                  <div class="prole">Founder & Lead Developer · DevEdge Digital</div>
-                  <div class="obadge"><div class="gdot"></div>Open to new projects</div>
-                </div>
-              </div>
-              <div class="bio">Founder of DevEdge Digital since 2014. 11+ years turning ambitious ideas into high-performance digital experiences — from full-stack development to brand identity. I've built 200+ brands and websites for clients across Canada, the US, Australia, and beyond. I wear many hats: developer, creative director, brand strategist. The thread tying it all together: a relentless focus on results.</div>
-              <div class="stat-chips">
-                <span class="stat-chip">11+ Years</span>
-                <span class="stat-chip">200+ Projects</span>
-                <span class="stat-chip">200+ Brands</span>
-                <span class="stat-chip">$2M+ Ad Spend</span>
-                <span class="stat-chip">150+ Landing Pages</span>
-              </div>
-            </div>
-          </div>
+  <div id="win-services" class="win"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('services')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">Services</span></div><div class="wbody"><div class="plist"><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#0a84ff,#0055d4)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="white" stroke-width="1.5" fill="none"/><path d="M2.5 9h13M9 2.5c-2 2-3 4-3 6.5s1 4.5 3 6.5M9 2.5c2 2 3 4 3 6.5s-1 4.5-3 6.5" stroke="white" stroke-width="1.3" fill="none"/></svg></div><div><div class="pn">Web Design & Development</div><div class="pd">Custom sites · WordPress, React, Next.js</div></div></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#ff9f0a,#d4700a)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" fill="white" fill-opacity=".9"/><path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.2 3.2l1.4 1.4M13.4 13.4l1.4 1.4M3.2 14.8l1.4-1.4M13.4 4.6l1.4-1.4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div><div><div class="pn">Branding & Identity Design</div><div class="pd">Logo, guidelines, visual assets, print</div></div></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#30d158,#1a9e3c)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h8M3 13h5" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="13" r="2.5" fill="none" stroke="white" stroke-width="1.3"/><path d="M13 13l1 1 2-2" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="pn">Digital Marketing</div><div class="pd">Social, PPC · $2M+ ad spend managed</div></div></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#5e5ce6,#3a38b5)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="5" stroke="white" stroke-width="1.5" fill="none"/><path d="M12 12l3.5 3.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div><div><div class="pn">SEO Optimization</div><div class="pd">On-page, technical & local SEO</div></div></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#ff375f,#c0152f)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3l1.5 4h4l-3.2 2.4 1.2 4L9 11 5.5 13.4l1.2-4L3.5 7h4z" fill="white" fill-opacity=".9"/></svg></div><div><div class="pn">Landing Page & Funnel Design</div><div class="pd">150+ pages · CRO & A/B testing</div></div></div></div></div></div>
 
-          <!-- Skills window -->
-          <div id="win-skills" class="win">
-            <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('skills')"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div><span class="wtitle">Skills</span></div>
-            <div class="wbody">
-              <div class="stack-list">
-                <div class="stack-row"><div class="stack-cat">Frontend</div><div class="stack-tags"><span class="stag">HTML5</span><span class="stag">CSS3</span><span class="stag">JavaScript</span><span class="stag">React</span><span class="stag">Next.js</span><span class="stag">Tailwind</span><span class="stag">GSAP</span></div></div>
-                <div class="stack-row"><div class="stack-cat">Backend & CMS</div><div class="stack-tags"><span class="stag">WordPress</span><span class="stag">PHP</span><span class="stag">MySQL</span><span class="stag">Node.js</span><span class="stag">Webflow</span><span class="stag">Shopify</span><span class="stag">WooCommerce</span></div></div>
-                <div class="stack-row"><div class="stack-cat">Design</div><div class="stack-tags"><span class="stag">Figma</span><span class="stag">Adobe XD</span><span class="stag">Illustrator</span><span class="stag">Photoshop</span><span class="stag">InDesign</span><span class="stag">Canva</span></div></div>
-                <div class="stack-row"><div class="stack-cat">Marketing</div><div class="stack-tags"><span class="stag">Google Ads</span><span class="stag">Meta Ads</span><span class="stag">SEMrush</span><span class="stag">Ahrefs</span><span class="stag">GA4</span><span class="stag">Search Console</span></div></div>
-                <div class="stack-row"><div class="stack-cat">Dev Tools</div><div class="stack-tags"><span class="stag">Git</span><span class="stag">GitHub</span><span class="stag">VS Code</span><span class="stag">Vercel</span><span class="stag">Cloudflare</span></div></div>
-              </div>
-            </div>
-          </div>
+  <div id="win-skills" class="win"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('skills')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">Skills & Stack</span></div><div class="wbody"><div class="stack-list"><div class="srow"><div class="scat">Frontend</div><div class="stags"><span class="stag">HTML5</span><span class="stag">CSS3</span><span class="stag">JavaScript</span><span class="stag">React</span><span class="stag">Next.js</span><span class="stag">Tailwind</span><span class="stag">GSAP</span></div></div><div class="srow"><div class="scat">Backend & CMS</div><div class="stags"><span class="stag">WordPress</span><span class="stag">PHP</span><span class="stag">MySQL</span><span class="stag">Node.js</span><span class="stag">Webflow</span><span class="stag">Shopify</span><span class="stag">WooCommerce</span></div></div><div class="srow"><div class="scat">Design</div><div class="stags"><span class="stag">Figma</span><span class="stag">Adobe XD</span><span class="stag">Illustrator</span><span class="stag">Photoshop</span><span class="stag">InDesign</span><span class="stag">Canva</span></div></div><div class="srow"><div class="scat">Marketing</div><div class="stags"><span class="stag">Google Ads</span><span class="stag">Meta Ads</span><span class="stag">SEMrush</span><span class="stag">Ahrefs</span><span class="stag">GA4</span><span class="stag">Search Console</span></div></div><div class="srow"><div class="scat">Dev Tools</div><div class="stags"><span class="stag">Git</span><span class="stag">GitHub</span><span class="stag">VS Code</span><span class="stag">Vercel</span><span class="stag">Cloudflare</span><span class="stag">cPanel</span></div></div></div></div></div>
 
-          <!-- Projects window -->
-          <div id="win-projects" class="win">
-            <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('projects')"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div><span class="wtitle">Projects</span></div>
-            <div class="wbody">
-              <div class="plist">
-                <div class="prow"><div class="pi" style="background:rgba(43,111,255,.1)">🏢</div><div><div class="pn">Robuso Ventures</div><div class="pd">Toronto investment syndicate · WordPress</div></div><a href="https://robusoventures.com" target="_blank" class="plink">Visit →</a></div>
-                <div class="prow"><div class="pi" style="background:rgba(52,199,89,.1)">💊</div><div><div class="pn">Freedom Direct Rx</div><div class="pd">Healthcare landing page · High-converting</div></div><a href="https://freedomdirectrx.com" target="_blank" class="plink">Visit →</a></div>
-                <div class="prow"><div class="pi" style="background:rgba(255,59,48,.1)">🍜</div><div><div class="pn">Nomonomo</div><div class="pd">Korean-Japanese bar · Vancouver, BC</div></div><a href="https://nomonomo.ca" target="_blank" class="plink">Visit →</a></div>
-                <div class="prow"><div class="pi" style="background:rgba(255,149,0,.1)">💰</div><div><div class="pn">Get Direct Loan Today</div><div class="pd">Business lending · Lead gen · WordPress</div></div><a href="https://getdirectloantoday.com" target="_blank" class="plink">Visit →</a></div>
-                <div class="prow"><div class="pi" style="background:rgba(88,86,214,.1)">🐇</div><div><div class="pn">Fat Rabbit</div><div class="pd">Restaurant & catering · Niagara, Canada</div></div><a href="https://fat-rabbit.ca" target="_blank" class="plink">Visit →</a></div>
-                <div class="prow"><div class="pi" style="background:rgba(255,204,0,.1)">🐷</div><div><div class="pn">Golden Pig Marketing</div><div class="pd">TikTok Shop & DTC performance agency</div></div><a href="https://goldenpigmarketing.com" target="_blank" class="plink">Visit →</a></div>
-                <div class="prow"><div class="pi" style="background:rgba(43,111,255,.08)">🛍</div><div><div class="pn">WhyNotPH</div><div class="pd">Affiliate product discovery · WordPress</div></div><a href="https://whynotph.shop/" target="_blank" class="plink">Visit →</a></div>
-              </div>
-            </div>
-          </div>
+  <div id="win-projects" class="win"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('projects')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">Projects</span></div><div class="wbody"><div class="plist"><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#1c1c1e,#2c2c2e)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="4" width="14" height="10" rx="2" stroke="white" stroke-width="1.3" fill="none"/><path d="M2 7h14" stroke="white" stroke-width="1"/><circle cx="4.5" cy="5.5" r=".8" fill="white"/><circle cx="6.5" cy="5.5" r=".8" fill="white"/></svg></div><div><div class="pn">Robuso Ventures</div><div class="pd">Toronto investment syndicate · WordPress</div></div><a href="https://robusoventures.com" target="_blank" class="plink">↗ Visit</a></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#30d158,#1a8c36)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3a6 6 0 100 12A6 6 0 009 3z" stroke="white" stroke-width="1.3" fill="none"/><path d="M7 9l1.5 1.5L11.5 7" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="pn">Freedom Direct Rx</div><div class="pd">Healthcare landing page</div></div><a href="https://freedomdirectrx.com" target="_blank" class="plink">↗ Visit</a></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#ff3b30,#b01f16)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 13s1-4 5-4 5 4 5 4" stroke="white" stroke-width="1.3" fill="none" stroke-linecap="round"/><circle cx="9" cy="6" r="2.5" stroke="white" stroke-width="1.3" fill="none"/></svg></div><div><div class="pn">Nomonomo</div><div class="pd">Korean-Japanese bar · Vancouver, BC</div></div><a href="https://nomonomo.ca" target="_blank" class="plink">↗ Visit</a></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#ff9f0a,#c06800)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="3" y="5" width="12" height="9" rx="1.5" stroke="white" stroke-width="1.3" fill="none"/><path d="M6 5V4a3 3 0 016 0v1" stroke="white" stroke-width="1.3" fill="none" stroke-linecap="round"/><circle cx="9" cy="10" r="1.5" fill="white" fill-opacity=".85"/></svg></div><div><div class="pn">Get Direct Loan Today</div><div class="pd">Business lending · Lead generation</div></div><a href="https://getdirectloantoday.com" target="_blank" class="plink">↗ Visit</a></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#5e5ce6,#3634c7)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3l6 3v5l-6 3-6-3V6z" stroke="white" stroke-width="1.3" fill="none"/><path d="M9 9v6M3 6l6 3 6-3" stroke="white" stroke-width="1.2" fill="none"/></svg></div><div><div class="pn">Fat Rabbit</div><div class="pd">Restaurant & catering · Niagara, Canada</div></div><a href="https://fat-rabbit.ca" target="_blank" class="plink">↗ Visit</a></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#ffd60a,#b89200)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 4l1.8 3.6 4 .6-2.9 2.8.7 4L9 13l-3.6 1.9.7-4L3.2 8.2l4-.6z" fill="rgba(0,0,0,.4)" stroke="rgba(0,0,0,.5)" stroke-width=".8" stroke-linejoin="round"/></svg></div><div><div class="pn">Golden Pig Marketing</div><div class="pd">TikTok Shop & DTC performance agency</div></div><a href="https://goldenpigmarketing.com" target="_blank" class="plink">↗ Visit</a></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#0a84ff,#0050c8)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><rect x="2" y="5" width="14" height="9" rx="2" stroke="white" stroke-width="1.3" fill="none"/><path d="M2 8.5l7 4.5 7-4.5" stroke="white" stroke-width="1.2" fill="none"/></svg></div><div><div class="pn">WhyNotPH</div><div class="pd">Affiliate product discovery</div></div><a href="https://whynotph.shop/" target="_blank" class="plink">↗ Visit</a></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#30d158,#0e8030)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3v12M5 7l4-4 4 4M5 15h8" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="pn">EasyLoanio</div><div class="pd">Business funding · Finance layout</div></div><a href="https://easyloanio.com/" target="_blank" class="plink">↗ Visit</a></div></div></div></div>
 
-          <!-- Experience window -->
-          <div id="win-experience" class="win">
-            <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('experience')"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div><span class="wtitle">Experience</span></div>
-            <div class="wbody">
-              <div class="explist">
-                <div class="exprow"><div class="expdot" style="background:#2B6FFF"></div><div><div class="exp-co">DevEdge Digital</div><div class="exp-role">Founder & Lead Developer</div><div class="exp-yr">2014 – Present · 11+ years · Zamboanga City, Philippines</div></div></div>
-                <div class="exprow"><div class="expdot" style="background:#f97316"></div><div><div class="exp-co">Verified Digital</div><div class="exp-role">Senior Web Developer</div><div class="exp-yr">Jan 2023 · 1 yr 10 mos</div></div></div>
-                <div class="exprow"><div class="expdot" style="background:#34d399"></div><div><div class="exp-co">Upwork & Fiverr</div><div class="exp-role">Cartoon Character Creator (Freelance)</div><div class="exp-yr">Mar 2019 · 2 mos</div></div></div>
-                <div class="exprow"><div class="expdot" style="background:#c084fc"></div><div><div class="exp-co">CTI Media Services</div><div class="exp-role">Web Developer, Graphic Designer & Video Editor</div><div class="exp-yr">Apr 2014 – Oct 2022 · 8 yrs 7 mos</div></div></div>
-              </div>
-            </div>
-          </div>
+  <div id="win-experience" class="win"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('experience')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">Experience</span></div><div class="wbody"><div class="explist"><div class="exprow"><div class="edot" style="background:#0a84ff"></div><div><div class="eco">DevEdge Digital</div><div class="erol">Founder & Lead Developer</div><div class="eyr">2014 – Present · 11+ years · Zamboanga City, Philippines</div></div></div><div class="exprow"><div class="edot" style="background:#ff9f0a"></div><div><div class="eco">Verified Digital</div><div class="erol">Senior Web Developer</div><div class="eyr">Jan 2023 · 1 yr 10 mos</div></div></div><div class="exprow"><div class="edot" style="background:#30d158"></div><div><div class="eco">Upwork & Fiverr</div><div class="erol">Cartoon Character Creator (Freelance)</div><div class="eyr">Mar 2019 · 2 mos</div></div></div><div class="exprow"><div class="edot" style="background:#bf5af2"></div><div><div class="eco">CTI Media Services</div><div class="erol">Web Developer, Graphic Designer & Video Editor</div><div class="eyr">Apr 2014 – Oct 2022 · 8 yrs 7 mos</div></div></div></div></div></div>
 
-          <!-- Education window -->
-          <div id="win-education" class="win">
-            <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('education')"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div><span class="wtitle">Education</span></div>
-            <div class="wbody">
-              <div class="edu-row">
-                <div class="edu-icon">🎓</div>
-                <div>
-                  <div style="font-size:12px;font-weight:600;color:#1d1d1f">Western Mindanao State University</div>
-                  <div style="font-size:11px;color:rgba(0,0,0,.5);margin-top:2px">Bachelor of Science — Computer Science</div>
-                  <div style="font-size:10px;color:rgba(0,0,0,.35);margin-top:3px">2007 – 2010 · Zamboanga City, Philippines</div>
-                </div>
-              </div>
-            </div>
-          </div>
+  <div id="win-education" class="win"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('education')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">Education</span></div><div class="wbody"><div class="prow" style="padding:14px 12px"><div class="pi" style="background:linear-gradient(145deg,#ff375f,#c0152f);width:40px;height:40px;border-radius:10px;font-size:22px">🎓</div><div><div class="pn">Western Mindanao State University</div><div class="pd">Bachelor of Science — Computer Science</div><div style="font-size:9.5px;color:rgba(0,0,0,.32);margin-top:3px;font-weight:500">2007 – 2010 · Zamboanga City, Philippines</div></div></div></div></div>
 
-          <!-- Services window -->
-          <div id="win-services" class="win">
-            <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('services')"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div><span class="wtitle">Services</span></div>
-            <div class="wbody">
-              <div class="plist">
-                <div class="prow"><div class="pi" style="background:rgba(43,111,255,.1)">🌐</div><div><div class="pn">Web Design & Development</div><div class="pd">Custom high-performance sites · WordPress, React, Next.js</div></div></div>
-                <div class="prow"><div class="pi" style="background:rgba(255,149,0,.1)">🎨</div><div><div class="pn">Branding & Identity Design</div><div class="pd">Logo, guidelines, visual assets, print collateral</div></div></div>
-                <div class="prow"><div class="pi" style="background:rgba(52,199,89,.1)">📣</div><div><div class="pn">Digital Marketing</div><div class="pd">Social, PPC, strategy · $2M+ ad spend managed</div></div></div>
-                <div class="prow"><div class="pi" style="background:rgba(88,86,214,.1)">🔍</div><div><div class="pn">SEO Optimization</div><div class="pd">On-page, technical, local SEO</div></div></div>
-                <div class="prow"><div class="pi" style="background:rgba(255,59,48,.1)">🚀</div><div><div class="pn">Landing Page & Funnel Design</div><div class="pd">150+ pages built · CRO, A/B testing</div></div></div>
-              </div>
-            </div>
-          </div>
+  <div id="win-testimonials" class="win"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('testimonials')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">Client Testimonials</span></div><div class="wbody"><div class="tlist"><div class="tcard"><div class="tstars">★★★★★</div><div class="tq">"Enald completely transformed our online presence. The site loads incredibly fast, looks stunning, and has already driven a noticeable uptick in leads. His process was seamless from discovery to launch."</div><div class="tfoot"><div class="tava" style="background:linear-gradient(135deg,#0a84ff,#0050c8)">MR</div><div><div class="tname">Marcus R.</div><div class="trole">CEO · Northvale Capital Group</div></div></div></div><div class="tcard"><div class="tstars">★★★★★</div><div class="tq">"We came with a rough idea and Enald turned it into a brand identity we're genuinely proud of. The logo, the colors, the whole visual language — it just clicked. Clients compliment our branding constantly."</div><div class="tfoot"><div class="tava" style="background:linear-gradient(135deg,#bf5af2,#7c2fc7)">SL</div><div><div class="tname">Sofia L.</div><div class="trole">Founder · Luminary Brand Co.</div></div></div></div><div class="tcard"><div class="tstars">★★★★★</div><div class="tq">"The SEO and paid ads delivered results within 60 days — we were ranking page one for three key terms. The ROI has been exceptional. Wouldn't hesitate to recommend Enald to anyone."</div><div class="tfoot"><div class="tava" style="background:linear-gradient(135deg,#30d158,#1a8c36)">JT</div><div><div class="tname">James T.</div><div class="trole">Marketing Director · Harlow & Co.</div></div></div></div></div></div></div>
 
-          <!-- Contact window -->
-          <div id="win-contact" class="win">
-            <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('contact')"></div><div class="tl tl-y"></div><div class="tl tl-g"></div></div><span class="wtitle">Contact</span></div>
-            <div class="wbody">
-              <div class="cg">
-                <div class="ci"><div class="ci-ico" style="background:rgba(43,111,255,.1)">✉️</div><div><div class="ci-label">Email</div><div class="ci-val">enald.araneta0626@gmail.com</div></div></div>
-                <div class="ci"><div class="ci-ico" style="background:rgba(52,199,89,.1)">📞</div><div><div class="ci-label">Phone</div><div class="ci-val">+63 977 052 7996</div></div></div>
-                <div class="ci"><div class="ci-ico" style="background:rgba(0,0,0,.06)">🌐</div><div><div class="ci-label">Website</div><div class="ci-val"><a href="https://devedge.digital" target="_blank" style="color:#2B6FFF;text-decoration:none">devedge.digital</a></div></div></div>
-                <div class="ci"><div class="ci-ico" style="background:rgba(255,149,0,.1)">📍</div><div><div class="ci-label">Location</div><div class="ci-val">Zamboanga City, Philippines</div></div></div>
-                <div class="ci"><div class="ci-ico" style="background:rgba(0,119,181,.1)">💼</div><div><div class="ci-label">LinkedIn</div><div class="ci-val">schneizel26</div></div></div>
-                <div class="ci"><div class="ci-ico" style="background:rgba(88,86,214,.1)">✈️</div><div><div class="ci-label">Telegram</div><div class="ci-val">@enald06</div></div></div>
-              </div>
-            </div>
-          </div>
+  <div id="win-contact" class="win"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('contact')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">Contact</span></div><div class="wbody"><div class="cgrid"><div class="ci"><div class="ci-ico" style="background:linear-gradient(145deg,#0a84ff,#0050c8)">✉️</div><div><div class="ci-label">Email</div><div class="ci-val">enald.araneta0626@gmail.com</div></div></div><div class="ci"><div class="ci-ico" style="background:linear-gradient(145deg,#30d158,#1a8c36)">📞</div><div><div class="ci-label">Phone</div><div class="ci-val">+63 977 052 7996</div></div></div><div class="ci"><div class="ci-ico" style="background:linear-gradient(145deg,#1c1c1e,#2c2c2e)">🌐</div><div><div class="ci-label">Website</div><div class="ci-val"><a href="https://devedge.digital" target="_blank" style="color:#0a84ff;text-decoration:none;font-weight:600">devedge.digital</a></div></div></div><div class="ci"><div class="ci-ico" style="background:linear-gradient(145deg,#ff9f0a,#c06800)">📍</div><div><div class="ci-label">Location</div><div class="ci-val">Zamboanga City, Philippines</div></div></div><div class="ci"><div class="ci-ico" style="background:linear-gradient(145deg,#0077b5,#004f80)">💼</div><div><div class="ci-label">LinkedIn</div><div class="ci-val"><a href="https://linkedin.com/in/enald-dean-araneta" target="_blank" style="color:#0a84ff;text-decoration:none;font-weight:600">enald-dean-araneta</a></div></div></div><div class="ci"><div class="ci-ico" style="background:linear-gradient(145deg,#30363d,#161b22)">🐙</div><div><div class="ci-label">GitHub</div><div class="ci-val"><a href="https://github.com/enaldaraneta0626-gif" target="_blank" style="color:#0a84ff;text-decoration:none;font-weight:600">enaldaraneta0626-gif</a></div></div></div></div></div></div>
 
-        </div><!-- /desktop -->
+  <!-- ══ DOCK ══ -->
+  <div class="dock-wrap"><div class="dock">
+    <div class="di" id="di-about" onclick="toggleWin('about')"><div class="di-tip">About Me</div><div class="diico" style="background:linear-gradient(160deg,#1a6fff,#0040c8)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="11" r="5.5" fill="rgba(255,255,255,.95)"/><path d="M5 27c0-5.5 4.5-10 10-10s10 4.5 10 10" fill="rgba(255,255,255,.88)"/></svg></div><div class="di-dot"></div></div>
+    <div class="di" id="di-services" onclick="toggleWin('services')"><div class="di-tip">Services</div><div class="diico" style="background:linear-gradient(160deg,#ff9500,#d46800)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="4" y="5" width="22" height="14" rx="3" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.9)" stroke-width="1.5"/><path d="M4 12h22" stroke="rgba(255,255,255,.4)" stroke-width="1"/><path d="M11 25h8M15 19v6" stroke="rgba(255,255,255,.85)" stroke-width="1.6" stroke-linecap="round"/><circle cx="7" cy="8.5" r="1.2" fill="rgba(255,255,255,.8)"/><circle cx="10.5" cy="8.5" r="1.2" fill="rgba(255,255,255,.8)"/><circle cx="14" cy="8.5" r="1.2" fill="rgba(255,255,255,.8)"/></svg></div><div class="di-dot"></div></div>
+    <div class="di" id="di-skills" onclick="toggleWin('skills')"><div class="di-tip">Skills</div><div class="diico" style="background:linear-gradient(160deg,#34c759,#1a8c36)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="5" y="7" width="20" height="4" rx="2" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.6)" stroke-width="1"/><rect x="5" y="13" width="20" height="4" rx="2" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.6)" stroke-width="1"/><rect x="5" y="19" width="20" height="4" rx="2" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.6)" stroke-width="1"/><path d="M7 9l1.5 1.5L12 7" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 15l1.5 1.5L12 13" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M7 21l1.5 1.5L12 19" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="di-dot"></div></div>
+    <div class="di" id="di-projects" onclick="toggleWin('projects')"><div class="di-tip">Projects</div><div class="diico" style="background:linear-gradient(160deg,#7d5fff,#4a2fc8)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="4" y="4" width="9" height="9" rx="2.5" fill="rgba(255,255,255,.88)"/><rect x="17" y="4" width="9" height="9" rx="2.5" fill="rgba(255,255,255,.5)"/><rect x="4" y="17" width="9" height="9" rx="2.5" fill="rgba(255,255,255,.5)"/><rect x="17" y="17" width="9" height="9" rx="2.5" fill="rgba(255,255,255,.88)"/></svg></div><div class="di-dot"></div></div>
+    <div class="di" id="di-experience" onclick="toggleWin('experience')"><div class="di-tip">Experience</div><div class="diico" style="background:linear-gradient(160deg,#3cb9fc,#1070d4)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="4" y="11" width="22" height="14" rx="3" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.9)" stroke-width="1.5"/><path d="M10 11V9a5 5 0 0110 0v2" stroke="rgba(255,255,255,.9)" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M4 17h22" stroke="rgba(255,255,255,.35)" stroke-width="1"/><rect x="13" y="15" width="4" height="4" rx="1" fill="rgba(255,255,255,.88)"/></svg></div></div>
+    <div class="di" id="di-education" onclick="toggleWin('education')"><div class="di-tip">Education</div><div class="diico" style="background:linear-gradient(160deg,#ff453a,#c01020)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M15 6L27 12l-12 6L3 12z" fill="rgba(255,255,255,.92)"/><path d="M8 14.5v6c0 2.5 3.1 4.5 7 4.5s7-2 7-4.5v-6" stroke="rgba(255,255,255,.85)" stroke-width="1.6" stroke-linecap="round" fill="none"/><path d="M23 12v7" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round"/><circle cx="23" cy="20" r="1.5" fill="rgba(255,255,255,.6)"/></svg></div></div>
+    <div class="di" id="di-testimonials" onclick="toggleWin('testimonials')"><div class="di-tip">Testimonials</div><div class="diico" style="background:linear-gradient(160deg,#ffd60a,#c09000)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M9 8h12M9 12h8M5 6h20v16l-5-3H5z" stroke="rgba(0,0,0,.55)" stroke-width="1.5" stroke-linejoin="round" fill="rgba(0,0,0,.15)"/></svg></div><div class="di-dot"></div></div>
+    <div class="dsep"></div>
+    <div class="di"><div class="di-tip">devedge.digital</div><div class="diico" style="background:linear-gradient(160deg,#1c1c1e,#000)" onclick="window.open('https://devedge.digital','_blank')"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="10" stroke="rgba(255,255,255,.75)" stroke-width="1.4" fill="none"/><ellipse cx="15" cy="15" rx="5" ry="10" stroke="rgba(255,255,255,.4)" stroke-width="1.2" fill="none"/><path d="M5 15h20M6 10h18M6 20h18" stroke="rgba(255,255,255,.35)" stroke-width="1"/></svg></div></div>
+    <div class="di"><div class="di-tip">LinkedIn</div><div class="diico" style="background:linear-gradient(160deg,#0a66c2,#004182)" onclick="window.open('https://linkedin.com/in/enald-dean-araneta','_blank')"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="5" y="5" width="20" height="20" rx="4" fill="rgba(255,255,255,.1)"/><circle cx="10" cy="10.5" r="1.8" fill="white"/><rect x="8.5" y="13.5" width="3" height="10" rx="1" fill="white"/><rect x="14" y="13.5" width="3" height="10" rx="1" fill="white"/><path d="M17 17c0-2 1-3.5 3-3.5s3 1.5 3 3.5v6h-3v-6" fill="white"/></svg></div></div>
+    <div class="di"><div class="di-tip">GitHub</div><div class="diico" style="background:linear-gradient(160deg,#30363d,#161b22)" onclick="window.open('https://github.com/enaldaraneta0626-gif','_blank')"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 4C9 4 4 9.1 4 15.3c0 5 3.2 9.2 7.7 10.7.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.6-3.9-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.4 11.4 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.4 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6C22.8 24.5 26 20.3 26 15.3 26 9.1 21 4 15 4z" fill="white"/></svg></div></div>
+    <div class="di" id="di-contact" onclick="toggleWin('contact')"><div class="di-tip">Contact</div><div class="diico" style="background:linear-gradient(160deg,#3cb9fc,#0a5fd8)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="4" y="7" width="22" height="16" rx="3" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.9)" stroke-width="1.5"/><path d="M4 11l11 7 11-7" stroke="rgba(255,255,255,.9)" stroke-width="1.5" fill="none"/></svg></div><div class="di-dot"></div></div>
+  </div></div>
 
-        <!-- Dock -->
-        <div class="dock-wrap"><div class="dock">
-          <div class="di" id="di-about" onclick="toggleWin('about')"><div class="di-tip">About Me</div><div class="diico" style="background:linear-gradient(145deg,#2B6FFF,#1a4fd8)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="9" r="4" fill="rgba(255,255,255,.9)"/><path d="M5 21c0-3.9 3.1-7 7-7s7 3.1 7 7" fill="rgba(255,255,255,.85)"/></svg></div><div class="di-dot"></div></div>
-          <div class="di" id="di-services" onclick="toggleWin('services')"><div class="di-tip">Services</div><div class="diico" style="background:linear-gradient(145deg,#ff9f0a,#c2410c)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="5" width="18" height="14" rx="2.5" stroke="rgba(255,255,255,.9)" stroke-width="1.5" fill="none"/><path d="M3 9h18" stroke="rgba(255,255,255,.5)" stroke-width="1"/><circle cx="6.5" cy="7" r=".8" fill="rgba(255,255,255,.8)"/><circle cx="9.5" cy="7" r=".8" fill="rgba(255,255,255,.8)"/><circle cx="12.5" cy="7" r=".8" fill="rgba(255,255,255,.8)"/></svg></div><div class="di-dot"></div></div>
-          <div class="di" id="di-skills" onclick="toggleWin('skills')"><div class="di-tip">Skills</div><div class="diico" style="background:linear-gradient(145deg,#34d399,#059669)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="rgba(255,255,255,.95)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg></div><div class="di-dot"></div></div>
-          <div class="di" id="di-projects" onclick="toggleWin('projects')"><div class="di-tip">Projects</div><div class="diico" style="background:linear-gradient(145deg,#f97316,#c2410c)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="8" height="8" rx="2" fill="rgba(255,255,255,.8)"/><rect x="13" y="3" width="8" height="8" rx="2" fill="rgba(255,255,255,.5)"/><rect x="3" y="13" width="8" height="8" rx="2" fill="rgba(255,255,255,.5)"/><rect x="13" y="13" width="8" height="8" rx="2" fill="rgba(255,255,255,.8)"/></svg></div><div class="di-dot"></div></div>
-          <div class="di" id="di-experience" onclick="toggleWin('experience')"><div class="di-tip">Experience</div><div class="diico" style="background:linear-gradient(145deg,#60a5fa,#1d4ed8)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="9" width="18" height="12" rx="2" stroke="rgba(255,255,255,.9)" stroke-width="1.5" fill="none"/><path d="M8 9V7a4 4 0 018 0v2" stroke="rgba(255,255,255,.9)" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg></div></div>
-          <div class="di" id="di-education" onclick="toggleWin('education')"><div class="di-tip">Education</div><div class="diico" style="background:linear-gradient(145deg,#f87171,#b91c1c)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 4l10 5-10 5L2 9l10-5z" fill="rgba(255,255,255,.9)"/><path d="M7 11.5v5c0 1.7 2.2 3 5 3s5-1.3 5-3v-5" stroke="rgba(255,255,255,.8)" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg></div></div>
-          <div class="dsep"></div>
-          <div class="di"><div class="di-tip">devedge.digital</div><div class="diico" style="background:linear-gradient(145deg,#374151,#111827)" onclick="window.open('https://devedge.digital','_blank')"><i class="ti ti-world" style="font-size:20px;color:white"></i></div></div>
-          <div class="di"><div class="di-tip">LinkedIn</div><div class="diico" style="background:linear-gradient(145deg,#38bdf8,#0369a1)" onclick="window.open('https://linkedin.com','_blank')"><i class="ti ti-brand-linkedin" style="font-size:20px;color:white"></i></div></div>
-          <div class="di" id="di-contact" onclick="toggleWin('contact')"><div class="di-tip">Contact</div><div class="diico" style="background:linear-gradient(145deg,#f8fafc,#e2e8f0)"><i class="ti ti-mail" style="font-size:20px;color:#334155"></i></div></div>
-        </div></div>
-
-      </div><!-- /screen -->
-    </div><!-- /bezel -->
-  </div><!-- /lid -->
-  <div class="base"><div class="hinge"></div></div>
-</div><!-- /wrap -->
+</div><!-- /desktop-root -->
 
 <script src="https://player.vimeo.com/api/player.js"></script>
 <script>
-// Clock
+// ── Lock screen ──
+function updateLockClock(){
+  const d=new Date(),days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'],mo=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM';h=h%12||12;
+  const lt=document.getElementById('lock-time'),ld=document.getElementById('lock-date');
+  if(lt)lt.textContent=`${h}:${m<10?'0'+m:m}`;
+  if(ld)ld.textContent=`${days[d.getDay()]}, ${mo[d.getMonth()]} ${d.getDate()}`;
+}
+updateLockClock();setInterval(updateLockClock,10000);
+
+function unlockDesktop(){
+  document.getElementById('lock').classList.add('hiding');
+  setTimeout(()=>{
+    document.getElementById('lock').classList.add('gone');
+    document.getElementById('desktop').classList.add('visible');
+    showMusicWidget();
+  },900);
+}
+
+function lockScreen(){
+  document.getElementById('lock').classList.remove('gone','hiding');
+  document.getElementById('desktop').classList.remove('visible');
+}
+
+// ── Clock ──
 function tick(){
-  const d=new Date(),days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const d=new Date(),days=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   let h=d.getHours(),m=d.getMinutes(),ap=h>=12?'PM':'AM';h=h%12||12;
   const el=document.getElementById('clock');
-  if(el)el.textContent=`${days[d.getDay()]} ${months[d.getMonth()]} ${d.getDate()}  ${h}:${m<10?'0'+m:m} ${ap}`;
+  if(el)el.textContent=`${days[d.getDay()]} ${mo[d.getMonth()]} ${d.getDate()}  ${h}:${m<10?'0'+m:m} ${ap}`;
 }tick();setInterval(tick,10000);
 
-// Windows
+// ── Wallpaper ──
+let currentWP=0;
+const wpNames=['Sonoma Vineyard','Aurora Night','Ocean Mist','Desert Glow'];
+function switchWP(idx){
+  if(idx===currentWP)return;
+  const prev=document.getElementById('vbg-'+currentWP);
+  const next=document.getElementById('vbg-'+idx);
+  const iframe=next.querySelector('iframe');
+  if(iframe.dataset.src&&!iframe.src){iframe.src=iframe.dataset.src;}
+  next.style.display='block';
+  setTimeout(()=>{prev.classList.add('fade');next.classList.remove('fade');setTimeout(()=>{prev.style.display='none';prev.classList.remove('fade');},700);},100);
+  document.querySelectorAll('.wp-thumb').forEach((t,i)=>t.classList.toggle('active',i===idx));
+  currentWP=idx;
+  showToast('Wallpaper','Changed to '+wpNames[idx]);
+}
+function openWP(){document.getElementById('wp-panel').classList.add('show');closeAllDDs();}
+function closeWP(){document.getElementById('wp-panel').classList.remove('show');}
+
+// ── Music (using free Web Audio API tones as demo — replace with actual audio URLs) ──
+const tracks=[
+  {title:'Lofi Chill Vibes',artist:'DevEdge Radio',emoji:'🎸',color:'linear-gradient(135deg,#ff6b6b,#ee5a24)',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'},
+  {title:'Focus Mode',artist:'DevEdge Radio',emoji:'🎹',color:'linear-gradient(135deg,#a29bfe,#6c5ce7)',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3'},
+  {title:'Late Night Code',artist:'DevEdge Radio',emoji:'🎺',color:'linear-gradient(135deg,#55efc4,#00b894)',src:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3'},
+];
+let trackIdx=0,audio=null,isPlaying=false,isMuted=false,progInterval=null;
+
+function initAudio(){
+  if(audio){audio.pause();audio=null;}
+  audio=new Audio(tracks[trackIdx].src);
+  audio.volume=0.35;
+  audio.loop=false;
+  audio.addEventListener('ended',nextTrack);
+  audio.addEventListener('timeupdate',updateProgress);
+  document.getElementById('music-title').textContent=tracks[trackIdx].title;
+  document.getElementById('music-artist').textContent=tracks[trackIdx].artist;
+  document.getElementById('music-art').textContent=tracks[trackIdx].emoji;
+  document.getElementById('music-art').style.background=tracks[trackIdx].color;
+}
+
+function updateProgress(){
+  if(!audio||!audio.duration)return;
+  const pct=(audio.currentTime/audio.duration)*100;
+  document.getElementById('music-prog-fill').style.width=pct+'%';
+}
+
+function togglePlay(){
+  if(!audio)initAudio();
+  if(isPlaying){audio.pause();isPlaying=false;document.getElementById('play-btn').innerHTML='<i class="ti ti-player-play"></i>';}
+  else{audio.play().catch(()=>{});isPlaying=true;document.getElementById('play-btn').innerHTML='<i class="ti ti-player-pause"></i>';}
+}
+
+function nextTrack(){
+  trackIdx=(trackIdx+1)%tracks.length;
+  const wasPlaying=isPlaying;
+  if(audio){audio.pause();audio=null;}isPlaying=false;
+  initAudio();
+  if(wasPlaying){audio.play().catch(()=>{});isPlaying=true;document.getElementById('play-btn').innerHTML='<i class="ti ti-player-pause"></i>';}
+}
+
+function prevTrack(){
+  trackIdx=(trackIdx-1+tracks.length)%tracks.length;
+  const wasPlaying=isPlaying;
+  if(audio){audio.pause();audio=null;}isPlaying=false;
+  initAudio();
+  if(wasPlaying){audio.play().catch(()=>{});isPlaying=true;document.getElementById('play-btn').innerHTML='<i class="ti ti-player-pause"></i>';}
+}
+
+function toggleMute(){
+  if(!audio)return;
+  isMuted=!isMuted;audio.muted=isMuted;
+  document.getElementById('mute-btn').innerHTML=isMuted?'<i class="ti ti-volume-off"></i>':'<i class="ti ti-volume"></i>';
+}
+
+function seekMusic(e){
+  if(!audio||!audio.duration)return;
+  const bar=document.getElementById('music-progress');
+  const rect=bar.getBoundingClientRect();
+  const pct=(e.clientX-rect.left)/rect.width;
+  audio.currentTime=pct*audio.duration;
+}
+
+function showMusicWidget(){
+  const w=document.getElementById('music-widget');
+  w.classList.remove('hidden');
+  if(!audio)initAudio();
+}
+function hideMusicWidget(){document.getElementById('music-widget').classList.add('hidden');}
+
+// ── Windows ──
 let activeWin=null;
-const winIds=['about','services','skills','projects','experience','education','contact'];
+const winIds=['about','services','skills','projects','experience','education','testimonials','contact'];
 function toggleWin(id){
-  if(activeWin&&activeWin!==id){
-    document.getElementById('win-'+activeWin).classList.remove('show');
-    const pd=document.getElementById('di-'+activeWin);if(pd)pd.classList.remove('active');
-  }
+  if(activeWin&&activeWin!==id){document.getElementById('win-'+activeWin).classList.remove('show');const pd=document.getElementById('di-'+activeWin);if(pd)pd.classList.remove('active');}
   const w=document.getElementById('win-'+id),di=document.getElementById('di-'+id);
   if(w.classList.contains('show')){w.classList.remove('show');if(di)di.classList.remove('active');activeWin=null;}
   else{w.classList.add('show');if(di)di.classList.add('active');activeWin=id;}
-  closeAllDDs();
+  closeAllDDs();closeWP();
 }
-function closeWin(id){
-  document.getElementById('win-'+id).classList.remove('show');
-  const di=document.getElementById('di-'+id);if(di)di.classList.remove('active');
-  if(activeWin===id)activeWin=null;
-}
+function closeWin(id){document.getElementById('win-'+id).classList.remove('show');const di=document.getElementById('di-'+id);if(di)di.classList.remove('active');if(activeWin===id)activeWin=null;}
 function closeAllWins(){winIds.forEach(closeWin);}
 
-// Dropdowns
+// ── Dropdowns ──
 let activeDd=null;
 function toggleDD(id){
   event.stopPropagation();
@@ -447,23 +586,22 @@ function toggleDD(id){
   dd.classList.toggle('show');dd.parentElement.classList.toggle('open',!showing);
   activeDd=showing?null:id;
 }
-function closeAllDDs(){
-  document.querySelectorAll('.dd.show').forEach(d=>{d.classList.remove('show');d.parentElement.classList.remove('open');});
-  activeDd=null;
-}
-document.addEventListener('click',closeAllDDs);
+function closeAllDDs(){document.querySelectorAll('.dd.show').forEach(d=>{d.classList.remove('show');d.parentElement.classList.remove('open');});activeDd=null;}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('.dd')&&!e.target.closest('.mbi'))closeAllDDs();
+  if(!e.target.closest('.wp-panel')&&!e.target.closest('.mbi'))closeWP();
+});
 
-// Toast
-let toastTimer;
+// ── Toast ──
+let toastT;
 function showToast(title,body){
   document.getElementById('toast-t').textContent=title;
   document.getElementById('toast-b').textContent=body;
   const t=document.getElementById('toast');t.classList.add('show');
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3000);
-  closeAllDDs();
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3000);closeAllDDs();
 }
 
-// WiFi
+// ── WiFi ──
 let wifiOn=true;
 function toggleWifi(){
   wifiOn=!wifiOn;
@@ -471,44 +609,52 @@ function toggleWifi(){
   showToast('Wi-Fi',wifiOn?'Connected to HomeNetwork_5G':'Wi-Fi turned off');
 }
 
-// Battery
+// ── Battery ──
 try{navigator.getBattery&&navigator.getBattery().then(b=>{document.getElementById('batt-pct').textContent=`Battery: ${Math.round(b.level*100)}%`;});}catch(e){}
 
-// Spotlight
+// ── Spotlight ──
 const spItems=[
-  {label:'About Me',icon:'👤',bg:'#2B6FFF22',id:'about'},
-  {label:'Services',icon:'🌐',bg:'#ff9f0a22',id:'services'},
-  {label:'Skills',icon:'⚡',bg:'#34d39922',id:'skills'},
-  {label:'Projects',icon:'🚀',bg:'#f9731622',id:'projects'},
-  {label:'Experience',icon:'💼',bg:'#60a5fa22',id:'experience'},
-  {label:'Education',icon:'🎓',bg:'#f8717122',id:'education'},
-  {label:'Contact',icon:'✉️',bg:'#38bdf822',id:'contact'},
+  {label:'About Me',icon:'👤',bg:'#1a6fff22',id:'about'},
+  {label:'Services',icon:'🖥',bg:'#ff950022',id:'services'},
+  {label:'Skills & Stack',icon:'⚡',bg:'#34c75922',id:'skills'},
+  {label:'Projects',icon:'🚀',bg:'#7d5fff22',id:'projects'},
+  {label:'Experience',icon:'💼',bg:'#3cb9fc22',id:'experience'},
+  {label:'Education',icon:'🎓',bg:'#ff453a22',id:'education'},
+  {label:'Testimonials',icon:'⭐',bg:'#ffd60a22',id:'testimonials'},
+  {label:'Contact',icon:'✉️',bg:'#0a84ff22',id:'contact'},
+  {label:'Change Wallpaper',icon:'🖼',bg:'#30d15822',action:openWP},
+  {label:'Music Player',icon:'🎵',bg:'#ff6b6b22',action:showMusicWidget},
 ];
 let spIdx=0;
-function openSpotlight(){
-  document.getElementById('spotlight').classList.add('show');
-  setTimeout(()=>document.getElementById('sp-input').focus(),50);
-  renderSp('');closeAllDDs();
-}
-function closeSpotlight(){document.getElementById('spotlight').classList.remove('show');document.getElementById('sp-input').value='';}
+function openSp(){document.getElementById('spotlight').classList.add('show');setTimeout(()=>document.getElementById('sp-input').focus(),50);renderSp('');closeAllDDs();}
+function closeSp(){document.getElementById('spotlight').classList.remove('show');document.getElementById('sp-input').value='';}
 function doSearch(q){renderSp(q);}
 function renderSp(q){
   const res=document.getElementById('sp-results');
-  const filtered=q?spItems.filter(i=>i.label.toLowerCase().includes(q.toLowerCase())):spItems;
+  const f=q?spItems.filter(i=>i.label.toLowerCase().includes(q.toLowerCase())):spItems;
   spIdx=0;
-  res.innerHTML=filtered.map((item,i)=>`<div class="sp-item${i===0?' hl':''}" onclick="toggleWin('${item.id}');closeSpotlight()"><div class="sp-ico" style="background:${item.bg}">${item.icon}</div>${item.label}</div>`).join('');
+  res.innerHTML=f.map((item,i)=>`<div class="sp-item${i===0?' hl':''}" data-idx="${spItems.indexOf(item)}"><div class="sp-ico" style="background:${item.bg}">${item.icon}</div>${item.label}</div>`).join('');
+  res.querySelectorAll('.sp-item').forEach(el=>el.addEventListener('click',()=>{
+    const item=spItems[+el.dataset.idx];
+    if(item.action){item.action();}else{toggleWin(item.id);}
+    closeSp();
+  }));
 }
 function spKey(e){
   const items=document.querySelectorAll('#sp-results .sp-item');if(!items.length)return;
   if(e.key==='ArrowDown')spIdx=Math.min(spIdx+1,items.length-1);
   else if(e.key==='ArrowUp')spIdx=Math.max(spIdx-1,0);
   else if(e.key==='Enter'){items[spIdx]&&items[spIdx].click();return;}
-  else if(e.key==='Escape'){closeSpotlight();return;}
+  else if(e.key==='Escape'){closeSp();return;}
   items.forEach((el,i)=>el.classList.toggle('hl',i===spIdx));
   items[spIdx]&&items[spIdx].scrollIntoView({block:'nearest'});
 }
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){closeSp();closeAllDDs();closeWP();}
+  if((e.metaKey||e.ctrlKey)&&e.key==='f'){e.preventDefault();openSp();}
+});
 
-// Webcam
+// ── Webcam ──
 let camStream=null,camOn=false;
 async function toggleCam(){
   if(!camOn){
@@ -516,7 +662,7 @@ async function toggleCam(){
       camStream=await navigator.mediaDevices.getUserMedia({video:true,audio:false});
       document.getElementById('cam-video').srcObject=camStream;
       document.getElementById('cam-pop').classList.add('show');
-      document.getElementById('notch-cam').classList.add('on');
+      document.getElementById('ncam').classList.add('on');
       document.getElementById('cam-label').textContent='FaceTime HD Camera — Active';
       camOn=true;
     }catch(e){showToast('Camera','Access denied or not available');}
@@ -526,7 +672,7 @@ function closeCam(){
   if(camStream){camStream.getTracks().forEach(t=>t.stop());camStream=null;}
   document.getElementById('cam-video').srcObject=null;
   document.getElementById('cam-pop').classList.remove('show');
-  document.getElementById('notch-cam').classList.remove('on');
+  document.getElementById('ncam').classList.remove('on');
   camOn=false;
 }
 </script>
