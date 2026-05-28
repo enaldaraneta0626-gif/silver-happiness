@@ -1569,9 +1569,12 @@ function drawTetris(){
   const cvs=document.getElementById('tetris-canvas');
   const ctx=cvs.getContext('2d');
   const bs=cvs.width/TC;
-  ctx.fillStyle='#0d0d1a';ctx.fillRect(0,0,cvs.width,cvs.height);
-  // grid lines
-  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=.5;
+  // Tetris bg — deep space
+  const tBg=ctx.createLinearGradient(0,0,0,cvs.height);
+  tBg.addColorStop(0,'#0a0a1f');tBg.addColorStop(1,'#05050f');
+  ctx.fillStyle=tBg;ctx.fillRect(0,0,cvs.width,cvs.height);
+  // Grid lines — subtle blue tint
+  ctx.strokeStyle='rgba(100,120,255,.06)';ctx.lineWidth=.5;
   for(let r=0;r<TR;r++){ctx.beginPath();ctx.moveTo(0,r*bs);ctx.lineTo(cvs.width,r*bs);ctx.stroke();}
   for(let col=0;col<TC;col++){ctx.beginPath();ctx.moveTo(col*bs,0);ctx.lineTo(col*bs,cvs.height);ctx.stroke();}
   // board
@@ -1592,11 +1595,19 @@ function drawTetris(){
 }
 
 function tDrawBlock(ctx,x,y,s,col){
+  // Main face
   ctx.fillStyle=col;
   ctx.beginPath();ctx.roundRect(x+1,y+1,s-2,s-2,3);ctx.fill();
-  // shine
-  ctx.fillStyle='rgba(255,255,255,.25)';
-  ctx.beginPath();ctx.roundRect(x+2,y+2,s-4,(s-4)*.4,2);ctx.fill();
+  // Inner highlight (top-left)
+  const g=ctx.createLinearGradient(x,y,x+s,y+s);
+  g.addColorStop(0,'rgba(255,255,255,.35)');g.addColorStop(.5,'rgba(255,255,255,.08)');g.addColorStop(1,'rgba(0,0,0,.25)');
+  ctx.fillStyle=g;ctx.beginPath();ctx.roundRect(x+1,y+1,s-2,s-2,3);ctx.fill();
+  // Top shine strip
+  ctx.fillStyle='rgba(255,255,255,.28)';
+  ctx.beginPath();ctx.roundRect(x+2,y+2,s-4,Math.floor((s-4)*.35),2);ctx.fill();
+  // Dark border
+  ctx.strokeStyle='rgba(0,0,0,.3)';ctx.lineWidth=.5;
+  ctx.beginPath();ctx.roundRect(x+1,y+1,s-2,s-2,3);ctx.stroke();
 }
 
 document.addEventListener('keydown',e=>{
@@ -1660,9 +1671,12 @@ function drawSnake(){
   const cvs=document.getElementById('snake-canvas');
   const ctx=cvs.getContext('2d');
   const cs=cvs.width/SG;
-  ctx.fillStyle='#0d0d1a';ctx.fillRect(0,0,cvs.width,cvs.height);
-  // grid
-  ctx.strokeStyle='rgba(255,255,255,.03)';ctx.lineWidth=.5;
+  // Snake bg — dark forest
+  const sBg=ctx.createRadialGradient(cvs.width/2,cvs.height/2,0,cvs.width/2,cvs.height/2,cvs.width*.8);
+  sBg.addColorStop(0,'#0d1f0d');sBg.addColorStop(1,'#060d06');
+  ctx.fillStyle=sBg;ctx.fillRect(0,0,cvs.width,cvs.height);
+  // Grid
+  ctx.strokeStyle='rgba(255,255,255,.04)';ctx.lineWidth=.5;
   for(let i=0;i<=SG;i++){
     ctx.beginPath();ctx.moveTo(i*cs,0);ctx.lineTo(i*cs,cvs.height);ctx.stroke();
     ctx.beginPath();ctx.moveTo(0,i*cs);ctx.lineTo(cvs.width,i*cs);ctx.stroke();
@@ -1866,9 +1880,14 @@ function drawBreakout(){
   const ctx=cvs.getContext('2d');
   const W=cvs.width,H=cvs.height;
   // bg gradient
-  const bg=ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#0d0d1a');bg.addColorStop(1,'#1a0a2e');
-  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  // Breakout bg — deep purple space
+  const bbg=ctx.createRadialGradient(W*.5,H*.3,0,W*.5,H*.5,Math.max(W,H)*.8);
+  bbg.addColorStop(0,'#1a0d35');bbg.addColorStop(.6,'#0d0a22');bbg.addColorStop(1,'#050310');
+  ctx.fillStyle=bbg;ctx.fillRect(0,0,W,H);
+  // Star field
+  ctx.fillStyle='rgba(255,255,255,.5)';
+  if(!window._bkStars){window._bkStars=Array.from({length:60},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*.8+.2}));}
+  window._bkStars.forEach(s=>{ctx.beginPath();ctx.arc(s.x,s.y,s.r,0,Math.PI*2);ctx.fill();});
   // bricks
   if(bkBricks)bkBricks.forEach(br=>{
     if(!br.alive)return;
@@ -1962,104 +1981,129 @@ function initSolitaire(){
 
 function solCalcLayout(){
   const W=solCanvas.width,H=solCanvas.height;
-  // On mobile, fit 8 columns + gaps into available width
-  const isMobile=W<500;
-  const GAP=isMobile?4:8;
-  const totalGaps=7*GAP+2*(isMobile?8:20);
-  const CW=Math.min(Math.floor((W-totalGaps)/8), isMobile?60:100);
-  const CH=Math.floor(CW*1.45);
-  const PAD=Math.floor((W-CW*8-7*GAP)/2);
-  const TOP=isMobile?10:16;
-  solLayout={CW,CH,PAD,TOP,
-    VSTEP:Math.floor(CH*(isMobile?.3:.28)),
-    VSTEPU:Math.floor(CH*(isMobile?.2:.18)),
-    GAP
-  };
+  const isMobile=W<600;
+  const GAP=isMobile?3:6;
+  // Card width: fit 8 columns
+  const CW=Math.min(Math.floor((W-(isMobile?16:40))/8-GAP), isMobile?52:80);
+  const CH=Math.floor(CW*1.4);
+  const PAD=Math.max(4,Math.floor((W-CW*8-7*GAP)/2));
+  const TOP=isMobile?8:14;
+  const tabY=TOP+CH+GAP*2;
+  // Figure out max tableau height across all columns
+  // VSTEP must fit all cards in available height
+  const maxCol=solState?Math.max(...solState.tableau.map(p=>p.length),1):7;
+  const availH=H-tabY-CH-8; // space for tableau
+  // step = availH / (maxCol-1) but min sensible value
+  const rawStep=maxCol>1?Math.floor(availH/(maxCol)):Math.floor(CH*.3);
+  const VSTEP=Math.min(Math.max(rawStep, isMobile?14:18), Math.floor(CH*.38));
+  const VSTEPU=Math.floor(VSTEP*.55);
+  solLayout={CW,CH,PAD,TOP,VSTEP,VSTEPU,GAP};
 }
 
 function solCard(ctx,x,y,cw,ch,card,selected=false){
-  // Shadow
-  ctx.shadowColor='rgba(0,0,0,.35)';ctx.shadowBlur=8;ctx.shadowOffsetY=3;
-  // Card bg
-  const r=6;
-  ctx.fillStyle=selected?'#e8f4ff':'#fff';
-  ctx.beginPath();ctx.roundRect(x,y,cw,ch,r);ctx.fill();
-  ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-  // Border
-  ctx.strokeStyle=selected?'#0a84ff':'rgba(0,0,0,.12)';
-  ctx.lineWidth=selected?2:.5;
-  ctx.beginPath();ctx.roundRect(x,y,cw,ch,r);ctx.stroke();
-  ctx.lineWidth=1;
+  const r=Math.max(4,Math.floor(cw*.08));
+  // Drop shadow
+  ctx.shadowColor='rgba(0,0,0,.45)';
+  ctx.shadowBlur=selected?14:7;
+  ctx.shadowOffsetY=selected?4:2;
+  ctx.shadowOffsetX=0;
+
   if(!card.faceUp){
-    // Card back — elegant pattern
-    const bg=ctx.createLinearGradient(x,y,x+cw,y+ch);
-    bg.addColorStop(0,'#1a3a6e');bg.addColorStop(1,'#0a1f4a');
-    ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(x+2,y+2,cw-4,ch-4,4);ctx.fill();
+    // Card back — premium dark blue with crosshatch pattern
+    ctx.fillStyle='#1a2f5e';
+    ctx.beginPath();ctx.roundRect(x,y,cw,ch,r);ctx.fill();
+    ctx.shadowBlur=0;ctx.shadowOffsetY=0;
     // Pattern
-    ctx.strokeStyle='rgba(255,255,255,.08)';ctx.lineWidth=1;
-    for(let i=-ch;i<cw+ch;i+=10){
-      ctx.beginPath();ctx.moveTo(x+2+i,y+2);ctx.lineTo(x+2+i-ch,y+ch-2);ctx.stroke();
+    ctx.save();ctx.beginPath();ctx.roundRect(x,y,cw,ch,r);ctx.clip();
+    ctx.strokeStyle='rgba(255,255,255,.07)';ctx.lineWidth=1;
+    for(let i=-ch;i<cw+ch;i+=8){
+      ctx.beginPath();ctx.moveTo(x+i,y);ctx.lineTo(x+i-ch,y+ch);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(x+i,y);ctx.lineTo(x+i+ch,y+ch);ctx.stroke();
     }
-    ctx.strokeStyle='rgba(255,255,255,.05)';
-    for(let i=-cw;i<ch+cw;i+=10){
-      ctx.beginPath();ctx.moveTo(x+2,y+2+i);ctx.lineTo(x+cw-2,y+2+i-cw);ctx.stroke();
-    }
+    ctx.restore();
     // Inner border
-    ctx.strokeStyle='rgba(100,150,255,.2)';ctx.lineWidth=1;
-    ctx.beginPath();ctx.roundRect(x+4,y+4,cw-8,ch-8,3);ctx.stroke();
+    ctx.strokeStyle='rgba(100,140,255,.25)';ctx.lineWidth=1;
+    ctx.beginPath();ctx.roundRect(x+3,y+3,cw-6,ch-6,r-1);ctx.stroke();
+    // Outer border
+    ctx.strokeStyle='rgba(255,255,255,.1)';ctx.lineWidth=.5;
+    ctx.beginPath();ctx.roundRect(x,y,cw,ch,r);ctx.stroke();
     return;
   }
-  const col=SOL.COLORS[card.suit];
-  const isRed=col==='red';
-  const fs=Math.max(7,Math.floor(cw*.18));
-  const suitFs=Math.max(8,Math.floor(cw*.22));
-  ctx.font=`bold ${fs}px Plus Jakarta Sans,sans-serif`;
-  ctx.textBaseline='top';
-  // Top-left value+suit
-  ctx.fillStyle=isRed?'#e53935':'#1a1a2e';
-  ctx.fillText(card.val,x+4,y+3);
-  ctx.font=`${suitFs}px serif`;
-  ctx.fillText(card.suit,x+3,y+fs+2);
-  // Bottom-right (rotated)
-  ctx.save();ctx.translate(x+cw-4,y+ch-4);ctx.rotate(Math.PI);
-  ctx.font=`bold ${fs}px Plus Jakarta Sans,sans-serif`;
-  ctx.textBaseline='top';
-  ctx.fillStyle=isRed?'#e53935':'#1a1a2e';
+
+  // Face card background
+  const isRed=SOL.COLORS[card.suit]==='red';
+  // White card with subtle warm tone
+  ctx.fillStyle=selected?'#eef6ff':'#fafafa';
+  ctx.beginPath();ctx.roundRect(x,y,cw,ch,r);ctx.fill();
+  ctx.shadowBlur=0;ctx.shadowOffsetY=0;
+
+  // Selection glow border
+  if(selected){
+    ctx.strokeStyle='#0a84ff';ctx.lineWidth=2;
+    ctx.shadowColor='rgba(10,132,255,.5)';ctx.shadowBlur=8;
+  } else {
+    ctx.strokeStyle='rgba(0,0,0,.1)';ctx.lineWidth=.5;
+  }
+  ctx.beginPath();ctx.roundRect(x,y,cw,ch,r);ctx.stroke();
+  ctx.shadowBlur=0;
+
+  const col=isRed?'#d32f2f':'#1a1a2e';
+  const fs=Math.max(6,Math.floor(cw*.17));
+  const sfs=Math.max(7,Math.floor(cw*.2));
+
+  // Top-left pip
+  ctx.font=`bold ${fs}px Plus Jakarta Sans,system-ui,sans-serif`;
+  ctx.fillStyle=col;ctx.textBaseline='top';ctx.textAlign='left';
+  ctx.fillText(card.val,x+3,y+2);
+  ctx.font=`${sfs}px serif`;
+  ctx.fillText(card.suit,x+2,y+fs+1);
+
+  // Bottom-right pip (rotated)
+  ctx.save();
+  ctx.translate(x+cw-3,y+ch-3);ctx.rotate(Math.PI);
+  ctx.font=`bold ${fs}px Plus Jakarta Sans,system-ui,sans-serif`;
+  ctx.fillStyle=col;ctx.textBaseline='top';ctx.textAlign='left';
   ctx.fillText(card.val,0,0);
-  ctx.font=`${suitFs}px serif`;
-  ctx.fillText(card.suit,-1,fs+2);
+  ctx.font=`${sfs}px serif`;
+  ctx.fillText(card.suit,0,fs+1);
   ctx.restore();
-  // Center suit
-  const bigFs=Math.floor(cw*.38);
+
+  // Center large suit (ghost)
+  const bigFs=Math.max(12,Math.floor(cw*.42));
   ctx.font=`${bigFs}px serif`;
   ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillStyle=isRed?'rgba(229,57,53,.12)':'rgba(26,26,46,.08)';
+  ctx.fillStyle=isRed?'rgba(211,47,47,.08)':'rgba(26,26,46,.06)';
   ctx.fillText(card.suit,x+cw/2,y+ch/2);
-  // Center value small
-  ctx.font=`bold ${Math.floor(cw*.22)}px Plus Jakarta Sans,sans-serif`;
-  ctx.fillStyle=isRed?'rgba(229,57,53,.25)':'rgba(26,26,46,.2)';
-  ctx.fillText(card.val,x+cw/2,y+ch*.65);
   ctx.textAlign='left';ctx.textBaseline='alphabetic';
 }
 
 function solEmptySlot(ctx,x,y,cw,ch,label=''){
-  ctx.strokeStyle='rgba(255,255,255,.15)';ctx.lineWidth=1.5;ctx.setLineDash([6,4]);
-  ctx.beginPath();ctx.roundRect(x,y,cw,ch,6);ctx.stroke();ctx.setLineDash([]);
+  const r=Math.max(4,Math.floor(cw*.08));
+  ctx.strokeStyle='rgba(255,255,255,.12)';
+  ctx.lineWidth=1.5;ctx.setLineDash([5,4]);
+  ctx.beginPath();ctx.roundRect(x,y,cw,ch,r);ctx.stroke();
+  ctx.setLineDash([]);
   if(label){
-    ctx.font=`${Math.floor(cw*.22)}px serif`;
-    ctx.fillStyle='rgba(255,255,255,.2)';ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.font=`${Math.max(10,Math.floor(cw*.26))}px serif`;
+    ctx.fillStyle='rgba(255,255,255,.15)';
+    ctx.textAlign='center';ctx.textBaseline='middle';
     ctx.fillText(label,x+cw/2,y+ch/2);ctx.textAlign='left';
   }
 }
 
 function solDraw(){
   if(!solCtx||!solState)return;
+  solCalcLayout();
   const ctx=solCtx,W=solCanvas.width,H=solCanvas.height;
   const {CW,CH,PAD,TOP,VSTEP,VSTEPU,GAP}=solLayout;
   // bg
-  const bg=ctx.createLinearGradient(0,0,0,H);
-  bg.addColorStop(0,'#0a1f0a');bg.addColorStop(1,'#0d2d1a');
+  // Rich felt background
+  const bg=ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H));
+  bg.addColorStop(0,'#0f3320');bg.addColorStop(.5,'#0a2518');bg.addColorStop(1,'#061510');
   ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+  // Subtle felt texture — horizontal grain
+  ctx.fillStyle='rgba(255,255,255,.012)';
+  for(let i=0;i<H;i+=3){ctx.fillRect(0,i,W,1);}
 
   // ── STOCK (col 0) ──
   const sx=PAD,sy=TOP;
@@ -2210,52 +2254,67 @@ function solClick(e){
   const ex=e.clientX-rect.left,ey=e.clientY-rect.top;
   const loc=solPosToLocation(ex,ey);
   if(!loc)return;
-  // Stock click → deal
+
+  // Stock click → deal card
   if(loc.type==='stock'){
     solSaveHistory();
     if(solState.stock.length===0){
-      solState.stock=solState.waste.reverse().map(c=>({...c,faceUp:false}));
+      solState.stock=solState.waste.reverse().map(cd=>({...cd,faceUp:false}));
       solState.waste=[];
     } else {
       const card={...solState.stock.pop(),faceUp:true};
       solState.waste.push(card);
-      solScore+=5;document.getElementById('sol-score').textContent=solScore;
+      solScore+=5;
+      document.getElementById('sol-score').textContent=solScore;
     }
     solSelected=null;solDraw();return;
   }
-  // If something selected, try to move
+
+  // If we have a selection, try to PLACE first
   if(solSelected){
     const cards=solGetCards(solSelected);
-    if(solCanPlace(cards,loc)){
+    // For tableau destination — always target the top of the pile, not the clicked row
+    const dest=loc.type==='tableau'
+      ? {...loc, row:Math.max(0,(solState.tableau[loc.col]||[]).length-1), empty:(solState.tableau[loc.col]||[]).length===0}
+      : loc;
+
+    if(cards && solCanPlace(cards,dest)){
       solSaveHistory();
       solRemoveCards(solSelected);
-      if(loc.type==='foundation'){
-        solState.foundations[loc.idx].push(...cards);
+      if(dest.type==='foundation'){
+        solState.foundations[dest.idx].push(...cards);
         solScore+=15;
-      } else if(loc.type==='tableau'){
-        if(loc.empty)solState.tableau[loc.col].push(...cards);
-        else solState.tableau[loc.col].push(...cards);
-        if(solSelected.source==='foundation')solScore=Math.max(0,solScore-10);
+      } else if(dest.type==='tableau'){
+        solState.tableau[dest.col].push(...cards);
+        if(solSelected.source==='foundation') solScore=Math.max(0,solScore-10);
         else solScore+=5;
       }
       document.getElementById('sol-score').textContent=solScore;
-      // Flip newly exposed card
+      // Flip newly exposed card in source tableau
       if(solSelected.source==='tableau'){
         const pile=solState.tableau[solSelected.col];
-        if(pile.length&&!pile[pile.length-1].faceUp){pile[pile.length-1].faceUp=true;solScore+=10;document.getElementById('sol-score').textContent=solScore;}
+        if(pile.length&&!pile[pile.length-1].faceUp){
+          pile[pile.length-1].faceUp=true;
+          solScore+=10;
+          document.getElementById('sol-score').textContent=solScore;
+        }
       }
-      solMoves++;document.getElementById('sol-moves').textContent=solMoves;
+      solMoves++;
+      document.getElementById('sol-moves').textContent=solMoves;
       solSelected=null;solDraw();solCheckWin();return;
     }
-    solSelected=null;solDraw();
-    // fall through to re-select
+    // Place failed — deselect, then try to re-select the clicked location
+    solSelected=null;
   }
-  // Select card
+
+  // Try to SELECT a card/stack
   const cards=solGetCards(loc);
   if(cards&&cards.length){
     solSelected={...loc,source:loc.type};
-    solDraw();
+  } else {
+    solSelected=null;
   }
+  solDraw();
 }
 
 function solDblClick(e){
