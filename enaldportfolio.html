@@ -4,6 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Enald Araneta — Founder & Lead Developer · DevEdge Digital</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a84ff'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-size='18' font-weight='700' font-family='system-ui,sans-serif' fill='white'%3EE%3C/text%3E%3C/svg%3E"/>
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230a84ff'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-size='18' font-weight='700' font-family='system-ui,sans-serif' fill='white'%3EE%3C/text%3E%3C/svg%3E"/>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300&display=swap" rel="stylesheet">
@@ -45,7 +47,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 .video-bg.fade{opacity:0}
 
 /* Music widget */
-.music-widget{position:fixed;bottom:90px;right:16px;z-index:60;background:rgba(22,22,26,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:.5px solid rgba(255,255,255,.14);border-radius:16px;padding:10px 12px 10px 10px;width:240px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:opacity .3s,transform .3s}
+.music-widget{position:fixed;bottom:90px;right:16px;z-index:60;cursor:grab;user-select:none;background:rgba(22,22,26,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:.5px solid rgba(255,255,255,.14);border-radius:16px;padding:10px 12px 10px 10px;width:240px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:opacity .3s,transform .3s}
 .music-widget.hidden{opacity:0;transform:translateY(10px);pointer-events:none}
 .yt-thumb-wrap{width:52px;height:52px;border-radius:10px;flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(135deg,#1a1a2e,#16213e)}
 .yt-overlay{position:absolute;inset:0;z-index:2;cursor:pointer;display:flex;align-items:center;justify-content:center}
@@ -502,6 +504,46 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 .fact-emoji{font-size:20px;flex-shrink:0;line-height:1.2}
 .fact-text{font-size:13px;color:rgba(0,0,0,.6);line-height:1.6;font-weight:400}
 
+
+/* ── Games Mobile ── */
+@media(max-width:768px){
+  .game-overlay{position:fixed;inset:0;z-index:999}
+  .game-hud{height:44px;padding:0 12px;flex-wrap:wrap;gap:4px}
+  .game-hud-title{font-size:13px}
+  .game-hud-score{font-size:11px}
+  .game-hud-score span{font-size:14px;min-width:36px}
+  .game-hud-right{gap:5px}
+  .game-btn{padding:5px 10px;font-size:11px}
+  .game-body{padding:6px}
+  .game-hint{font-size:9.5px;bottom:8px;letter-spacing:0}
+  .game-msg-title{font-size:24px}
+  .game-msg-sub{font-size:12px}
+  .game-msg-btn{padding:10px 24px;font-size:13px}
+  /* Games launcher window */
+  #win-games{width:calc(100vw - 16px)!important;max-height:calc(100vh - 80px)!important}
+  .games-launcher{grid-template-columns:1fr 1fr;gap:10px;padding:4px}
+  .game-icon{width:54px!important;height:54px!important;border-radius:14px!important}
+  .game-name{font-size:12px!important}
+  .game-desc{font-size:10px!important}
+}
+@media(max-width:480px){
+  .game-hud{height:40px;padding:0 8px}
+  .game-hud-score{display:none}
+  .game-hud-score:first-child{display:flex}
+  .game-btn{padding:4px 8px;font-size:10px}
+  .games-launcher{gap:8px}
+  .game-icon{width:46px!important;height:46px!important}
+}
+
+
+/* ── Solitaire mobile ── */
+@media(max-width:600px){
+  #go-solitaire .game-hud{flex-wrap:wrap;height:auto;padding:6px 10px;gap:4px}
+  #go-solitaire .game-hud-left{flex-wrap:wrap;gap:8px}
+  #go-solitaire .game-hint{font-size:9px;bottom:4px}
+  #go-solitaire .game-body{padding:4px 4px 28px}
+}
+
 /* ── Mobile Responsive ── */
 @media(max-width:768px){
   .menubar{padding:0 10px}
@@ -844,7 +886,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
     </div>
     <div class="game-body">
       <canvas id="tetris-canvas" class="game-canvas-main"></canvas>
-      <div class="game-hint">← → Move &nbsp;·&nbsp; ↑ Rotate &nbsp;·&nbsp; ↓ Soft Drop &nbsp;·&nbsp; Space Hard Drop</div>
+      <div class="game-hint">← → Move &nbsp;·&nbsp; ↑ Rotate &nbsp;·&nbsp; ↓ Drop &nbsp;·&nbsp; Space Hard Drop &nbsp;·&nbsp; 📱 Swipe to control</div>
       <div class="game-overlay-msg" id="tetris-msg">
         <div class="game-msg-title" id="tetris-msg-title">Game Over</div>
         <div class="game-msg-sub" id="tetris-msg-sub">Score: 0</div>
@@ -868,7 +910,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
     </div>
     <div class="game-body">
       <canvas id="snake-canvas" class="game-canvas-main"></canvas>
-      <div class="game-hint">Arrow Keys or WASD to move</div>
+      <div class="game-hint">Arrow Keys / WASD &nbsp;·&nbsp; 📱 Swipe to move</div>
       <div class="game-overlay-msg" id="snake-msg">
         <div class="game-msg-title">Game Over</div>
         <div class="game-msg-sub" id="snake-msg-sub">Score: 0</div>
@@ -1454,9 +1496,13 @@ const TPIECES=[
 
 function initTetris(){
   const cvs=document.getElementById('tetris-canvas');
-  const bw=Math.min(window.innerWidth*.4,320);
-  const bh=bw*2;
-  cvs.width=TC*(bw/TC|0);cvs.height=TR*(bw/TC|0);
+  const body=cvs.closest('.game-body');
+  const availW=body?body.clientWidth-24:window.innerWidth-24;
+  const availH=body?body.clientHeight-60:window.innerHeight-60;
+  // Tetris is 1:2 ratio (10 cols x 20 rows)
+  const bw=Math.min(Math.floor(availW*.55), Math.floor(availH/2), 280);
+  const bs=Math.floor(bw/TC);
+  cvs.width=TC*bs;cvs.height=TR*bs;
   tBoard=Array.from({length:TR},()=>Array(TC).fill(0));
   tScore=0;tLines=0;tLevel=1;tDropInterval=800;tRunning=true;
   document.getElementById('ts-score').textContent='0';
@@ -1573,8 +1619,11 @@ let snake,sDir,sNextDir,sFood,snakeTimer=null,sScore=0,sBest=0,sRunning=false;
 
 function initSnake(){
   const cvs=document.getElementById('snake-canvas');
-  const size=Math.min(window.innerWidth,window.innerHeight-80);
-  const cellSize=Math.floor(size*.9/SG);
+  const body=cvs.closest('.game-body');
+  const availW=body?body.clientWidth-24:window.innerWidth-24;
+  const availH=body?body.clientHeight-60:window.innerHeight-120;
+  const size=Math.min(availW, availH, 520);
+  const cellSize=Math.floor(size/SG);
   cvs.width=SG*cellSize;cvs.height=SG*cellSize;
   snake=[{x:12,y:12},{x:11,y:12},{x:10,y:12}];
   sDir={x:1,y:0};sNextDir={x:1,y:0};
@@ -1653,6 +1702,37 @@ document.addEventListener('keydown',e=>{
   }
 });
 
+// Touch swipe controls for Snake & Tetris
+(function(){
+  let tx=0,ty=0;
+  document.addEventListener('touchstart',e=>{
+    tx=e.touches[0].clientX;ty=e.touches[0].clientY;
+  },{passive:true});
+  document.addEventListener('touchend',e=>{
+    const dx=e.changedTouches[0].clientX-tx;
+    const dy=e.changedTouches[0].clientY-ty;
+    const adx=Math.abs(dx),ady=Math.abs(dy);
+    if(Math.max(adx,ady)<20)return; // too short
+    // Snake swipe
+    if(document.getElementById('go-snake').classList.contains('show')&&sRunning){
+      let nd=null;
+      if(adx>ady){nd=dx>0?{x:1,y:0}:{x:-1,y:0};}
+      else{nd=dy>0?{x:0,y:1}:{x:0,y:-1};}
+      if(nd&&!(nd.x===-sDir.x&&nd.y===-sDir.y))sNextDir=nd;
+    }
+    // Tetris swipe
+    if(document.getElementById('go-tetris').classList.contains('show')&&tRunning){
+      if(adx>ady){
+        if(dx>0){if(!tCollide(tPiece,tX+1,tY))tX++;}
+        else{if(!tCollide(tPiece,tX-1,tY))tX--;}
+      } else {
+        if(dy>0){while(!tCollide(tPiece,tX,tY+1))tY++;tLock();tLastTime=performance.now();}
+        else{const rot=tPiece[0].map((_,i)=>tPiece.map(r=>r[i]).reverse());let k=0;if(tCollide(rot,tX,tY)){k=tX>TC/2?-1:1;}if(!tCollide(rot,tX+k,tY)){tPiece=rot;tX+=k;}}
+      }
+    }
+  },{passive:true});
+})();
+
 /* ══════════ BREAKOUT ══════════ */
 let bkBall,bkPaddle,bkBricks,bkScore=0,bkLives=3,bkLevel=1,bkRunning=false,bkStarted=false,bkRAF=null,bkBest=0;
 const BKR=5,BKC=10;
@@ -1660,8 +1740,11 @@ const BK_COLS=['#ff453a','#ff9f0a','#ffd60a','#30d158','#0a84ff'];
 
 function initBreakout(){
   const cvs=document.getElementById('breakout-canvas');
-  const W=Math.min(window.innerWidth*.85,700);
-  const H=Math.min(window.innerHeight*.75,500);
+  const body=cvs.closest('.game-body');
+  const availW=body?body.clientWidth-24:window.innerWidth-24;
+  const availH=body?body.clientHeight-60:window.innerHeight-120;
+  const W=Math.min(availW, 700);
+  const H=Math.min(availH, 500);
   cvs.width=W;cvs.height=H;
   bkScore=0;bkLives=3;bkLevel=1;bkRunning=false;bkStarted=false;
   document.getElementById('bs-score').textContent='0';
@@ -1829,8 +1912,10 @@ function initSolitaire(){
   document.getElementById('solitaire-msg').style.display='none';
   // Size canvas to fill game body
   const body=document.querySelector('#go-solitaire .game-body');
-  const W=Math.min(body.clientWidth-24,900);
-  const H=Math.max(body.clientHeight-48,500);
+  const availW=body?body.clientWidth-16:window.innerWidth-16;
+  const availH=body?body.clientHeight-48:window.innerHeight-120;
+  const W=Math.min(availW,900);
+  const H=Math.max(availH,400);
   solCanvas.width=W;solCanvas.height=H;
   solScore=0;solMoves=0;solSecs=0;solHistory=[];solSelected=null;
   document.getElementById('sol-score').textContent='0';
@@ -1863,18 +1948,32 @@ function initSolitaire(){
   solDraw();
   solCanvas.onclick=solClick;
   solCanvas.ondblclick=solDblClick;
+  // Mobile: single tap=click, double tap=dblclick
+  let solLastTap=0;
+  solCanvas.addEventListener('touchend',function(e){
+    e.preventDefault();
+    const touch=e.changedTouches[0];
+    const now=Date.now();
+    const evt={clientX:touch.clientX,clientY:touch.clientY};
+    if(now-solLastTap<350){solDblClick(evt);}else{solClick(evt);}
+    solLastTap=now;
+  },{passive:false});
 }
 
 function solCalcLayout(){
   const W=solCanvas.width,H=solCanvas.height;
-  const CW=Math.min(Math.floor((W-80)/8),100);
-  const CH=Math.floor(CW*1.4);
-  const PAD=Math.floor((W-CW*8-7*8)/2);
-  const TOP=16;
+  // On mobile, fit 8 columns + gaps into available width
+  const isMobile=W<500;
+  const GAP=isMobile?4:8;
+  const totalGaps=7*GAP+2*(isMobile?8:20);
+  const CW=Math.min(Math.floor((W-totalGaps)/8), isMobile?60:100);
+  const CH=Math.floor(CW*1.45);
+  const PAD=Math.floor((W-CW*8-7*GAP)/2);
+  const TOP=isMobile?10:16;
   solLayout={CW,CH,PAD,TOP,
-    VSTEP:Math.floor(CH*.28),
-    VSTEPU:Math.floor(CH*.18),
-    GAP:8
+    VSTEP:Math.floor(CH*(isMobile?.3:.28)),
+    VSTEPU:Math.floor(CH*(isMobile?.2:.18)),
+    GAP
   };
 }
 
@@ -1912,8 +2011,8 @@ function solCard(ctx,x,y,cw,ch,card,selected=false){
   }
   const col=SOL.COLORS[card.suit];
   const isRed=col==='red';
-  const fs=Math.max(10,Math.floor(cw*.18));
-  const suitFs=Math.max(12,Math.floor(cw*.22));
+  const fs=Math.max(7,Math.floor(cw*.18));
+  const suitFs=Math.max(8,Math.floor(cw*.22));
   ctx.font=`bold ${fs}px Plus Jakarta Sans,sans-serif`;
   ctx.textBaseline='top';
   // Top-left value+suit
@@ -2307,6 +2406,71 @@ function toggleFaq(el){
   document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
   if(!isOpen)el.classList.add('open');
 }
+
+
+// ── Draggable music widget ──
+(function(){
+  const el=document.getElementById('music-widget');
+  if(!el)return;
+  let dragging=false,ox=0,oy=0,startX=0,startY=0;
+
+  function getPos(){
+    const r=el.getBoundingClientRect();
+    return{x:r.left,y:r.top};
+  }
+
+  function startDrag(cx,cy){
+    const pos=getPos();
+    dragging=true;
+    startX=cx;startY=cy;
+    ox=pos.x;oy=pos.y;
+    el.style.cursor='grabbing';
+    el.style.transition='none';
+    // Switch from bottom/right to top/left positioning
+    el.style.left=pos.x+'px';
+    el.style.top=pos.y+'px';
+    el.style.right='auto';
+    el.style.bottom='auto';
+  }
+
+  function moveDrag(cx,cy){
+    if(!dragging)return;
+    const dx=cx-startX,dy=cy-startY;
+    const nx=Math.max(0,Math.min(window.innerWidth-el.offsetWidth,ox+dx));
+    const ny=Math.max(28,Math.min(window.innerHeight-el.offsetHeight,oy+dy));
+    el.style.left=nx+'px';
+    el.style.top=ny+'px';
+  }
+
+  function endDrag(){
+    dragging=false;
+    el.style.cursor='grab';
+    el.style.transition='opacity .3s,transform .3s';
+  }
+
+  // Mouse
+  el.addEventListener('mousedown',e=>{
+    // Don't drag when clicking buttons
+    if(e.target.closest('button')||e.target.closest('a')||e.target.closest('#yt-player'))return;
+    e.preventDefault();
+    startDrag(e.clientX,e.clientY);
+  });
+  document.addEventListener('mousemove',e=>{if(dragging)moveDrag(e.clientX,e.clientY);});
+  document.addEventListener('mouseup',endDrag);
+
+  // Touch
+  el.addEventListener('touchstart',e=>{
+    if(e.target.closest('button')||e.target.closest('a'))return;
+    const t=e.touches[0];
+    startDrag(t.clientX,t.clientY);
+  },{passive:true});
+  document.addEventListener('touchmove',e=>{
+    if(!dragging)return;
+    e.preventDefault();
+    moveDrag(e.touches[0].clientX,e.touches[0].clientY);
+  },{passive:false});
+  document.addEventListener('touchend',endDrag);
+})();
 
 </script>
 </body>
