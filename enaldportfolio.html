@@ -47,8 +47,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 /* Music widget */
 .music-widget{position:fixed;bottom:90px;right:16px;z-index:60;background:rgba(22,22,26,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:.5px solid rgba(255,255,255,.14);border-radius:16px;padding:10px 12px 10px 10px;width:240px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:opacity .3s,transform .3s}
 .music-widget.hidden{opacity:0;transform:translateY(10px);pointer-events:none}
-.yt-thumb-wrap{width:52px;height:52px;border-radius:10px;flex-shrink:0;position:relative;overflow:hidden;background:#111}
-.yt-overlay{position:absolute;inset:0;z-index:2;cursor:pointer}
+.yt-thumb-wrap{width:52px;height:52px;border-radius:10px;flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(135deg,#1a1a2e,#16213e)}
+.yt-overlay{position:absolute;inset:0;z-index:2;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.yt-overlay::before{content:"🎵";font-size:20px;opacity:.7;pointer-events:none}
 .music-title{font-size:12.5px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .music-artist{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:2px}
 .music-controls{display:flex;align-items:center;gap:5px;margin-top:6px}
@@ -366,20 +367,13 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
   <div class="music-widget hidden" id="music-widget">
     <button class="music-close" onclick="hideMusicWidget()">&#x2715;</button>
     <div class="yt-thumb-wrap">
-      <iframe
-        id="yt-player"
-        src="https://www.youtube.com/embed/5uQ4aJ2NJZQ?list=RD5uQ4aJ2NJZQ&listType=playlist&autoplay=1&mute=0&controls=0&loop=1&modestbranding=1&rel=0&enablejsapi=1&origin=null"
-        frameborder="0"
-        allow="autoplay; encrypted-media"
-        allowfullscreen
-        style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:8px;pointer-events:none"
-      ></iframe>
-      <!-- overlay to intercept clicks for play/pause -->
+      <!-- YT API mounts here -->
+      <div id="yt-player"></div>
       <div class="yt-overlay" onclick="ytTogglePlay()"></div>
     </div>
     <div style="flex:1;min-width:0">
-      <div class="music-title">DevEdge Radio</div>
-      <div class="music-artist">YouTube Mix</div>
+      <div class="music-title">DevEdge Radio 🎵</div>
+      <div class="music-artist" id="yt-track-info">Playing…</div>
       <div class="music-controls">
         <button class="mc-btn" onclick="ytPrev()" title="Previous"><i class="ti ti-player-skip-back"></i></button>
         <button class="mc-btn" id="yt-play-btn" onclick="ytTogglePlay()" title="Play/Pause"><i class="ti ti-player-pause"></i></button>
@@ -579,9 +573,8 @@ function openWP(){document.getElementById('wp-panel').classList.add('show');clos
 function closeWP(){document.getElementById('wp-panel').classList.remove('show');}
 
 // ── Music — YouTube IFrame API ──
-let ytPlayer=null,ytReady=false,ytMuted=false,ytPlaying=true;
+let ytPlayer=null,ytReady=false,ytMuted=false,ytPlaying=false;
 
-// Load YT IFrame API
 (function(){
   const tag=document.createElement('script');
   tag.src='https://www.youtube.com/iframe_api';
@@ -590,36 +583,77 @@ let ytPlayer=null,ytReady=false,ytMuted=false,ytPlaying=true;
 
 function onYouTubeIframeAPIReady(){
   ytPlayer=new YT.Player('yt-player',{
+    width:'52',height:'52',
+    videoId:'5uQ4aJ2NJZQ',
+    playerVars:{
+      listType:'playlist',
+      list:'RD5uQ4aJ2NJZQ',
+      autoplay:1,
+      controls:0,
+      modestbranding:1,
+      rel:0,
+      showinfo:0,
+      iv_load_policy:3,
+      mute:1
+    },
     events:{
       onReady:function(e){
         ytReady=true;
-        // autoplay muted first (browser policy), then unmute
-        e.target.mute();
         e.target.playVideo();
+        // unmute after gesture delay
         setTimeout(()=>{
           e.target.unMute();
-          e.target.setVolume(60);
-        },1500);
+          e.target.setVolume(55);
+          ytPlaying=true;
+          updateYtBtn();
+          updateTrackInfo();
+        },1800);
       },
       onStateChange:function(e){
-        const btn=document.getElementById('yt-play-btn');
-        if(!btn)return;
         ytPlaying=(e.data===YT.PlayerState.PLAYING);
-        btn.innerHTML=ytPlaying
-          ?'<i class="ti ti-player-pause"></i>'
-          :'<i class="ti ti-player-play"></i>';
+        updateYtBtn();
+        if(ytPlaying)updateTrackInfo();
       }
     }
   });
 }
 
+function updateYtBtn(){
+  const btn=document.getElementById('yt-play-btn');
+  if(btn)btn.innerHTML=ytPlaying
+    ?'<i class="ti ti-player-pause"></i>'
+    :'<i class="ti ti-player-play"></i>';
+}
+
+function updateTrackInfo(){
+  if(!ytReady||!ytPlayer)return;
+  try{
+    const data=ytPlayer.getVideoData();
+    const info=document.getElementById('yt-track-info');
+    // Only show "Track N of playlist" — no song title
+    const idx=(ytPlayer.getPlaylistIndex()||0)+1;
+    const total=ytPlayer.getPlaylist()?(ytPlayer.getPlaylist().length):'?';
+    if(info)info.textContent='Track '+idx+' of '+total;
+  }catch(e){}
+}
+
 function ytTogglePlay(){
   if(!ytReady||!ytPlayer)return;
-  if(ytPlaying){ytPlayer.pauseVideo();}
-  else{ytPlayer.playVideo();}
+  ytPlaying?ytPlayer.pauseVideo():ytPlayer.playVideo();
 }
-function ytNext(){if(ytReady&&ytPlayer)ytPlayer.nextVideo();}
-function ytPrev(){if(ytReady&&ytPlayer)ytPlayer.previousVideo();}
+
+function ytNext(){
+  if(!ytReady||!ytPlayer)return;
+  ytPlayer.nextVideo();
+  setTimeout(updateTrackInfo,800);
+}
+
+function ytPrev(){
+  if(!ytReady||!ytPlayer)return;
+  ytPlayer.previousVideo();
+  setTimeout(updateTrackInfo,800);
+}
+
 function ytToggleMute(){
   if(!ytReady||!ytPlayer)return;
   ytMuted=!ytMuted;
