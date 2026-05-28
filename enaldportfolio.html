@@ -199,10 +199,46 @@ nav.scrolled{
 }
 .btn-outline:hover{border-color:var(--line-3);color:var(--cream);}
 
+/* Hero photo */
+.hero-right{
+  position:relative;z-index:2;
+  opacity:0;animation:slideL .9s .35s ease forwards;
+  display:flex;flex-direction:column;gap:14px;
+}
+.hero-photo-wrap{
+  position:relative;
+  border-radius:3px;
+  overflow:hidden;
+  border:1px solid var(--line-2);
+  box-shadow:0 40px 80px rgba(0,0,0,.5);
+}
+.hero-photo-wrap img{
+  width:100%;
+  display:block;
+  aspect-ratio:3/4;
+  object-fit:cover;
+  object-position:center top;
+  filter:saturate(0.92) brightness(0.96);
+  transition:transform .5s ease;
+}
+.hero-photo-wrap:hover img{transform:scale(1.02);}
+/* Blue top accent line */
+.hero-photo-wrap::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--blue);
+  box-shadow:0 0 16px rgba(43,111,255,.5);
+  z-index:2;
+}
+/* Subtle gradient fade at bottom into card */
+.hero-photo-wrap::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:80px;
+  background:linear-gradient(to top,var(--bg) 0%,transparent 100%);
+  z-index:1;pointer-events:none;
+}
+
 /* Hero identity card */
 .hero-card{
   position:relative;z-index:2;
-  opacity:0;animation:slideL .9s .35s ease forwards;
 }
 .hero-card-inner{
   background:var(--bg-3);
@@ -578,7 +614,8 @@ footer{background:var(--bg-1);padding:34px var(--pad-x) 26px;border-top:1px soli
 /* ══ RESPONSIVE ══ */
 @media(max-width:1024px){
   .hero{grid-template-columns:1fr;padding-bottom:80px;}
-  .hero-card{max-width:400px;}
+  .hero-right{max-width:420px;}
+  .hero-photo-wrap img{aspect-ratio:4/3;}
   .about-grid{grid-template-columns:1fr;gap:40px;}
   .stack-layout{grid-template-columns:1fr;gap:36px;}
   .services-grid{grid-template-columns:1fr 1fr;}
@@ -656,21 +693,28 @@ footer{background:var(--bg-1);padding:34px var(--pad-x) 26px;border-top:1px soli
       </div>
     </div>
 
-    <div class="hero-card">
-      <div class="hero-card-inner">
-        <div class="hc-name">Enald A.</div>
-        <div class="hc-role">Founder & Lead Developer</div>
-        <div class="hc-divider"></div>
-        <div class="hc-chips">
-          <span class="chip">Web Development</span>
-          <span class="chip">Brand Identity</span>
-          <span class="chip">Digital Marketing</span>
-          <span class="chip">SEO</span>
-          <span class="chip">11+ Years</span>
-        </div>
-        <div class="hc-avail">
-          <span class="avail-dot"></span>
-          <span class="avail-text">Open to new projects</span>
+    <div class="hero-right">
+      <!-- Photo -->
+      <div class="hero-photo-wrap">
+        <img src="photo_enald.webp" alt="Enald A. — Founder & Lead Developer at DevEdge Digital"/>
+      </div>
+      <!-- Identity card -->
+      <div class="hero-card">
+        <div class="hero-card-inner">
+          <div class="hc-name">Enald A.</div>
+          <div class="hc-role">Founder & Lead Developer</div>
+          <div class="hc-divider"></div>
+          <div class="hc-chips">
+            <span class="chip">Web Development</span>
+            <span class="chip">Brand Identity</span>
+            <span class="chip">Digital Marketing</span>
+            <span class="chip">SEO</span>
+            <span class="chip">11+ Years</span>
+          </div>
+          <div class="hc-avail">
+            <span class="avail-dot"></span>
+            <span class="avail-text">Open to new projects</span>
+          </div>
         </div>
       </div>
     </div>
