@@ -283,6 +283,92 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 .cam-pill.off .cam-pill-dot{background:rgba(255,255,255,.35);box-shadow:none;animation:none}
 .cam-pill.off .cam-pill-label{color:rgba(255,255,255,.55)}
 
+
+
+
+
+/* ── Floating Profile Card (desktop) ── */
+.profile-card{
+  position:fixed;
+  bottom:100px;
+  left:20px;
+  z-index:45;
+  width:220px;
+  background:rgba(18,18,24,.78);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:.5px solid rgba(255,255,255,.14);
+  border-radius:16px;
+  padding:14px 14px 12px;
+  box-shadow:0 8px 32px rgba(0,0,0,.45);
+  opacity:0;transform:translateY(12px);
+  transition:opacity .5s ease,transform .5s ease;
+  pointer-events:none;
+}
+.profile-card.show{opacity:1;transform:translateY(0);pointer-events:all}
+.pc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.pc-avatar{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(145deg,#2B6FFF,#1a4fd8);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;font-weight:700;color:#fff;
+  border:2px solid rgba(255,255,255,.55);
+  overflow:hidden;
+}
+.pc-avatar img{width:100%;height:100%;object-fit:cover;object-position:center 15%}
+.pc-name{font-size:13px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.pc-role{font-size:9.5px;color:rgba(255,255,255,.5);margin-top:2px;line-height:1.3}
+.pc-status{
+  display:flex;align-items:center;gap:5px;
+  margin-bottom:10px;
+  padding:4px 10px;
+  background:rgba(52,199,89,.12);
+  border:.5px solid rgba(52,199,89,.28);
+  border-radius:20px;
+  width:fit-content;
+}
+.pc-dot{width:5px;height:5px;border-radius:50%;background:#34c759;animation:pcdot 2s ease infinite}
+@keyframes pcdot{0%,100%{box-shadow:0 0 0 0 rgba(52,199,89,.4)}50%{box-shadow:0 0 0 4px rgba(52,199,89,0)}}
+.pc-status-txt{font-size:9.5px;color:#34c759;font-weight:600}
+.pc-divider{height:.5px;background:rgba(255,255,255,.08);margin-bottom:10px}
+.pc-links{display:flex;gap:6px}
+.pc-btn{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:4px;
+  padding:5px 6px;border-radius:8px;
+  background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.65);font-size:9.5px;font-weight:600;
+  cursor:pointer;text-decoration:none;transition:background .15s,color .15s;
+  font-family:'Plus Jakarta Sans',sans-serif;
+}
+.pc-btn:hover{background:rgba(255,255,255,.15);color:#fff}
+.pc-btn i{font-size:12px}
+
+/* ── Games ── */
+.games-launcher{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;padding:4px}
+.game-card{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:16px 10px;border-radius:12px;
+  background:rgba(0,0,0,.04);border:.5px solid rgba(0,0,0,.07);
+  cursor:pointer;transition:background .15s,transform .15s;
+}
+.game-card:hover{background:rgba(0,0,0,.08);transform:translateY(-2px)}
+.game-icon{
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:26px;
+}
+.game-name{font-size:11.5px;font-weight:600;color:#1d1d1f;text-align:center}
+.game-desc{font-size:9.5px;color:rgba(0,0,0,.45);text-align:center}
+
+/* Game canvas window */
+.game-win{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:200;
+  background:rgba(252,252,255,.97);backdrop-filter:blur(32px);
+  border:.5px solid rgba(255,255,255,.7);border-radius:14px;overflow:hidden;
+  box-shadow:0 28px 72px rgba(0,0,0,.55);display:none;flex-direction:column}
+.game-win.show{display:flex;animation:winpop .22s cubic-bezier(.34,1.56,.64,1)}
+.game-win-bar{height:38px;background:rgba(235,235,240,.96);border-bottom:.5px solid rgba(0,0,0,.07);
+  display:flex;align-items:center;padding:0 14px;gap:8px;flex-shrink:0}
+.game-canvas-wrap{padding:12px;display:flex;align-items:center;justify-content:center;background:#1a1a2e}
+
 /* ── Mobile Responsive ── */
 @media(max-width:768px){
   .menubar{padding:0 10px}
@@ -337,6 +423,28 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 
 <!-- ══ DESKTOP ══ -->
 <div class="desktop-root" id="desktop">
+
+
+
+
+  <!-- Floating Profile Card -->
+  <div class="profile-card" id="profile-card">
+    <div class="pc-top">
+      <div class="pc-avatar" id="pc-avatar">EA</div>
+      <div>
+        <div class="pc-name">Enald Araneta</div>
+        <div class="pc-role">Founder & Lead Dev<br/>DevEdge Digital</div>
+      </div>
+    </div>
+    <div class="pc-status"><div class="pc-dot"></div><span class="pc-status-txt">Open to new projects</span></div>
+    <div class="pc-divider"></div>
+    <div class="pc-links">
+      <a class="pc-btn" href="https://devedge.digital" target="_blank"><i class="ti ti-world"></i>Site</a>
+      <a class="pc-btn" href="https://linkedin.com/in/enald-dean-araneta" target="_blank"><i class="ti ti-brand-linkedin"></i>In</a>
+      <a class="pc-btn" href="https://github.com/enaldaraneta0626-gif" target="_blank"><i class="ti ti-brand-github"></i>Git</a>
+      <a class="pc-btn" onclick="toggleWin('contact')" style="cursor:pointer"><i class="ti ti-mail"></i>Mail</a>
+    </div>
+  </div>
 
   <!-- Video BGs -->
   <div class="video-bg" id="vbg-0">
@@ -462,7 +570,21 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
   </div>
 
   <!-- ══ WINDOWS ══ -->
-  <div id="win-about" class="win"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('about')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g" onclick="toggleFullscreen()">&#x2B;</div></div><span class="wtitle">About Me</span></div><div class="wbody"><div class="prof-row"><div class="ava" id="win-ava" style="background:linear-gradient(145deg,#2B6FFF,#1a4fd8);font-size:18px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center">EA</div><div><div class="pname">Enald Araneta</div><div class="prole">Founder & Lead Developer · DevEdge Digital</div><div class="obadge"><div class="gdot"></div>Open to new projects</div></div></div><div class="bio">I'm Enald — founder of DevEdge Digital. For over a decade I've helped businesses across Canada, the US, and Australia build websites, brands, and marketing strategies that actually drive results. I care about clean code, strong design, and work that makes a real difference.</div><div class="stat-chips"><span class="sc-chip">11+ Yrs Experience</span><span class="sc-chip">100+ Clients</span><span class="sc-chip">50+ Brands Built</span><span class="sc-chip">$2M+ Ads Managed</span></div></div></div>
+  <div id="win-about" class="win" style="width:min(580px,calc(100vw - 32px))"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('about')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g" onclick="toggleFullscreen()">&#x2B;</div></div><span class="wtitle">About Me — Enald Araneta</span></div><div class="wbody"><div class="prof-row"><div class="ava" id="win-ava" style="background:linear-gradient(145deg,#2B6FFF,#1a4fd8);font-size:18px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;width:64px;height:64px;flex-shrink:0">EA</div><div><div class="pname">Enald Araneta</div><div class="prole">Founder & Lead Developer · DevEdge Digital</div><div style="font-size:11px;color:rgba(0,0,0,.4);margin-top:3px">📍 Zamboanga City, Philippines · Working Globally</div><div class="obadge" style="margin-top:6px"><div class="gdot"></div>Open to new projects</div></div></div>
+<div class="bio" style="margin-top:16px">I'm Enald — founder of <strong style="color:#1d1d1f">DevEdge Digital</strong>, a full-service creative studio I started in 2014. For over a decade I've helped businesses across Canada, the US, Australia, and beyond build digital products that actually perform.</div>
+<div class="bio" style="margin-top:10px">I wear a lot of hats — <strong style="color:#1d1d1f">full-stack developer, creative director, brand strategist, and digital marketer</strong>. Whether it's a conversion-focused landing page, a full brand identity from scratch, or a complex WordPress build, I approach every project with the same obsession: make it work beautifully and drive real results.</div>
+<div class="bio" style="margin-top:10px">When I'm not in the code, I'm leading a team of designers, editors, and marketers who share the same passion for quality and impact. I believe great digital work isn't just about looking good — it's about <strong style="color:#1d1d1f">growing businesses.</strong></div>
+<div class="stat-chips" style="margin-top:16px"><span class="sc-chip">11+ Yrs Experience</span><span class="sc-chip">100+ Clients</span><span class="sc-chip">50+ Brands Built</span><span class="sc-chip">$2M+ Ads Managed</span></div>
+<div style="margin-top:16px;padding-top:14px;border-top:.5px solid rgba(0,0,0,.07)">
+  <div style="font-size:10px;font-weight:700;color:rgba(0,0,0,.35);text-transform:uppercase;letter-spacing:.08em;margin-bottom:10px">What I bring to the table</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <div style="padding:10px 12px;border-radius:10px;background:rgba(10,132,255,.06);border:.5px solid rgba(10,132,255,.12)"><div style="font-size:11.5px;font-weight:700;color:#0a5fd8;margin-bottom:3px">Full-Stack Dev</div><div style="font-size:10.5px;color:rgba(0,0,0,.52);line-height:1.5">WordPress, React, Next.js, PHP, custom builds from scratch</div></div>
+    <div style="padding:10px 12px;border-radius:10px;background:rgba(255,149,0,.06);border:.5px solid rgba(255,149,0,.14)"><div style="font-size:11.5px;font-weight:700;color:#b86800;margin-bottom:3px">Creative Direction</div><div style="font-size:10.5px;color:rgba(0,0,0,.52);line-height:1.5">Brand identity, visual systems, logo design, print & digital</div></div>
+    <div style="padding:10px 12px;border-radius:10px;background:rgba(52,199,89,.06);border:.5px solid rgba(52,199,89,.14)"><div style="font-size:11.5px;font-weight:700;color:#1a7f35;margin-bottom:3px">Digital Marketing</div><div style="font-size:10.5px;color:rgba(0,0,0,.52);line-height:1.5">SEO, Google & Meta Ads, $2M+ in managed ad spend</div></div>
+    <div style="padding:10px 12px;border-radius:10px;background:rgba(94,92,230,.06);border:.5px solid rgba(94,92,230,.14)"><div style="font-size:11.5px;font-weight:700;color:#3634c7;margin-bottom:3px">Studio Founder</div><div style="font-size:10.5px;color:rgba(0,0,0,.52);line-height:1.5">Leading DevEdge Digital since 2014, serving clients globally</div></div>
+  </div>
+</div>
+</div></div>
 
   <div id="win-services" class="win"><div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('services')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g" onclick="toggleFullscreen()">&#x2B;</div></div><span class="wtitle">Services</span></div><div class="wbody"><div class="plist"><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#0a84ff,#0055d4)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="7" stroke="white" stroke-width="1.5" fill="none"/><path d="M2.5 9h13M9 2.5c-2 2-3 4-3 6.5s1 4.5 3 6.5M9 2.5c2 2 3 4 3 6.5s-1 4.5-3 6.5" stroke="white" stroke-width="1.3" fill="none"/></svg></div><div><div class="pn">Web Design & Development</div><div class="pd">Custom sites · WordPress, React, Next.js</div></div></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#ff9f0a,#d4700a)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="3" fill="white" fill-opacity=".9"/><path d="M9 1v2M9 15v2M1 9h2M15 9h2M3.2 3.2l1.4 1.4M13.4 13.4l1.4 1.4M3.2 14.8l1.4-1.4M13.4 4.6l1.4-1.4" stroke="white" stroke-width="1.5" stroke-linecap="round"/></svg></div><div><div class="pn">Branding & Identity Design</div><div class="pd">Logo, guidelines, visual assets, print</div></div></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#30d158,#1a9e3c)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M3 5h12M3 9h8M3 13h5" stroke="white" stroke-width="1.5" stroke-linecap="round"/><circle cx="14" cy="13" r="2.5" fill="none" stroke="white" stroke-width="1.3"/><path d="M13 13l1 1 2-2" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="pn">Digital Marketing</div><div class="pd">Social, PPC · $2M+ ad spend managed</div></div></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#5e5ce6,#3a38b5)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="5" stroke="white" stroke-width="1.5" fill="none"/><path d="M12 12l3.5 3.5" stroke="white" stroke-width="1.8" stroke-linecap="round"/></svg></div><div><div class="pn">SEO Optimization</div><div class="pd">On-page, technical & local SEO</div></div></div><div class="prow"><div class="pi" style="background:linear-gradient(145deg,#ff375f,#c0152f)"><svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 3l1.5 4h4l-3.2 2.4 1.2 4L9 11 5.5 13.4l1.2-4L3.5 7h4z" fill="white" fill-opacity=".9"/></svg></div><div><div class="pn">Landing Page & Funnel Design</div><div class="pd">150+ pages · CRO & A/B testing</div></div></div></div></div></div>
 
@@ -487,12 +609,59 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
     <div class="di" id="di-experience" onclick="toggleWin('experience')"><div class="di-tip">Experience</div><div class="diico" style="background:linear-gradient(160deg,#3cb9fc,#1070d4)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="4" y="11" width="22" height="14" rx="3" fill="rgba(255,255,255,.18)" stroke="rgba(255,255,255,.9)" stroke-width="1.5"/><path d="M10 11V9a5 5 0 0110 0v2" stroke="rgba(255,255,255,.9)" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M4 17h22" stroke="rgba(255,255,255,.35)" stroke-width="1"/><rect x="13" y="15" width="4" height="4" rx="1" fill="rgba(255,255,255,.88)"/></svg></div></div>
     <div class="di" id="di-education" onclick="toggleWin('education')"><div class="di-tip">Education</div><div class="diico" style="background:linear-gradient(160deg,#ff453a,#c01020)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M15 6L27 12l-12 6L3 12z" fill="rgba(255,255,255,.92)"/><path d="M8 14.5v6c0 2.5 3.1 4.5 7 4.5s7-2 7-4.5v-6" stroke="rgba(255,255,255,.85)" stroke-width="1.6" stroke-linecap="round" fill="none"/><path d="M23 12v7" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round"/><circle cx="23" cy="20" r="1.5" fill="rgba(255,255,255,.6)"/></svg></div></div>
     <div class="di" id="di-testimonials" onclick="toggleWin('testimonials')"><div class="di-tip">Testimonials</div><div class="diico" style="background:linear-gradient(160deg,#ffd60a,#c09000)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M9 8h12M9 12h8M5 6h20v16l-5-3H5z" stroke="rgba(0,0,0,.55)" stroke-width="1.5" stroke-linejoin="round" fill="rgba(0,0,0,.15)"/></svg></div><div class="di-dot"></div></div>
+    <div class="di" id="di-games" onclick="toggleWin('games')"><div class="di-tip">Entertainment</div><div class="diico" style="background:linear-gradient(160deg,#ff2d55,#c0003c)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="5" y="9" width="20" height="14" rx="4" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.85)" stroke-width="1.5"/><circle cx="10" cy="16" r="2" fill="rgba(255,255,255,.9)"/><circle cx="20" cy="16" r="2" fill="rgba(255,255,255,.9)"/><path d="M15 12v4M13 14h4" stroke="rgba(255,255,255,.9)" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="di-dot"></div></div>
     <div class="dsep"></div>
     <div class="di"><div class="di-tip">devedge.digital</div><div class="diico" style="background:linear-gradient(160deg,#1c1c1e,#000)" onclick="window.open('https://devedge.digital','_blank')"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="10" stroke="rgba(255,255,255,.75)" stroke-width="1.4" fill="none"/><ellipse cx="15" cy="15" rx="5" ry="10" stroke="rgba(255,255,255,.4)" stroke-width="1.2" fill="none"/><path d="M5 15h20M6 10h18M6 20h18" stroke="rgba(255,255,255,.35)" stroke-width="1"/></svg></div></div>
     <div class="di"><div class="di-tip">LinkedIn</div><div class="diico" style="background:linear-gradient(160deg,#0a66c2,#004182)" onclick="window.open('https://linkedin.com/in/enald-dean-araneta','_blank')"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="5" y="5" width="20" height="20" rx="4" fill="rgba(255,255,255,.1)"/><circle cx="10" cy="10.5" r="1.8" fill="white"/><rect x="8.5" y="13.5" width="3" height="10" rx="1" fill="white"/><rect x="14" y="13.5" width="3" height="10" rx="1" fill="white"/><path d="M17 17c0-2 1-3.5 3-3.5s3 1.5 3 3.5v6h-3v-6" fill="white"/></svg></div></div>
     <div class="di"><div class="di-tip">GitHub</div><div class="diico" style="background:linear-gradient(160deg,#30363d,#161b22)" onclick="window.open('https://github.com/enaldaraneta0626-gif','_blank')"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M15 4C9 4 4 9.1 4 15.3c0 5 3.2 9.2 7.7 10.7.6.1.8-.3.8-.6v-2.1c-3.2.7-3.9-1.6-3.9-1.6-.5-1.4-1.3-1.8-1.3-1.8-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.8 0-1.3.5-2.3 1.2-3.2-.1-.3-.5-1.5.1-3.2 0 0 1-.3 3.3 1.2a11.4 11.4 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 2.9.1 3.2.8.9 1.2 1.9 1.2 3.2 0 4.5-2.7 5.5-5.4 5.8.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6C22.8 24.5 26 20.3 26 15.3 26 9.1 21 4 15 4z" fill="white"/></svg></div></div>
     <div class="di" id="di-contact" onclick="toggleWin('contact')"><div class="di-tip">Contact</div><div class="diico" style="background:linear-gradient(160deg,#3cb9fc,#0a5fd8)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="4" y="7" width="22" height="16" rx="3" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.9)" stroke-width="1.5"/><path d="M4 11l11 7 11-7" stroke="rgba(255,255,255,.9)" stroke-width="1.5" fill="none"/></svg></div><div class="di-dot"></div></div>
   </div></div>
+
+
+  <!-- Games launcher window -->
+  <div id="win-games" class="win">
+    <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('games')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g" onclick="toggleFullscreen()">&#x2B;</div></div><span class="wtitle">Entertainment</span></div>
+    <div class="wbody">
+      <div class="games-launcher">
+        <div class="game-card" onclick="launchGame('tetris')">
+          <div class="game-icon" style="background:linear-gradient(145deg,#ff453a,#c0152f)">🟥</div>
+          <div class="game-name">Tetris</div>
+          <div class="game-desc">Classic block stacking</div>
+        </div>
+        <div class="game-card" onclick="launchGame('snake')">
+          <div class="game-icon" style="background:linear-gradient(145deg,#30d158,#1a8c36)">🐍</div>
+          <div class="game-name">Snake</div>
+          <div class="game-desc">Eat, grow, survive</div>
+        </div>
+        <div class="game-card" onclick="launchGame('breakout')">
+          <div class="game-icon" style="background:linear-gradient(145deg,#0a84ff,#0050c8)">🏓</div>
+          <div class="game-name">Breakout</div>
+          <div class="game-desc">Break all the bricks</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tetris window -->
+  <div id="game-win-tetris" class="game-win" style="width:320px">
+    <div class="game-win-bar"><div class="tls"><div class="tl tl-r" onclick="closeGame('tetris')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">Tetris · <span id="tetris-score">0</span></span></div>
+    <div class="game-canvas-wrap"><canvas id="tetris-canvas" width="200" height="360" style="border-radius:4px"></canvas></div>
+    <div style="padding:8px 12px;background:rgba(235,235,240,.96);font-size:10.5px;color:rgba(0,0,0,.5);text-align:center;border-top:.5px solid rgba(0,0,0,.07)">← → move &nbsp;↑ rotate &nbsp;↓ drop &nbsp;Space hard drop</div>
+  </div>
+
+  <!-- Snake window -->
+  <div id="game-win-snake" class="game-win" style="width:320px">
+    <div class="game-win-bar"><div class="tls"><div class="tl tl-r" onclick="closeGame('snake')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">Snake · <span id="snake-score">0</span></span></div>
+    <div class="game-canvas-wrap"><canvas id="snake-canvas" width="280" height="280" style="border-radius:4px"></canvas></div>
+    <div style="padding:8px 12px;background:rgba(235,235,240,.96);font-size:10.5px;color:rgba(0,0,0,.5);text-align:center;border-top:.5px solid rgba(0,0,0,.07)">Arrow keys or WASD to move</div>
+  </div>
+
+  <!-- Breakout window -->
+  <div id="game-win-breakout" class="game-win" style="width:360px">
+    <div class="game-win-bar"><div class="tls"><div class="tl tl-r" onclick="closeGame('breakout')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g">&#x2B;</div></div><span class="wtitle">Breakout · <span id="breakout-score">0</span></span></div>
+    <div class="game-canvas-wrap"><canvas id="breakout-canvas" width="320" height="260" style="border-radius:4px"></canvas></div>
+    <div style="padding:8px 12px;background:rgba(235,235,240,.96);font-size:10.5px;color:rgba(0,0,0,.5);text-align:center;border-top:.5px solid rgba(0,0,0,.07)">Mouse / touch to move paddle · Click canvas to start</div>
+  </div>
 
 </div><!-- /desktop-root -->
 
@@ -514,6 +683,7 @@ function unlockDesktop(){
     document.getElementById('lock').classList.add('gone');
     document.getElementById('desktop').classList.add('visible');
     showMusicWidget();
+    setTimeout(showProfileCard, 600);
     // Pre-load all wallpaper iframes so switching is instant
     [1,2,3].forEach(i=>{
       const el=document.getElementById('vbg-'+i);
@@ -673,7 +843,7 @@ function hideMusicWidget(){
 
 // ── Windows ──
 let activeWin=null;
-const winIds=['about','services','skills','projects','experience','education','testimonials','contact'];
+const winIds=['about','services','skills','projects','experience','education','testimonials','contact','games'];
 function toggleWin(id){
   if(activeWin&&activeWin!==id){document.getElementById('win-'+activeWin).classList.remove('show');const pd=document.getElementById('di-'+activeWin);if(pd)pd.classList.remove('active');}
   const w=document.getElementById('win-'+id),di=document.getElementById('di-'+id);
@@ -849,6 +1019,224 @@ function closeCam(){
   // Try after a short delay so DOM is ready
   setTimeout(()=>tryLoad(0),500);
 })();
+
+
+
+
+// ── Profile card ──
+function showProfileCard(){
+  const card=document.getElementById('profile-card');
+  if(card)card.classList.add('show');
+  // load photo into card avatar
+  const pcAva=document.getElementById('pc-avatar');
+  if(pcAva){
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=function(){
+      pcAva.style.backgroundImage='url('+img.src+')';
+      pcAva.style.backgroundSize='cover';
+      pcAva.style.backgroundPosition='center 15%';
+      pcAva.style.fontSize='0';
+      pcAva.textContent='';
+    };
+    img.src='https://devedge.digital/enaldportfolio/photo_enald.webp?t='+Date.now();
+  }
+}
+
+// ── Games ──
+let activeGame=null;
+
+function launchGame(name){
+  closeWin('games');
+  if(activeGame&&activeGame!==name) closeGame(activeGame);
+  const w=document.getElementById('game-win-'+name);
+  if(!w)return;
+  w.classList.add('show');
+  activeGame=name;
+  if(name==='tetris') initTetris();
+  if(name==='snake') initSnake();
+  if(name==='breakout') initBreakout();
+}
+
+function closeGame(name){
+  const w=document.getElementById('game-win-'+name);
+  if(w)w.classList.remove('show');
+  if(name==='tetris' && tetrisLoop){clearInterval(tetrisLoop);tetrisLoop=null;}
+  if(name==='snake' && snakeLoop){clearInterval(snakeLoop);snakeLoop=null;}
+  if(name==='breakout'){bkRunning=false;}
+  if(activeGame===name)activeGame=null;
+}
+
+/* ═══ TETRIS ═══ */
+const COLS=10,ROWS=20,BLOCK=20;
+const PIECES=[
+  [[1,1,1,1]],
+  [[1,1],[1,1]],
+  [[0,1,0],[1,1,1]],
+  [[1,0,0],[1,1,1]],
+  [[0,0,1],[1,1,1]],
+  [[1,1,0],[0,1,1]],
+  [[0,1,1],[1,1,0]],
+];
+const COLORS=['#00f0f0','#f0f000','#a000f0','#0000f0','#f0a000','#00f000','#f00000'];
+let tBoard,tPiece,tScore=0,tetrisLoop=null,tX,tY,tColor;
+
+function initTetris(){
+  const cvs=document.getElementById('tetris-canvas');
+  tBoard=Array.from({length:ROWS},()=>Array(COLS).fill(0));
+  tScore=0;document.getElementById('tetris-score').textContent='0';
+  spawnTetris();
+  if(tetrisLoop)clearInterval(tetrisLoop);
+  tetrisLoop=setInterval(()=>tetrisTick(cvs),450);
+  drawTetris(cvs);
+}
+
+function spawnTetris(){
+  const i=Math.floor(Math.random()*PIECES.length);
+  tPiece=PIECES[i].map(r=>[...r]);
+  tColor=COLORS[i];
+  tX=Math.floor((COLS-tPiece[0].length)/2);tY=0;
+  if(collision(tPiece,tX,tY)){clearInterval(tetrisLoop);tetrisLoop=null;showToast('Tetris','Game Over! Score: '+tScore);}
+}
+
+function collision(p,x,y){
+  for(let r=0;r<p.length;r++)for(let c=0;c<p[r].length;c++){
+    if(!p[r][c])continue;
+    if(y+r>=ROWS||x+c<0||x+c>=COLS||tBoard[y+r][x+c])return true;
+  }return false;
+}
+
+function tetrisTick(cvs){
+  if(!collision(tPiece,tX,tY+1)){tY++;} else {
+    for(let r=0;r<tPiece.length;r++)for(let co=0;co<tPiece[r].length;co++){if(tPiece[r][co])tBoard[tY+r][tX+co]=tColor;}
+    let cleared=0;
+    for(let r=ROWS-1;r>=0;r--){if(tBoard[r].every(c=>c)){tBoard.splice(r,1);tBoard.unshift(Array(COLS).fill(0));cleared++;r++;}}
+    tScore+=cleared*100;document.getElementById('tetris-score').textContent=tScore;
+    spawnTetris();
+  }
+  drawTetris(cvs);
+}
+
+function drawTetris(cvs){
+  const ctx=cvs.getContext('2d');
+  ctx.fillStyle='#1a1a2e';ctx.fillRect(0,0,cvs.width,cvs.height);
+  // board
+  for(let r=0;r<ROWS;r++)for(let co=0;co<COLS;co++){
+    if(tBoard[r][co]){ctx.fillStyle=tBoard[r][co];ctx.fillRect(co*BLOCK,r*BLOCK,BLOCK-1,BLOCK-1);}
+  }
+  // piece
+  ctx.fillStyle=tColor;
+  for(let r=0;r<tPiece.length;r++)for(let co=0;co<tPiece[r].length;co++){
+    if(tPiece[r][co])ctx.fillRect((tX+co)*BLOCK,(tY+r)*BLOCK,BLOCK-1,BLOCK-1);
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  const cvs=document.getElementById('tetris-canvas');
+  if(!document.getElementById('game-win-tetris').classList.contains('show')||!tetrisLoop)return;
+  if(e.key==='ArrowLeft'){if(!collision(tPiece,tX-1,tY))tX--;}
+  else if(e.key==='ArrowRight'){if(!collision(tPiece,tX+1,tY))tX++;}
+  else if(e.key==='ArrowDown'){if(!collision(tPiece,tX,tY+1))tY++;}
+  else if(e.key==='ArrowUp'){
+    const rot=tPiece[0].map((_,i)=>tPiece.map(r=>r[i]).reverse());
+    if(!collision(rot,tX,tY))tPiece=rot;
+  } else if(e.key===' '){while(!collision(tPiece,tX,tY+1))tY++;}
+  else return;
+  e.preventDefault();drawTetris(cvs);
+});
+
+/* ═══ SNAKE ═══ */
+const SGRID=20,SCELL=14;
+let snake,sDir,sFood,snakeLoop=null,sScore=0;
+
+function initSnake(){
+  snake=[{x:10,y:10},{x:9,y:10},{x:8,y:10}];
+  sDir={x:1,y:0};sScore=0;
+  document.getElementById('snake-score').textContent='0';
+  placeFood();
+  if(snakeLoop)clearInterval(snakeLoop);
+  snakeLoop=setInterval(snakeTick,130);
+}
+
+function placeFood(){sFood={x:Math.floor(Math.random()*SGRID),y:Math.floor(Math.random()*SGRID)};}
+
+function snakeTick(){
+  const cvs=document.getElementById('snake-canvas');
+  const head={x:snake[0].x+sDir.x,y:snake[0].y+sDir.y};
+  if(head.x<0||head.x>=SGRID||head.y<0||head.y>=SGRID||snake.some(s=>s.x===head.x&&s.y===head.y)){
+    clearInterval(snakeLoop);snakeLoop=null;showToast('Snake','Game Over! Score: '+sScore);return;
+  }
+  snake.unshift(head);
+  if(head.x===sFood.x&&head.y===sFood.y){sScore+=10;document.getElementById('snake-score').textContent=sScore;placeFood();}
+  else snake.pop();
+  const ctx=cvs.getContext('2d');
+  ctx.fillStyle='#1a1a2e';ctx.fillRect(0,0,cvs.width,cvs.height);
+  ctx.fillStyle='#30d158';
+  snake.forEach((s,i)=>{ctx.fillStyle=i===0?'#34c759':'#1a8c36';ctx.fillRect(s.x*SCELL,s.y*SCELL,SCELL-1,SCELL-1);});
+  ctx.fillStyle='#ff453a';ctx.fillRect(sFood.x*SCELL,sFood.y*SCELL,SCELL-1,SCELL-1);
+}
+
+document.addEventListener('keydown',e=>{
+  if(!document.getElementById('game-win-snake').classList.contains('show')||!snakeLoop)return;
+  const map={ArrowUp:{x:0,y:-1},ArrowDown:{x:0,y:1},ArrowLeft:{x:-1,y:0},ArrowRight:{x:1,y:0},
+    w:{x:0,y:-1},s:{x:0,y:1},a:{x:-1,y:0},d:{x:1,y:0}};
+  const d=map[e.key];
+  if(d&&!(d.x===-sDir.x&&d.y===-sDir.y)){sDir=d;e.preventDefault();}
+});
+
+/* ═══ BREAKOUT ═══ */
+let bkRunning=false,bkBall,bkPaddle,bkBricks,bkScore=0,bkAnim;
+const BK_ROWS=5,BK_COLS=8,BK_BRICKW=34,BK_BRICKH=12,BK_PAD=3;
+const BK_COLORS=['#ff453a','#ff9f0a','#ffd60a','#30d158','#0a84ff'];
+
+function initBreakout(){
+  const cvs=document.getElementById('breakout-canvas');
+  bkBall={x:160,y:200,dx:3,dy:-3,r:6};
+  bkPaddle={x:120,w:60,h:8,y:cvs.height-18};
+  bkBricks=[];
+  for(let r=0;r<BK_ROWS;r++)for(let co=0;co<BK_COLS;co++){
+    bkBricks.push({x:co*(BK_BRICKW+BK_PAD)+6,y:r*(BK_BRICKH+BK_PAD)+28,alive:true,color:BK_COLORS[r]});
+  }
+  bkScore=0;document.getElementById('breakout-score').textContent='0';
+  cvs.addEventListener('mousemove',e=>{const r=cvs.getBoundingClientRect();bkPaddle.x=Math.min(Math.max(e.clientX-r.left-bkPaddle.w/2,0),cvs.width-bkPaddle.w);});
+  cvs.addEventListener('touchmove',e=>{e.preventDefault();const r=cvs.getBoundingClientRect();bkPaddle.x=Math.min(Math.max(e.touches[0].clientX-r.left-bkPaddle.w/2,0),cvs.width-bkPaddle.w);},{passive:false});
+  cvs.onclick=()=>{if(!bkRunning){bkRunning=true;bkBreakoutLoop();}};
+  drawBreakout(cvs);
+}
+
+function bkBreakoutLoop(){
+  const cvs=document.getElementById('breakout-canvas');
+  if(!bkRunning||!document.getElementById('game-win-breakout').classList.contains('show')){bkRunning=false;return;}
+  const ctx=cvs.getContext('2d');
+  bkBall.x+=bkBall.dx;bkBall.y+=bkBall.dy;
+  if(bkBall.x<bkBall.r||bkBall.x>cvs.width-bkBall.r)bkBall.dx*=-1;
+  if(bkBall.y<bkBall.r)bkBall.dy*=-1;
+  if(bkBall.y>cvs.height+20){bkRunning=false;showToast('Breakout','Game Over! Score: '+bkScore);return;}
+  // paddle
+  if(bkBall.y+bkBall.r>bkPaddle.y&&bkBall.x>bkPaddle.x&&bkBall.x<bkPaddle.x+bkPaddle.w){
+    bkBall.dy=-Math.abs(bkBall.dy);
+    bkBall.dx=((bkBall.x-(bkPaddle.x+bkPaddle.w/2))/bkPaddle.w)*6;
+  }
+  // bricks
+  bkBricks.forEach(br=>{
+    if(!br.alive)return;
+    if(bkBall.x>br.x&&bkBall.x<br.x+BK_BRICKW&&bkBall.y>br.y&&bkBall.y<br.y+BK_BRICKH){
+      br.alive=false;bkBall.dy*=-1;bkScore+=10;document.getElementById('breakout-score').textContent=bkScore;
+    }
+  });
+  if(bkBricks.every(b=>!b.alive)){bkRunning=false;showToast('Breakout','You win! Score: '+bkScore);return;}
+  drawBreakout(cvs);
+  bkAnim=requestAnimationFrame(bkBreakoutLoop);
+}
+
+function drawBreakout(cvs){
+  const ctx=cvs.getContext('2d');
+  ctx.fillStyle='#1a1a2e';ctx.fillRect(0,0,cvs.width,cvs.height);
+  bkBricks.forEach(br=>{if(!br.alive)return;ctx.fillStyle=br.color;ctx.beginPath();ctx.roundRect(br.x,br.y,BK_BRICKW,BK_BRICKH,3);ctx.fill();});
+  ctx.fillStyle='#5ac8fa';ctx.beginPath();ctx.arc(bkBall.x,bkBall.y,bkBall.r,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='#fff';ctx.beginPath();ctx.roundRect(bkPaddle.x,bkPaddle.y,bkPaddle.w,bkPaddle.h,4);ctx.fill();
+  if(!bkRunning&&bkScore===0){ctx.fillStyle='rgba(255,255,255,.6)';ctx.font='13px Plus Jakarta Sans,sans-serif';ctx.textAlign='center';ctx.fillText('Click to start',cvs.width/2,cvs.height/2);}
+}
 
 </script>
 </body>
