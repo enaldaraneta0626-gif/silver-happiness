@@ -294,8 +294,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
   left:16px;
   transform:translateY(-50%);
   z-index:35;
-  width:200px;
-  background:rgba(18,18,24,.82);
+  width:230px;
+  background:rgba(18,18,24,.85);
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border:.5px solid rgba(255,255,255,.14);
   border-radius:16px;
@@ -306,9 +306,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
   pointer-events:none;
 }
 .profile-card.show{opacity:1;transform:translateY(-50%);pointer-events:all}
-.pc-top{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.pc-top{display:flex;align-items:center;gap:11px;margin-bottom:10px}
 .pc-avatar{
-  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  width:46px;height:46px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(145deg,#2B6FFF,#1a4fd8);
   display:flex;align-items:center;justify-content:center;
   font-size:14px;font-weight:700;color:#fff;
@@ -331,17 +331,23 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 @keyframes pcdot{0%,100%{box-shadow:0 0 0 0 rgba(52,199,89,.4)}50%{box-shadow:0 0 0 4px rgba(52,199,89,0)}}
 .pc-status-txt{font-size:9.5px;color:#34c759;font-weight:600}
 .pc-divider{height:.5px;background:rgba(255,255,255,.08);margin-bottom:10px}
-.pc-links{display:flex;gap:6px}
+.pc-bio{
+  font-size:11px;color:rgba(255,255,255,.5);
+  line-height:1.6;margin-bottom:12px;
+  font-family:'Plus Jakarta Sans',sans-serif;font-weight:400;
+}
+.pc-links{display:grid;grid-template-columns:1fr 1fr;gap:5px}
 .pc-btn{
-  flex:1;display:flex;align-items:center;justify-content:center;gap:4px;
-  padding:5px 6px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  padding:7px 6px;border-radius:9px;
   background:rgba(255,255,255,.07);border:.5px solid rgba(255,255,255,.12);
-  color:rgba(255,255,255,.65);font-size:9.5px;font-weight:600;
+  color:rgba(255,255,255,.7);font-size:10px;font-weight:600;
   cursor:pointer;text-decoration:none;transition:background .15s,color .15s;
   font-family:'Plus Jakarta Sans',sans-serif;
+  white-space:nowrap;
 }
-.pc-btn:hover{background:rgba(255,255,255,.15);color:#fff}
-.pc-btn i{font-size:12px}
+.pc-btn:hover{background:rgba(255,255,255,.16);color:#fff}
+.pc-btn i{font-size:13px;flex-shrink:0}
 
 
 /* ── Games ── */
@@ -460,6 +466,42 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 .di-label.peek{opacity:1}
 .di:hover .di-tip{opacity:1}
 
+
+/* ── Blog ── */
+.blog-card{padding:16px 20px;border-bottom:.5px solid rgba(0,0,0,.06);cursor:pointer;transition:background .15s}
+.blog-card:hover{background:rgba(0,0,0,.025)}
+.blog-card:last-child{border-bottom:none}
+.blog-meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.blog-tag{font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;letter-spacing:.03em}
+.blog-date{font-size:10px;color:rgba(0,0,0,.35);font-weight:500}
+.blog-title{font-size:13.5px;font-weight:700;color:#1d1d1f;line-height:1.4;margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif}
+.blog-excerpt{font-size:11.5px;color:rgba(0,0,0,.52);line-height:1.7;margin-bottom:8px}
+.blog-read{font-size:11px;font-weight:600;color:#0a84ff}
+.post-section{margin-bottom:16px}
+.post-section h3{font-size:13px;font-weight:700;color:#1d1d1f;margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif}
+.post-section p{font-size:12.5px;color:rgba(0,0,0,.62);line-height:1.8}
+.post-section ul{padding-left:18px;font-size:12.5px;color:rgba(0,0,0,.62);line-height:2}
+.post-tip{background:rgba(10,132,255,.06);border:.5px solid rgba(10,132,255,.15);border-radius:10px;padding:12px 14px;margin-top:12px;font-size:12px;color:rgba(0,0,0,.6);line-height:1.7}
+.post-tip strong{color:#0a5fd8}
+
+/* ── FAQ ── */
+.faq-list{display:flex;flex-direction:column;gap:6px}
+.faq-item{border-radius:10px;background:rgba(0,0,0,.03);border:.5px solid rgba(0,0,0,.06);overflow:hidden;cursor:pointer;transition:background .15s}
+.faq-item:hover{background:rgba(0,0,0,.05)}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:13px 15px;gap:12px}
+.faq-q span{font-size:12.5px;font-weight:600;color:#1d1d1f;line-height:1.4;font-family:'Plus Jakarta Sans',sans-serif}
+.faq-arrow{font-size:14px;color:rgba(0,0,0,.35);flex-shrink:0;transition:transform .25s}
+.faq-a{font-size:12px;color:rgba(0,0,0,.58);line-height:1.8;padding:0 15px 13px;display:none}
+.faq-item.open .faq-arrow{transform:rotate(180deg)}
+.faq-item.open .faq-a{display:block}
+.faq-item.open{background:rgba(10,132,255,.04);border-color:rgba(10,132,255,.14)}
+
+/* ── Fun Facts ── */
+.facts-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fact-card{padding:12px 14px;border-radius:10px;background:rgba(0,0,0,.03);border:.5px solid rgba(0,0,0,.06);display:flex;gap:10px;align-items:flex-start}
+.fact-emoji{font-size:20px;flex-shrink:0;line-height:1.2}
+.fact-text{font-size:11.5px;color:rgba(0,0,0,.6);line-height:1.6;font-weight:400}
+
 /* ── Mobile Responsive ── */
 @media(max-width:768px){
   .menubar{padding:0 10px}
@@ -524,16 +566,17 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
       <div class="pc-avatar" id="pc-avatar">EA</div>
       <div>
         <div class="pc-name">Enald Araneta</div>
-        <div class="pc-role">Founder & Lead Dev<br/>DevEdge Digital</div>
+        <div class="pc-role">Founder & Lead Developer<br/><span style="color:rgba(255,255,255,.35);font-size:9px">DevEdge Digital</span></div>
       </div>
     </div>
     <div class="pc-status"><div class="pc-dot"></div><span class="pc-status-txt">Open to new projects</span></div>
+    <div class="pc-bio">Full-stack developer & creative director with 11+ years building brands and digital experiences for clients worldwide.</div>
     <div class="pc-divider"></div>
     <div class="pc-links">
       <a class="pc-btn" href="https://devedge.digital" target="_blank"><i class="ti ti-world"></i>Site</a>
-      <a class="pc-btn" href="https://linkedin.com/in/enald-dean-araneta" target="_blank"><i class="ti ti-brand-linkedin"></i>In</a>
-      <a class="pc-btn" href="https://github.com/enaldaraneta0626-gif" target="_blank"><i class="ti ti-brand-github"></i>Git</a>
-      <a class="pc-btn" onclick="toggleWin('contact')" style="cursor:pointer"><i class="ti ti-mail"></i>Mail</a>
+      <a class="pc-btn" href="https://linkedin.com/in/enald-dean-araneta" target="_blank"><i class="ti ti-brand-linkedin"></i>LinkedIn</a>
+      <a class="pc-btn" href="https://github.com/enaldaraneta0626-gif" target="_blank"><i class="ti ti-brand-github"></i>GitHub</a>
+      <a class="pc-btn" onclick="toggleWin('contact')" style="cursor:pointer"><i class="ti ti-mail"></i>Email</a>
     </div>
   </div>
 
@@ -701,6 +744,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
     <div class="di" id="di-education" onclick="toggleWin('education')"><div class="di-tip">Education</div><div class="di-label">Education</div><div class="diico" style="background:linear-gradient(160deg,#ff453a,#c01020)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M15 6L27 12l-12 6L3 12z" fill="rgba(255,255,255,.92)"/><path d="M8 14.5v6c0 2.5 3.1 4.5 7 4.5s7-2 7-4.5v-6" stroke="rgba(255,255,255,.85)" stroke-width="1.6" stroke-linecap="round" fill="none"/><path d="M23 12v7" stroke="rgba(255,255,255,.5)" stroke-width="1.5" stroke-linecap="round"/><circle cx="23" cy="20" r="1.5" fill="rgba(255,255,255,.6)"/></svg></div></div>
     <div class="di" id="di-testimonials" onclick="toggleWin('testimonials')"><div class="di-tip">Testimonials</div><div class="di-label">Testimonials</div><div class="diico" style="background:linear-gradient(160deg,#ffd60a,#c09000)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M9 8h12M9 12h8M5 6h20v16l-5-3H5z" stroke="rgba(0,0,0,.55)" stroke-width="1.5" stroke-linejoin="round" fill="rgba(0,0,0,.15)"/></svg></div><div class="di-dot"></div></div>
     <div class="di" id="di-games" onclick="toggleWin('games')"><div class="di-tip">Entertainment</div><div class="di-label">Entertainment</div><div class="diico" style="background:linear-gradient(160deg,#ff2d55,#c0003c)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="5" y="9" width="20" height="14" rx="4" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.85)" stroke-width="1.5"/><circle cx="10" cy="16" r="2" fill="rgba(255,255,255,.9)"/><circle cx="20" cy="16" r="2" fill="rgba(255,255,255,.9)"/><path d="M15 12v4M13 14h4" stroke="rgba(255,255,255,.9)" stroke-width="1.5" stroke-linecap="round"/></svg></div><div class="di-dot"></div></div>
+    <div class="di" id="di-blog" onclick="toggleWin('blog')"><div class="di-tip">Blog</div><div class="di-label">Blog</div><div class="diico" style="background:linear-gradient(160deg,#636366,#3a3a3c)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="5" y="6" width="20" height="19" rx="3" fill="rgba(255,255,255,.15)" stroke="rgba(255,255,255,.85)" stroke-width="1.4"/><path d="M9 11h12M9 15h12M9 19h7" stroke="rgba(255,255,255,.85)" stroke-width="1.4" stroke-linecap="round"/></svg></div><div class="di-dot"></div></div>
+    <div class="di" id="di-faq" onclick="toggleWin('faq')"><div class="di-tip">FAQ</div><div class="di-label">FAQ</div><div class="diico" style="background:linear-gradient(160deg,#5e5ce6,#3634c7)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="10" fill="rgba(255,255,255,.12)" stroke="rgba(255,255,255,.85)" stroke-width="1.4"/><text x="15" y="20" text-anchor="middle" font-size="14" font-weight="bold" fill="rgba(255,255,255,.9)" font-family="serif">?</text></svg></div><div class="di-dot"></div></div>
+    <div class="di" id="di-funfacts" onclick="toggleWin('funfacts')"><div class="di-tip">Fun Facts</div><div class="di-label">Fun Facts</div><div class="diico" style="background:linear-gradient(160deg,#ffd60a,#c09000)"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><text x="15" y="21" text-anchor="middle" font-size="18" font-family="serif">🥚</text></svg></div><div class="di-dot"></div></div>
     <div class="dsep"></div>
     <div class="di"><div class="di-tip">devedge.digital</div><div class="di-label">devedge.digital</div><div class="diico" style="background:linear-gradient(160deg,#1c1c1e,#000)" onclick="window.open('https://devedge.digital','_blank')"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="15" r="10" stroke="rgba(255,255,255,.75)" stroke-width="1.4" fill="none"/><ellipse cx="15" cy="15" rx="5" ry="10" stroke="rgba(255,255,255,.4)" stroke-width="1.2" fill="none"/><path d="M5 15h20M6 10h18M6 20h18" stroke="rgba(255,255,255,.35)" stroke-width="1"/></svg></div></div>
     <div class="di"><div class="di-tip">LinkedIn</div><div class="di-label">LinkedIn</div><div class="diico" style="background:linear-gradient(160deg,#0a66c2,#004182)" onclick="window.open('https://linkedin.com/in/enald-dean-araneta','_blank')"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><rect x="5" y="5" width="20" height="20" rx="4" fill="rgba(255,255,255,.1)"/><circle cx="10" cy="10.5" r="1.8" fill="white"/><rect x="8.5" y="13.5" width="3" height="10" rx="1" fill="white"/><rect x="14" y="13.5" width="3" height="10" rx="1" fill="white"/><path d="M17 17c0-2 1-3.5 3-3.5s3 1.5 3 3.5v6h-3v-6" fill="white"/></svg></div></div>
@@ -879,6 +925,106 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
         <div class="game-msg-title">🎉 You Win!</div>
         <div class="game-msg-sub" id="sol-win-sub">Congratulations!</div>
         <button class="game-msg-btn" onclick="initSolitaire()">Play Again</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- BLOG window -->
+  <div id="win-blog" class="win" style="width:min(580px,calc(100vw - 32px));max-height:calc(100vh - 80px)">
+    <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('blog')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g" onclick="toggleFullscreen()">&#x2B;</div></div><span class="wtitle">Blog &amp; Articles</span></div>
+    <div class="wbody" style="padding:0">
+      <div id="blog-list">
+        <div class="blog-card" onclick="openPost(0)">
+          <div class="blog-meta"><span class="blog-tag" style="background:rgba(10,132,255,.1);color:#0a5fd8">Web Dev</span><span class="blog-date">May 2025</span></div>
+          <div class="blog-title">Why Your WordPress Site Is Slow (And How to Fix It in a Weekend)</div>
+          <div class="blog-excerpt">Most slow WordPress sites share the same 5 culprits. Here's a practical checklist I use on every client project to get load times under 2 seconds.</div>
+          <div class="blog-read">Read article →</div>
+        </div>
+        <div class="blog-card" onclick="openPost(1)">
+          <div class="blog-meta"><span class="blog-tag" style="background:rgba(255,149,0,.1);color:#b86800">Branding</span><span class="blog-date">Apr 2025</span></div>
+          <div class="blog-title">The Logo Isn't Your Brand — Here's What Actually Is</div>
+          <div class="blog-excerpt">After designing 50+ brand identities, I've learned that the logo is just the tip of the iceberg. Here's what really makes a brand stick.</div>
+          <div class="blog-read">Read article →</div>
+        </div>
+        <div class="blog-card" onclick="openPost(2)">
+          <div class="blog-meta"><span class="blog-tag" style="background:rgba(52,199,89,.1);color:#1a7f35">Marketing</span><span class="blog-date">Mar 2025</span></div>
+          <div class="blog-title">I Managed $2M in Ad Spend — Here's What Most Businesses Get Wrong</div>
+          <div class="blog-excerpt">Running paid ads isn't about spending more — it's about spending smarter. The 3 biggest mistakes I see businesses make with Google and Meta Ads.</div>
+          <div class="blog-read">Read article →</div>
+        </div>
+        <div class="blog-card" onclick="openPost(3)">
+          <div class="blog-meta"><span class="blog-tag" style="background:rgba(94,92,230,.1);color:#3634c7">SEO</span><span class="blog-date">Feb 2025</span></div>
+          <div class="blog-title">Local SEO in 2025: How Small Businesses Can Beat Big Competitors</div>
+          <div class="blog-excerpt">Big budgets don't always win. A focused local SEO strategy can put a small business on page one — here's the exact framework I use.</div>
+          <div class="blog-read">Read article →</div>
+        </div>
+        <div class="blog-card" onclick="openPost(4)">
+          <div class="blog-meta"><span class="blog-tag" style="background:rgba(255,59,48,.1);color:#c0152f">Landing Pages</span><span class="blog-date">Jan 2025</span></div>
+          <div class="blog-title">5 Landing Page Mistakes That Are Killing Your Conversion Rate</div>
+          <div class="blog-excerpt">After building 150+ landing pages, I keep seeing the same mistakes over and over. Fix these 5 things and watch your conversions climb.</div>
+          <div class="blog-read">Read article →</div>
+        </div>
+      </div>
+      <div id="blog-post" style="display:none;padding:20px 22px">
+        <button onclick="closePost()" style="background:none;border:none;cursor:pointer;color:#0a84ff;font-size:12px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;padding:0;margin-bottom:16px;display:flex;align-items:center;gap:4px">← Back to articles</button>
+        <div id="post-tag" class="blog-tag" style="margin-bottom:10px"></div>
+        <div id="post-title" style="font-size:18px;font-weight:700;color:#1d1d1f;line-height:1.3;margin-bottom:6px;font-family:'Plus Jakarta Sans',sans-serif"></div>
+        <div id="post-date" style="font-size:11px;color:rgba(0,0,0,.35);margin-bottom:18px;font-weight:500"></div>
+        <div id="post-body" style="font-size:13px;color:rgba(0,0,0,.68);line-height:1.85;font-family:'Plus Jakarta Sans',sans-serif"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ window -->
+  <div id="win-faq" class="win" style="width:min(560px,calc(100vw - 32px))">
+    <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('faq')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g" onclick="toggleFullscreen()">&#x2B;</div></div><span class="wtitle">FAQ</span></div>
+    <div class="wbody">
+      <div class="faq-list">
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>How long does a typical website project take?</span><i class="ti ti-chevron-down faq-arrow"></i></div>
+          <div class="faq-a">Most websites take 2–4 weeks from kickoff to launch. Landing pages can be done in 3–5 days. Larger projects with custom features typically run 4–8 weeks. I always give you a clear timeline upfront before we start.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>What's included in a branding package?</span><i class="ti ti-chevron-down faq-arrow"></i></div>
+          <div class="faq-a">Every branding project includes logo design (multiple concepts), color palette, typography system, brand guidelines document, and all source files (AI, SVG, PNG, PDF). Optional add-ons include business cards, letterheads, and social media kits.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>Do you work with clients outside the Philippines?</span><i class="ti ti-chevron-down faq-arrow"></i></div>
+          <div class="faq-a">Absolutely — the majority of my clients are in Canada, the US, and Australia. I'm fully remote and work across time zones. Communication is handled via email, Slack, Zoom, and Loom depending on what works best for you.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>How much does a website cost?</span><i class="ti ti-chevron-down faq-arrow"></i></div>
+          <div class="faq-a">It depends on the scope — a landing page starts around $300–$500, while full WordPress websites typically range from $800–$3,000+. I provide a detailed quote after our discovery call so there are no surprises.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>Will I be able to update the site myself?</span><i class="ti ti-chevron-down faq-arrow"></i></div>
+          <div class="faq-a">Yes! I build sites so clients can manage them without developer help. I also provide a short walkthrough video after launch so you know exactly how to make updates. And I'm always available if you need help.</div>
+        </div>
+        <div class="faq-item" onclick="toggleFaq(this)">
+          <div class="faq-q"><span>Do you offer ongoing support after launch?</span><i class="ti ti-chevron-down faq-arrow"></i></div>
+          <div class="faq-a">Yes — I offer monthly maintenance packages covering updates, backups, security monitoring, and minor content changes. I don't believe in building something and disappearing. Long-term partnerships are my favourite kind of work.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUN FACTS window -->
+  <div id="win-funfacts" class="win" style="width:min(520px,calc(100vw - 32px))">
+    <div class="win-bar"><div class="tls"><div class="tl tl-r" onclick="closeWin('funfacts')">&#x2715;</div><div class="tl tl-y">&#x2212;</div><div class="tl tl-g" onclick="toggleFullscreen()">&#x2B;</div></div><span class="wtitle">Fun Facts &amp; Easter Eggs 🥚</span></div>
+    <div class="wbody">
+      <div class="facts-grid">
+        <div class="fact-card"><div class="fact-emoji">☕</div><div class="fact-text">Fuelled by coffee — easily 4–5 cups a day while coding</div></div>
+        <div class="fact-card"><div class="fact-emoji">🌙</div><div class="fact-text">Best code gets written between midnight and 3am. Night owl by nature.</div></div>
+        <div class="fact-card"><div class="fact-emoji">🎨</div><div class="fact-text">Started as a graphic designer before falling in love with code in 2014</div></div>
+        <div class="fact-card"><div class="fact-emoji">🌏</div><div class="fact-text">Based in Zamboanga City, PH — the "City of Flowers" — working with clients 10,000km away</div></div>
+        <div class="fact-card"><div class="fact-emoji">🎮</div><div class="fact-text">Built the games in this portfolio from scratch. Yes, including Solitaire.</div></div>
+        <div class="fact-card"><div class="fact-emoji">🏆</div><div class="fact-text">First ever client project back in 2014: a restaurant website. Still proud of it.</div></div>
+        <div class="fact-card"><div class="fact-emoji">📱</div><div class="fact-text">This entire portfolio is a single HTML file. No framework. No build step.</div></div>
+        <div class="fact-card"><div class="fact-emoji">🚀</div><div class="fact-text">Favourite stack: WordPress + ACF + vanilla JS. Sometimes the classics just work.</div></div>
+      </div>
+      <div style="margin-top:16px;padding:14px;border-radius:10px;background:rgba(10,132,255,.06);border:.5px solid rgba(10,132,255,.14);text-align:center">
+        <div style="font-size:11px;color:rgba(0,0,0,.45);font-weight:400">🥚 You found the Easter egg section. Congrats, you're clearly thorough — <span style="color:#0a84ff;font-weight:600;cursor:pointer" onclick="toggleWin('contact')">let's work together.</span></div>
       </div>
     </div>
   </div>
@@ -1063,7 +1209,7 @@ function hideMusicWidget(){
 
 // ── Windows ──
 let activeWin=null;
-const winIds=['about','services','skills','projects','experience','education','testimonials','contact','games'];
+const winIds=['about','services','skills','projects','experience','education','testimonials','contact','games','blog','faq','funfacts'];
 function toggleWin(id){
   if(activeWin&&activeWin!==id){document.getElementById('win-'+activeWin).classList.remove('show');const pd=document.getElementById('di-'+activeWin);if(pd)pd.classList.remove('active');}
   const w=document.getElementById('win-'+id),di=document.getElementById('di-'+id);
@@ -1121,6 +1267,9 @@ const spItems=[
   {label:'Testimonials',icon:'⭐',bg:'#ffd60a22',id:'testimonials'},
   {label:'Contact',icon:'✉️',bg:'#0a84ff22',id:'contact'},
   {label:'Change Wallpaper',icon:'🖼',bg:'#30d15822',action:openWP},
+  {label:'Blog & Articles',icon:'📝',bg:'#63636322',id:'blog'},
+  {label:'FAQ',icon:'❓',bg:'#5e5ce622',id:'faq'},
+  {label:'Fun Facts',icon:'🥚',bg:'#ffd60a22',id:'funfacts'},
   {label:'Music Player',icon:'🎵',bg:'#ff6b6b22',action:showMusicWidget},
 ];
 let spIdx=0;
@@ -2075,6 +2224,89 @@ function closeGame(name){
   setTimeout(peekLabels, 2000);
   setInterval(peekLabels, 7000);
 })();
+
+
+// ── Blog posts ──
+const POSTS=[
+  {
+    tag:`Web Dev", tagStyle:'background:rgba(10,132,255,.1);color:#0a5fd8`,
+    title:`Why Your WordPress Site Is Slow (And How to Fix It in a Weekend)`,
+    date:`May 2025`,
+    body:`<div class="post-section"><p>Speed isn't just a nice-to-have — Google uses page speed as a ranking factor, and studies show that every 1-second delay costs you 7% in conversions. After working on hundreds of WordPress sites, I keep seeing the same culprits.</p></div>
+<div class="post-section"><h3>1. Unoptimised Images</h3><p>Images are almost always the #1 problem. Install a plugin like ShortPixel or Imagify and convert everything to WebP. Compress on upload, and use lazy loading for anything below the fold. This alone can cut your page weight by 60%.</p></div>
+<div class="post-section"><h3>2. Too Many Plugins</h3><p>Every plugin adds HTTP requests, CSS, and JS to your page. Audit your plugin list ruthlessly — if you haven't used it in 3 months, delete it. Aim for under 15 active plugins.</p></div>
+<div class="post-section"><h3>3. No Caching</h3><p>Install WP Rocket or LiteSpeed Cache. Enable page caching, browser caching, and GZIP compression. This is often the single biggest speed win you'll see.</p></div>
+<div class="post-section"><h3>4. Cheap Hosting</h3><p>Shared hosting on a crowded server is a speed killer. Move to a managed WordPress host like Kinsta, WP Engine, or SiteGround. The cost difference is usually $20–30/month and the speed difference is night and day.</p></div>
+<div class="post-section"><h3>5. Render-Blocking Resources</h3><p>CSS and JS loading in the wrong order blocks your page from rendering. Use a caching plugin to defer JS, combine CSS files, and remove unused scripts. Check your score on GTmetrix and PageSpeed Insights before and after.</p></div>
+<div class="post-tip"><strong>Pro tip:</strong> Run your site through GTmetrix before and after each fix. Aim for an A grade and under 2 seconds load time. If you're still struggling, reach out — this is one of my favourite problems to solve.</div>`
+  },
+  {
+    tag:`Branding", tagStyle:'background:rgba(255,149,0,.1);color:#b86800`,
+    title:`The Logo Isn't Your Brand — Here's What Actually Is`,
+    date:`Apr 2025`,
+    body:`<div class="post-section"><p>The most common misconception I encounter when talking to new clients: they think getting a logo means they have a brand. After designing 50+ brand identities, I can tell you — a logo is just the entry point.</p></div>
+<div class="post-section"><h3>Your brand is how people feel about you</h3><p>It's the emotion someone has when they land on your website, the trust they feel when they read your copy, the memory they carry after using your product. The logo is just a symbol that triggers that feeling.</p></div>
+<div class="post-section"><h3>What actually makes a brand</h3><ul><li>A consistent visual system (colors, typography, spacing)</li><li>A clear voice and tone in all written communication</li><li>A defined customer promise that you deliver on every time</li><li>Consistent experience across every touchpoint</li><li>A story that people can connect with emotionally</li></ul></div>
+<div class="post-section"><h3>Why this matters for your business</h3><p>Businesses with strong brands charge more, attract better clients, and grow through word of mouth. Businesses without them compete on price alone — and that's an exhausting race to the bottom.</p></div>
+<div class="post-tip"><strong>Exercise:</strong> Ask 5 existing clients to describe your business in 3 words. Whatever they say — that's your brand. If you don't like the answer, that's where we start.</div>`
+  },
+  {
+    tag:`Marketing", tagStyle:'background:rgba(52,199,89,.1);color:#1a7f35`,
+    title:`I Managed $2M in Ad Spend — Here's What Most Businesses Get Wrong`,
+    date:`Mar 2025`,
+    body:`<div class="post-section"><p>Running paid ads for clients across Canada, the US, and Australia over the past decade has taught me one thing clearly: most businesses are wasting at least 30–40% of their ad budget on fixable mistakes.</p></div>
+<div class="post-section"><h3>Mistake 1: Sending traffic to a bad landing page</h3><p>The most expensive mistake. You can have perfect targeting and compelling ads — but if the landing page is slow, confusing, or lacks a clear CTA, you're burning money. Fix the destination before you scale the traffic.</p></div>
+<div class="post-section"><h3>Mistake 2: Targeting too broadly</h3><p>Beginners think more reach = more results. The opposite is true. Tight, specific audiences with tailored messaging outperform broad audiences almost every time. Start narrow, prove the concept, then scale.</p></div>
+<div class="post-section"><h3>Mistake 3: Giving up too early</h3><p>Most campaigns need 2–4 weeks and a few hundred dollars of data before you can make smart optimisation decisions. I've seen clients kill campaigns after 3 days that would have been winners at week 3.</p></div>
+<div class="post-section"><h3>Mistake 4: Ignoring creative</h3><p>In 2025, creative is the targeting. Meta's algorithm is so good that if your creative resonates with the right people, it'll find them. Invest in your ad creative — video, copy, design — as much as you invest in your targeting.</p></div>
+<div class="post-tip"><strong>Rule of thumb:</strong> Spend at least 10x your average order value to get meaningful data. If your product costs $100, spend at least $1,000 before drawing conclusions.</div>`
+  },
+  {
+    tag:`SEO", tagStyle:'background:rgba(94,92,230,.1);color:#3634c7`,
+    title:`Local SEO in 2025: How Small Businesses Can Beat Big Competitors`,
+    date:`Feb 2025`,
+    body:`<div class="post-section"><p>Here's the good news about local SEO: Google genuinely wants to show the most relevant local result — not just the biggest brand. That means a focused strategy can punch well above your weight class.</p></div>
+<div class="post-section"><h3>Step 1: Nail your Google Business Profile</h3><p>This is the single highest-leverage thing you can do for local visibility. Complete every field, add photos weekly, respond to every review, and post updates regularly. Most businesses set it up once and forget it — that's your advantage.</p></div>
+<div class="post-section"><h3>Step 2: Consistent NAP everywhere</h3><p>Name, Address, Phone number — make sure it's identical across your website, Google, Facebook, Yelp, and every directory listing. Inconsistencies confuse Google and hurt your local ranking.</p></div>
+<div class="post-section"><h3>Step 3: Location-specific pages</h3><p>If you serve multiple areas, create a dedicated page for each one. "Plumber in [City Name]" beats a generic services page every time for local searches.</p></div>
+<div class="post-section"><h3>Step 4: Get reviews consistently</h3><p>Ask every happy customer for a Google review immediately after a good experience. Even 20–30 genuine reviews can put you ahead of competitors with hundreds of mediocre ones.</p></div>
+<div class="post-tip"><strong>Quick win:</strong> Search your business category + city right now. Look at the top 3 results in the map pack. Whatever they're doing in their Google Business Profile — do more of it.</div>`
+  },
+  {
+    tag:`Landing Pages", tagStyle:'background:rgba(255,59,48,.1);color:#c0152f`,
+    title:`5 Landing Page Mistakes That Are Killing Your Conversion Rate`,
+    date:`Jan 2025`,
+    body:`<div class="post-section"><p>After building 150+ landing pages across industries — healthcare, finance, restaurants, agencies, e-commerce — I see the same five mistakes destroying conversion rates over and over. Here's how to fix them.</p></div>
+<div class="post-section"><h3>1. Weak or unclear headline</h3><p>You have about 3 seconds to communicate your value before someone leaves. Your headline should immediately answer "What is this and why should I care?" If it doesn't, rewrite it before anything else.</p></div>
+<div class="post-section"><h3>2. Too many calls to action</h3><p>One page, one goal. Every additional CTA you add dilutes attention and reduces conversions. Pick one action you want visitors to take and design the entire page toward that single outcome.</p></div>
+<div class="post-section"><h3>3. No social proof above the fold</h3><p>Trust is the #1 conversion factor. Add a client logo bar, a star rating, or a one-line testimonial in the first screen. If visitors don't trust you, they won't convert — no matter how good your offer is.</p></div>
+<div class="post-section"><h3>4. Form asking for too much</h3><p>Every field you add to a form reduces submissions by ~10%. Only ask for what you absolutely need. Name and email is usually enough to start a conversation. Get the rest later.</p></div>
+<div class="post-section"><h3>5. No mobile optimisation</h3><p>Over 60% of web traffic is now mobile. If your landing page isn't tested on a real phone, you're losing more than half your potential conversions. Test on multiple devices before you launch.</p></div>
+<div class="post-tip"><strong>Quick test:</strong> Show your landing page to someone unfamiliar with your business for 5 seconds, then hide it. Ask them what the page was about and what they should do next. If they can"t answer clearly, you have a clarity problem.</div>`
+  },
+];
+
+function openPost(idx){
+  const p=POSTS[idx];
+  document.getElementById('blog-list').style.display='none';
+  document.getElementById('blog-post').style.display='block';
+  const tagEl=document.getElementById('post-tag');
+  tagEl.textContent=p.tag;tagEl.style=p.tagStyle+';font-size:10px;font-weight:700;padding:2px 9px;border-radius:20px;display:inline-block;margin-bottom:10px';
+  document.getElementById('post-title').textContent=p.title;
+  document.getElementById('post-date').textContent=p.date;
+  document.getElementById('post-body').innerHTML=p.body;
+}
+function closePost(){
+  document.getElementById('blog-list').style.display='block';
+  document.getElementById('blog-post').style.display='none';
+}
+
+// ── FAQ accordion ──
+function toggleFaq(el){
+  const isOpen=el.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!isOpen)el.classList.add('open');
+}
 
 </script>
 </body>
