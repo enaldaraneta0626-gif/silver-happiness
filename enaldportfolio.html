@@ -301,7 +301,8 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
   backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
   border:.5px solid rgba(255,255,255,.14);
   border-radius:16px;
-  padding:14px 14px 12px;
+  padding:0;
+  overflow:hidden;
   box-shadow:0 8px 32px rgba(0,0,0,.45);
   opacity:0;transform:translateY(12px);
   transition:opacity .5s ease,transform .5s ease;
@@ -309,8 +310,11 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 }
 .profile-card.show{opacity:1;transform:translateY(-50%);pointer-events:all}
 .pc-top{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+.pc-photo-wrap{width:100%;height:130px;overflow:hidden;border-radius:12px 12px 0 0;background:linear-gradient(145deg,#1a3a6e,#0a1f4a);flex-shrink:0;position:relative}
+.pc-photo{width:100%;height:100%;object-fit:cover;object-position:center 15%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;color:rgba(255,255,255,.7);background-size:cover;background-position:center 15%;background-repeat:no-repeat}
+.profile-card{padding:0!important}
 .pc-avatar{
-  width:46px;height:46px;border-radius:50%;flex-shrink:0;
+  width:56px;height:56px;border-radius:50%;flex-shrink:0;
   background:linear-gradient(145deg,#2B6FFF,#1a4fd8);
   display:flex;align-items:center;justify-content:center;
   font-size:14px;font-weight:700;color:#fff;
@@ -604,21 +608,22 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 
   <!-- Floating Profile Card -->
   <div class="profile-card" id="profile-card">
-    <div class="pc-top">
-      <div class="pc-avatar" id="pc-avatar">EA</div>
-      <div>
-        <div class="pc-name">Enald Araneta</div>
-        <div class="pc-role">Founder & Lead Developer<br/><span style="color:rgba(255,255,255,.35);font-size:9px">DevEdge Digital</span></div>
-      </div>
+    <!-- Big photo header -->
+    <div class="pc-photo-wrap">
+      <div class="pc-photo" id="pc-avatar">EA</div>
     </div>
-    <div class="pc-status"><div class="pc-dot"></div><span class="pc-status-txt">Open to new projects</span></div>
-    <div class="pc-bio">Full-stack developer & creative director with 11+ years building brands and digital experiences for clients worldwide.</div>
-    <div class="pc-divider"></div>
-    <div class="pc-links">
-      <a class="pc-btn" href="https://devedge.digital" target="_blank"><i class="ti ti-world"></i>Site</a>
-      <a class="pc-btn" href="https://linkedin.com/in/enald-dean-araneta" target="_blank"><i class="ti ti-brand-linkedin"></i>LinkedIn</a>
-      <a class="pc-btn" href="https://github.com/enaldaraneta0626-gif" target="_blank"><i class="ti ti-brand-github"></i>GitHub</a>
-      <a class="pc-btn" onclick="toggleWin('contact')" style="cursor:pointer"><i class="ti ti-mail"></i>Email</a>
+    <div style="padding:12px 14px 14px">
+      <div class="pc-name">Enald Araneta</div>
+      <div class="pc-role">Founder & Lead Developer · <span style="color:rgba(255,255,255,.45)">DevEdge Digital</span></div>
+      <div class="pc-status" style="margin-top:8px"><div class="pc-dot"></div><span class="pc-status-txt">Open to new projects</span></div>
+      <div class="pc-bio">Full-stack dev & creative director with 11+ years building brands and digital experiences worldwide.</div>
+      <div class="pc-divider"></div>
+      <div class="pc-links">
+        <a class="pc-btn" href="https://devedge.digital" target="_blank"><i class="ti ti-world"></i>Site</a>
+        <a class="pc-btn" href="https://linkedin.com/in/enald-dean-araneta" target="_blank"><i class="ti ti-brand-linkedin"></i>LinkedIn</a>
+        <a class="pc-btn" href="https://github.com/enaldaraneta0626-gif" target="_blank"><i class="ti ti-brand-github"></i>GitHub</a>
+        <a class="pc-btn" onclick="toggleWin('contact')" style="cursor:pointer"><i class="ti ti-mail"></i>Email</a>
+      </div>
     </div>
   </div>
 
@@ -1441,16 +1446,26 @@ function showProfileCard(){
   // load photo into card avatar
   const pcAva=document.getElementById('pc-avatar');
   if(pcAva){
-    const img=new Image();
-    img.crossOrigin='anonymous';
-    img.onload=function(){
-      pcAva.style.backgroundImage='url('+img.src+')';
-      pcAva.style.backgroundSize='cover';
-      pcAva.style.backgroundPosition='center 15%';
-      pcAva.style.fontSize='0';
-      pcAva.textContent='';
-    };
-    img.src='https://devedge.digital/enaldportfolio/photo_enald.webp?t='+Date.now();
+    // Try to load photo
+    const urls=[
+      'https://devedge.digital/enaldportfolio/photo_enald.webp',
+      'https://devedge.digital/photo_enald.webp',
+    ];
+    function tryUrl(i){
+      if(i>=urls.length)return;
+      const img=new Image();
+      img.crossOrigin='anonymous';
+      img.onload=function(){
+        pcAva.style.backgroundImage='url('+img.src+')';
+        pcAva.style.backgroundSize='cover';
+        pcAva.style.backgroundPosition='center 15%';
+        pcAva.style.fontSize='0';
+        pcAva.textContent='';
+      };
+      img.onerror=()=>tryUrl(i+1);
+      img.src=urls[i]+'?t='+Date.now();
+    }
+    tryUrl(0);
   }
 }
 
@@ -1982,20 +1997,43 @@ function initSolitaire(){
 function solCalcLayout(){
   const W=solCanvas.width,H=solCanvas.height;
   const isMobile=W<600;
-  const GAP=isMobile?3:6;
-  // Card width: fit 8 columns
-  const CW=Math.min(Math.floor((W-(isMobile?16:40))/8-GAP), isMobile?52:80);
-  const CH=Math.floor(CW*1.4);
-  const PAD=Math.max(4,Math.floor((W-CW*8-7*GAP)/2));
-  const TOP=isMobile?8:14;
+  const GAP=isMobile?3:5;
+
+  // Start with a card width, then check if everything fits vertically
+  let CW=Math.min(Math.floor((W-(isMobile?8:32))/8-GAP), isMobile?56:85);
+  let CH=Math.floor(CW*1.4);
+  const PAD=Math.max(2,Math.floor((W-CW*8-7*GAP)/2));
+  const TOP=isMobile?6:12;
   const tabY=TOP+CH+GAP*2;
-  // Figure out max tableau height across all columns
-  // VSTEP must fit all cards in available height
-  const maxCol=solState?Math.max(...solState.tableau.map(p=>p.length),1):7;
-  const availH=H-tabY-CH-8; // space for tableau
-  // step = availH / (maxCol-1) but min sensible value
-  const rawStep=maxCol>1?Math.floor(availH/(maxCol)):Math.floor(CH*.3);
-  const VSTEP=Math.min(Math.max(rawStep, isMobile?14:18), Math.floor(CH*.38));
+
+  // Find the deepest tableau column
+  const maxCards=solState?Math.max(...solState.tableau.map(p=>p.length),1):7;
+  const maxFaceUp=solState?Math.max(...solState.tableau.map(p=>p.filter(cd=>cd.faceUp).length),1):4;
+  const maxFaceDown=maxCards-maxFaceUp;
+
+  // Available height for tableau rows
+  const availH=H-tabY-16;
+
+  // VSTEP must fit: faceDown*VSTEPU + faceUp*VSTEP + CH <= availH
+  // Approximate: total = faceDown*VSTEPU + (faceUp-1)*VSTEP + CH
+  // Solve for VSTEP assuming VSTEPU = VSTEP*0.55
+  // total = maxFaceDown*VSTEP*0.55 + (maxFaceUp-1)*VSTEP + CH <= availH
+  // VSTEP*(maxFaceDown*0.55 + maxFaceUp-1) <= availH - CH
+  const denom=maxFaceDown*0.55+(maxFaceUp>1?maxFaceUp-1:0);
+  let VSTEP=denom>0?Math.floor((availH-CH)/denom):Math.floor(CH*.32);
+
+  // Clamp VSTEP to sensible range
+  VSTEP=Math.max(isMobile?12:16, Math.min(VSTEP, Math.floor(CH*.36)));
+
+  // If still overflowing, shrink card size
+  const totalH=tabY+maxFaceDown*Math.floor(VSTEP*.55)+(maxFaceUp>0?maxFaceUp-1:0)*VSTEP+CH+8;
+  if(totalH>H){
+    const scale=H/totalH;
+    CW=Math.floor(CW*scale);
+    CH=Math.floor(CH*scale);
+    VSTEP=Math.max(10,Math.floor(VSTEP*scale));
+  }
+
   const VSTEPU=Math.floor(VSTEP*.55);
   solLayout={CW,CH,PAD,TOP,VSTEP,VSTEPU,GAP};
 }
