@@ -47,37 +47,56 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 .video-bg.fade{opacity:0}
 
 /* Music widget */
-.music-widget{position:fixed;bottom:90px;right:16px;z-index:60;cursor:grab;user-select:none;background:rgba(22,22,26,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:.5px solid rgba(255,255,255,.14);border-radius:16px;padding:10px 12px 10px 10px;width:240px;height:72px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:opacity .3s,transform .3s,width .25s ease,height .25s ease;overflow:hidden}
+.music-widget{position:fixed;bottom:90px;right:16px;z-index:60;cursor:grab;user-select:none;background:linear-gradient(160deg,rgba(32,32,40,.94),rgba(14,14,20,.92));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:.5px solid rgba(255,255,255,.16);border-radius:16px;padding:10px 12px 10px 10px;width:240px;height:72px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:opacity .3s,transform .3s,width .25s ease,height .25s ease,box-shadow .4s ease;overflow:visible}
 .music-widget.hidden{opacity:0;transform:translateY(10px);pointer-events:none}
 .music-widget.size-med{width:340px;height:100px}
 .music-widget.size-lg{width:320px;height:340px;flex-direction:column;align-items:stretch;padding:14px 14px 12px}
-.yt-thumb-wrap{width:52px;height:52px;border-radius:10px;flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(135deg,#1a1a2e,#16213e);transition:width .25s,height .25s}
+.music-widget:hover{box-shadow:0 10px 40px rgba(0,0,0,.55)}
+.music-widget.is-playing{box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 26px rgba(10,132,255,.3)}
+/* Rotating neon halo — glows softly at rest, brightens and spins faster while playing */
+.music-widget::before{content:'';position:absolute;inset:-3px;border-radius:19px;z-index:-1;pointer-events:none;
+  background:conic-gradient(from 0deg,#0a84ff,#bf5af2,#ff2d55,#ffd60a,#30d158,#0a84ff);
+  filter:blur(9px);opacity:.22;animation:spinGlow 10s linear infinite;transition:opacity .5s ease}
+.music-widget.is-playing::before{opacity:.55;animation-duration:5s}
+@keyframes spinGlow{to{transform:rotate(360deg)}}
+.yt-thumb-wrap{width:52px;height:52px;border-radius:10px;flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(135deg,#1a1a2e,#16213e);transition:width .25s,height .25s,box-shadow .3s}
 .music-widget.size-med .yt-thumb-wrap{width:76px;height:76px}
 .music-widget.size-lg .yt-thumb-wrap{width:100%;height:auto;aspect-ratio:16/9;border-radius:12px}
-.yt-overlay{position:absolute;inset:0;z-index:2;cursor:pointer;display:flex;align-items:center;justify-content:center}
-.yt-overlay::before{content:"🎵";font-size:20px;opacity:.7;pointer-events:none}
+.music-widget.is-playing .yt-thumb-wrap{box-shadow:0 0 0 1.5px rgba(10,132,255,.5),0 0 18px rgba(10,132,255,.35)}
+.yt-overlay{position:absolute;inset:0;z-index:2;cursor:pointer;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,rgba(0,0,0,.12),transparent 70%);transition:background .2s}
+.yt-thumb-wrap:hover .yt-overlay{background:rgba(0,0,0,.28)}
+.yt-overlay::before{content:"🎵";font-size:20px;opacity:.75;pointer-events:none;display:inline-block;transition:transform .2s ease}
+.yt-thumb-wrap:hover .yt-overlay::before{transform:scale(1.18)}
+.music-widget:not(.is-playing) .yt-overlay::before{animation:notePulse 2.2s ease-in-out infinite}
+@keyframes notePulse{0%,100%{opacity:.65;transform:scale(1)}50%{opacity:1;transform:scale(1.1)}}
 .music-widget.size-med .yt-overlay::before{font-size:26px}
 .music-widget.size-lg .yt-overlay::before{font-size:38px}
 .music-title{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-widget.is-playing .music-title{background:linear-gradient(90deg,#fff 0%,#9fd0ff 25%,#fff 50%,#9fd0ff 75%,#fff 100%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:titleShimmer 3.5s linear infinite}
+@keyframes titleShimmer{to{background-position:-250% 0}}
 .music-widget.size-med .music-title,.music-widget.size-lg .music-title{font-size:16px}
-.music-artist{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:2px}
+.music-artist{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:2px;transition:color .3s}
+.music-widget.is-playing .music-artist{color:rgba(52,199,89,.85)}
 .music-widget.size-med .music-artist,.music-widget.size-lg .music-artist{font-size:12px}
 .music-controls{display:flex;align-items:center;gap:5px;margin-top:6px}
-.mc-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);font-size:15px;padding:0;line-height:1;transition:color .15s;display:flex;align-items:center}
-.mc-btn:hover{color:#fff}
+.mc-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);font-size:15px;padding:0;line-height:1;transition:color .15s,transform .12s;display:flex;align-items:center;position:relative}
+.mc-btn:hover{color:#fff;transform:scale(1.18)}
+.mc-btn:active{transform:scale(.85)}
 .music-widget.size-med .mc-btn,.music-widget.size-lg .mc-btn{font-size:18px}
-.music-close{background:none;border:none;color:rgba(255,255,255,.28);font-size:12px;cursor:pointer;position:absolute;top:8px;right:9px;line-height:1;z-index:3}
-.music-close:hover{color:#fff}
-.music-size-btn{background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;padding:0;line-height:1;transition:color .15s;display:flex;align-items:center}
-.music-size-btn:hover{color:#fff}
+#yt-play-btn.playing-glow::after{content:'';position:absolute;inset:-7px;border-radius:50%;border:1.5px solid rgba(10,132,255,.55);animation:pulseRing 1.6s ease-out infinite;pointer-events:none}
+@keyframes pulseRing{0%{transform:scale(.75);opacity:.9}100%{transform:scale(1.7);opacity:0}}
+.music-close{background:none;border:none;color:rgba(255,255,255,.28);font-size:12px;cursor:pointer;position:absolute;top:8px;right:9px;line-height:1;z-index:3;transition:color .15s,transform .15s}
+.music-close:hover{color:#fff;transform:rotate(90deg)}
+.music-size-btn{background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;padding:0;line-height:1;transition:color .15s,transform .15s;display:flex;align-items:center}
+.music-size-btn:hover{color:#fff;transform:scale(1.2) rotate(45deg)}
 .mc-vol{width:46px;height:14px;margin-left:6px;flex-shrink:0;accent-color:#0a84ff;cursor:pointer}
 .music-widget.size-med .mc-vol,.music-widget.size-lg .mc-vol{width:70px}
 .eq-bars{position:absolute;left:5px;bottom:5px;display:flex;align-items:flex-end;gap:2px;height:12px;z-index:3;pointer-events:none;opacity:0;transition:opacity .2s}
 .music-widget.is-playing .eq-bars{opacity:1}
-.eq-bars span{width:3px;background:#fff;border-radius:1px;animation:eqBounce .9s ease-in-out infinite;box-shadow:0 0 4px rgba(255,255,255,.6)}
+.eq-bars span{width:3px;border-radius:1px;animation:eqBounce .9s ease-in-out infinite;background:linear-gradient(180deg,#5ac8fa,#0a84ff);box-shadow:0 0 5px rgba(10,132,255,.8)}
 .eq-bars span:nth-child(1){animation-delay:0s}
-.eq-bars span:nth-child(2){animation-delay:.2s}
-.eq-bars span:nth-child(3){animation-delay:.4s}
+.eq-bars span:nth-child(2){animation-delay:.2s;background:linear-gradient(180deg,#bf5af2,#7d3fd8)}
+.eq-bars span:nth-child(3){animation-delay:.4s;background:linear-gradient(180deg,#30d158,#1a8c36)}
 @keyframes eqBounce{0%,100%{height:3px}50%{height:12px}}
 .music-widget.size-lg .eq-bars{height:18px;left:8px;bottom:8px}
 .music-widget.size-lg .eq-bars span{width:4px}
@@ -1229,9 +1248,12 @@ function onYouTubeIframeAPIReady(){
 
 function updateYtBtn(){
   const btn=document.getElementById('yt-play-btn');
-  if(btn)btn.innerHTML=ytPlaying
-    ?'<i class="ti ti-player-pause"></i>'
-    :'<i class="ti ti-player-play"></i>';
+  if(btn){
+    btn.innerHTML=ytPlaying
+      ?'<i class="ti ti-player-pause"></i>'
+      :'<i class="ti ti-player-play"></i>';
+    btn.classList.toggle('playing-glow',ytPlaying);
+  }
   const widget=document.getElementById('music-widget');
   if(widget)widget.classList.toggle('is-playing',ytPlaying);
 }
@@ -2617,8 +2639,8 @@ function toggleFaq(el){
 
   // Mouse
   el.addEventListener('mousedown',e=>{
-    // Don't drag when clicking buttons
-    if(e.target.closest('button')||e.target.closest('a')||e.target.closest('#yt-player'))return;
+    // Don't drag when clicking buttons, links, or the volume slider
+    if(e.target.closest('button')||e.target.closest('a')||e.target.closest('input')||e.target.closest('#yt-player'))return;
     e.preventDefault();
     startDrag(e.clientX,e.clientY);
   });
@@ -2627,7 +2649,7 @@ function toggleFaq(el){
 
   // Touch
   el.addEventListener('touchstart',e=>{
-    if(e.target.closest('button')||e.target.closest('a'))return;
+    if(e.target.closest('button')||e.target.closest('a')||e.target.closest('input'))return;
     const t=e.touches[0];
     startDrag(t.clientX,t.clientY);
   },{passive:true});
