@@ -47,25 +47,42 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 .video-bg.fade{opacity:0}
 
 /* Music widget */
-.music-widget{position:fixed;bottom:90px;right:16px;z-index:60;cursor:grab;user-select:none;background:rgba(22,22,26,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:.5px solid rgba(255,255,255,.14);border-radius:16px;padding:10px 12px 10px 10px;width:240px;height:72px;min-width:190px;min-height:64px;max-width:520px;max-height:420px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:opacity .3s,transform .3s;resize:both;overflow:hidden}
+.music-widget{position:fixed;bottom:90px;right:16px;z-index:60;cursor:grab;user-select:none;background:rgba(22,22,26,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:.5px solid rgba(255,255,255,.14);border-radius:16px;padding:10px 12px 10px 10px;width:240px;height:72px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:opacity .3s,transform .3s,width .25s ease,height .25s ease;overflow:hidden}
 .music-widget.hidden{opacity:0;transform:translateY(10px);pointer-events:none}
-.music-widget.large{flex-direction:column;align-items:stretch;padding:14px 14px 12px}
-.yt-thumb-wrap{width:52px;height:52px;border-radius:10px;flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(135deg,#1a1a2e,#16213e);transition:width .15s,height .15s}
-.music-widget.large .yt-thumb-wrap{width:100%;height:auto;aspect-ratio:16/9;border-radius:12px}
+.music-widget.size-med{width:340px;height:100px}
+.music-widget.size-lg{width:320px;height:340px;flex-direction:column;align-items:stretch;padding:14px 14px 12px}
+.yt-thumb-wrap{width:52px;height:52px;border-radius:10px;flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(135deg,#1a1a2e,#16213e);transition:width .25s,height .25s}
+.music-widget.size-med .yt-thumb-wrap{width:76px;height:76px}
+.music-widget.size-lg .yt-thumb-wrap{width:100%;height:auto;aspect-ratio:16/9;border-radius:12px}
 .yt-overlay{position:absolute;inset:0;z-index:2;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .yt-overlay::before{content:"🎵";font-size:20px;opacity:.7;pointer-events:none}
-.music-widget.large .yt-overlay::before{font-size:38px}
+.music-widget.size-med .yt-overlay::before{font-size:26px}
+.music-widget.size-lg .yt-overlay::before{font-size:38px}
 .music-title{font-size:14px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-widget.size-med .music-title,.music-widget.size-lg .music-title{font-size:16px}
 .music-artist{font-size:10.5px;color:rgba(255,255,255,.45);margin-top:2px}
+.music-widget.size-med .music-artist,.music-widget.size-lg .music-artist{font-size:12px}
 .music-controls{display:flex;align-items:center;gap:5px;margin-top:6px}
 .mc-btn{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.65);font-size:15px;padding:0;line-height:1;transition:color .15s;display:flex;align-items:center}
 .mc-btn:hover{color:#fff}
-.music-widget.large .mc-btn{font-size:20px}
+.music-widget.size-med .mc-btn,.music-widget.size-lg .mc-btn{font-size:18px}
 .music-close{background:none;border:none;color:rgba(255,255,255,.28);font-size:12px;cursor:pointer;position:absolute;top:8px;right:9px;line-height:1;z-index:3}
 .music-close:hover{color:#fff}
-.music-resize-hint{position:absolute;bottom:2px;right:3px;width:11px;height:11px;pointer-events:none;opacity:.35;z-index:2}
-.music-resize-hint svg{width:100%;height:100%}
-.music-play-hint{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:9.5px;color:rgba(255,255,255,.4);white-space:nowrap;pointer-events:none;z-index:2;font-family:'Plus Jakarta Sans',sans-serif}
+.music-size-btn{background:none;border:none;color:rgba(255,255,255,.5);font-size:13px;cursor:pointer;padding:0;line-height:1;transition:color .15s;display:flex;align-items:center}
+.music-size-btn:hover{color:#fff}
+.mc-vol{width:46px;height:14px;margin-left:6px;flex-shrink:0;accent-color:#0a84ff;cursor:pointer}
+.music-widget.size-med .mc-vol,.music-widget.size-lg .mc-vol{width:70px}
+.eq-bars{position:absolute;left:5px;bottom:5px;display:flex;align-items:flex-end;gap:2px;height:12px;z-index:3;pointer-events:none;opacity:0;transition:opacity .2s}
+.music-widget.is-playing .eq-bars{opacity:1}
+.eq-bars span{width:3px;background:#fff;border-radius:1px;animation:eqBounce .9s ease-in-out infinite;box-shadow:0 0 4px rgba(255,255,255,.6)}
+.eq-bars span:nth-child(1){animation-delay:0s}
+.eq-bars span:nth-child(2){animation-delay:.2s}
+.eq-bars span:nth-child(3){animation-delay:.4s}
+@keyframes eqBounce{0%,100%{height:3px}50%{height:12px}}
+.music-widget.size-lg .eq-bars{height:18px;left:8px;bottom:8px}
+.music-widget.size-lg .eq-bars span{width:4px}
+.music-widget.size-lg .eq-bars span{animation-name:eqBounceLg}
+@keyframes eqBounceLg{0%,100%{height:5px}50%{height:18px}}
 
 /* Wallpaper panel */
 .wp-panel{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:500;width:360px;background:rgba(244,244,248,.94);backdrop-filter:blur(32px);border:.5px solid rgba(255,255,255,.7);border-radius:14px;overflow:hidden;box-shadow:0 28px 72px rgba(0,0,0,.55);display:none}
@@ -570,8 +587,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
   .diico{width:40px!important;height:40px!important;border-radius:10px!important}
   .di{width:40px!important;padding-bottom:6px}
   .di-tip{display:none}
-  .music-widget{bottom:76px;right:8px;width:180px;height:64px;resize:none}
-  .music-resize-hint{display:none}
+  .music-widget{bottom:76px;right:8px;width:180px;height:64px}
+  .music-widget.size-med{width:220px;height:80px}
+  .music-widget.size-lg{width:220px;height:240px}
   .wp-panel{width:calc(100vw - 24px)!important}
   .sp-box{width:calc(100vw - 24px)}
   .cgrid{grid-template-columns:1fr!important}
@@ -667,6 +685,7 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
       <!-- YT API mounts here -->
       <div id="yt-player"></div>
       <div class="yt-overlay" onclick="ytTogglePlay()"></div>
+      <div class="eq-bars" id="eq-bars"><span></span><span></span><span></span></div>
     </div>
     <div style="flex:1;min-width:0">
       <div class="music-title">DevEdge Radio 🎵</div>
@@ -676,10 +695,9 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
         <button class="mc-btn" id="yt-play-btn" onclick="ytTogglePlay()" title="Play/Pause"><i class="ti ti-player-play"></i></button>
         <button class="mc-btn" onclick="ytNext()" title="Next"><i class="ti ti-player-skip-forward"></i></button>
         <button class="mc-btn" id="yt-mute-btn" onclick="ytToggleMute()" title="Mute" style="margin-left:auto"><i class="ti ti-volume"></i></button>
+        <input type="range" class="mc-vol" id="yt-vol-slider" min="0" max="100" value="55" oninput="ytSetVolume(this.value)" title="Volume">
+        <button class="music-size-btn" id="yt-size-btn" onclick="ytCycleSize()" title="Resize player"><i class="ti ti-arrows-diagonal"></i></button>
       </div>
-    </div>
-    <div class="music-resize-hint" title="Drag to resize">
-      <svg viewBox="0 0 12 12" fill="none"><path d="M10 2L2 10M10 6L6 10M10 10L10 10" stroke="white" stroke-width="1.3" stroke-linecap="round"/></svg>
     </div>
   </div>
 
@@ -1214,6 +1232,8 @@ function updateYtBtn(){
   if(btn)btn.innerHTML=ytPlaying
     ?'<i class="ti ti-player-pause"></i>'
     :'<i class="ti ti-player-play"></i>';
+  const widget=document.getElementById('music-widget');
+  if(widget)widget.classList.toggle('is-playing',ytPlaying);
 }
 
 function updateTrackInfo(){
@@ -1245,6 +1265,7 @@ function ytPrev(){
   setTimeout(updateTrackInfo,800);
 }
 
+let ytLastVolume=55;
 function ytToggleMute(){
   if(!ytReady||!ytPlayer)return;
   ytMuted=!ytMuted;
@@ -1253,6 +1274,26 @@ function ytToggleMute(){
   if(btn)btn.innerHTML=ytMuted
     ?'<i class="ti ti-volume-off"></i>'
     :'<i class="ti ti-volume"></i>';
+  const slider=document.getElementById('yt-vol-slider');
+  if(slider)slider.value=ytMuted?0:ytLastVolume;
+}
+
+function ytSetVolume(v){
+  v=Number(v);
+  if(!ytReady||!ytPlayer)return;
+  ytPlayer.setVolume(v);
+  const btn=document.getElementById('yt-mute-btn');
+  if(v===0){
+    ytMuted=true;
+    ytPlayer.mute();
+    if(btn)btn.innerHTML='<i class="ti ti-volume-off"></i>';
+  } else {
+    ytLastVolume=v;
+    if(ytMuted){ytMuted=false;ytPlayer.unMute();}
+    if(btn)btn.innerHTML=v<40
+      ?'<i class="ti ti-volume-2"></i>'
+      :'<i class="ti ti-volume"></i>';
+  }
 }
 
 function showMusicWidget(){
@@ -1262,24 +1303,26 @@ function hideMusicWidget(){
   document.getElementById('music-widget').classList.add('hidden');
 }
 
-// ── Resize the music widget — user can drag the bottom-right corner ──
+// ── Music widget size toggle — small → medium → large → small ──
+const ytSizes=['','size-med','size-lg'];
+let ytSizeIdx=0;
 function ytResize(){
   const wrap=document.getElementById('yt-thumb-wrap');
-  const widget=document.getElementById('music-widget');
-  if(!wrap||!widget)return;
-  const isLarge=widget.offsetWidth>320;
-  widget.classList.toggle('large',isLarge);
-  if(ytPlayer&&ytReady&&typeof ytPlayer.setSize==='function'){
+  if(!wrap||!ytPlayer||!ytReady||typeof ytPlayer.setSize!=='function')return;
+  // Let the CSS transition finish before measuring
+  setTimeout(()=>{
     const w=wrap.clientWidth||52,h=wrap.clientHeight||52;
     try{ytPlayer.setSize(w,h);}catch(e){}
-  }
+  },260);
 }
-(function(){
+function ytCycleSize(){
   const widget=document.getElementById('music-widget');
-  if(!widget||typeof ResizeObserver==='undefined')return;
-  const ro=new ResizeObserver(()=>ytResize());
-  ro.observe(widget);
-})();
+  if(!widget)return;
+  ytSizes.forEach(c=>{if(c)widget.classList.remove(c);});
+  ytSizeIdx=(ytSizeIdx+1)%ytSizes.length;
+  if(ytSizes[ytSizeIdx])widget.classList.add(ytSizes[ytSizeIdx]);
+  ytResize();
+}
 
 // ── Windows ──
 let activeWin=null;
@@ -2576,9 +2619,6 @@ function toggleFaq(el){
   el.addEventListener('mousedown',e=>{
     // Don't drag when clicking buttons
     if(e.target.closest('button')||e.target.closest('a')||e.target.closest('#yt-player'))return;
-    // Don't drag when grabbing the native resize handle (bottom-right ~16px corner)
-    const r=el.getBoundingClientRect();
-    if(e.clientX>r.right-16&&e.clientY>r.bottom-16)return;
     e.preventDefault();
     startDrag(e.clientX,e.clientY);
   });
