@@ -47,18 +47,29 @@ html,body{width:100%;height:100%;overflow:hidden;font-family:'Plus Jakarta Sans'
 .video-bg.fade{opacity:0}
 
 /* Music widget */
-.music-widget{position:fixed;bottom:90px;right:16px;z-index:60;cursor:grab;user-select:none;background:linear-gradient(160deg,rgba(32,32,40,.94),rgba(14,14,20,.92));backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:.5px solid rgba(255,255,255,.16);border-radius:16px;padding:10px 12px 10px 10px;width:240px;height:72px;display:flex;gap:10px;align-items:center;box-shadow:0 8px 32px rgba(0,0,0,.5);transition:opacity .3s,transform .3s,width .25s ease,height .25s ease,box-shadow .4s ease;overflow:visible}
+@property --border-angle{syntax:'<angle>';inherits:false;initial-value:0deg}
+.music-widget{position:fixed;bottom:90px;right:16px;z-index:60;cursor:grab;user-select:none;
+  border:2px solid transparent;border-radius:16px;
+  background:
+    linear-gradient(160deg,rgba(32,32,40,.94),rgba(14,14,20,.92)) padding-box,
+    conic-gradient(from var(--border-angle),rgba(255,255,255,.08) 0deg,rgba(255,255,255,.08) 260deg,#5ac8fa 300deg,#0a84ff 328deg,rgba(255,255,255,.08) 360deg) border-box;
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  padding:10px 12px 10px 10px;width:240px;height:72px;display:flex;gap:10px;align-items:center;
+  box-shadow:0 8px 32px rgba(0,0,0,.5);
+  transition:opacity .3s,transform .3s,width .25s ease,height .25s ease,box-shadow .4s ease;
+  overflow:visible;
+  animation:borderRotate 6s linear infinite}
 .music-widget.hidden{opacity:0;transform:translateY(10px);pointer-events:none}
 .music-widget.size-med{width:340px;height:100px}
 .music-widget.size-lg{width:320px;height:340px;flex-direction:column;align-items:stretch;padding:14px 14px 12px}
 .music-widget:hover{box-shadow:0 10px 40px rgba(0,0,0,.55)}
-.music-widget.is-playing{box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 26px rgba(10,132,255,.3)}
-/* Rotating neon halo — glows softly at rest, brightens and spins faster while playing */
-.music-widget::before{content:'';position:absolute;inset:-3px;border-radius:19px;z-index:-1;pointer-events:none;
-  background:conic-gradient(from 0deg,#0a84ff,#bf5af2,#ff2d55,#ffd60a,#30d158,#0a84ff);
-  filter:blur(9px);opacity:.22;animation:spinGlow 10s linear infinite;transition:opacity .5s ease}
-.music-widget.is-playing::before{opacity:.55;animation-duration:5s}
-@keyframes spinGlow{to{transform:rotate(360deg)}}
+@keyframes borderRotate{to{--border-angle:360deg}}
+/* While playing: the light sweeps faster and the border breathes/pulses in a loop */
+.music-widget.is-playing{animation:borderRotate 2.6s linear infinite,borderPulse 1.15s ease-in-out infinite}
+@keyframes borderPulse{
+  0%,100%{box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 12px rgba(10,132,255,.2)}
+  50%{box-shadow:0 8px 32px rgba(0,0,0,.5),0 0 28px rgba(10,132,255,.55)}
+}
 .yt-thumb-wrap{width:52px;height:52px;border-radius:10px;flex-shrink:0;position:relative;overflow:hidden;background:linear-gradient(135deg,#1a1a2e,#16213e);transition:width .25s,height .25s,box-shadow .3s}
 .music-widget.size-med .yt-thumb-wrap{width:76px;height:76px}
 .music-widget.size-lg .yt-thumb-wrap{width:100%;height:auto;aspect-ratio:16/9;border-radius:12px}
