@@ -258,19 +258,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 @media(max-width:768px){.testi-grid{grid-template-columns:1fr;}}
 
 /* =====================
-   TEAM — ORBIT LAYOUT
-   Center node = the person in focus. Satellites orbit around them.
-   Click a satellite to swap it into the center (with a flying grow/shrink
-   transition). Center auto-advances every 8s, pauses on interaction.
-   Ring also drifts subtly as the section scrolls through the viewport.
+   TEAM — NETWORK / NODE LAYOUT
+   Center node = the person in focus, shown as a flip card: front is their
+   photo in a tech reticle frame, back is a terminal-style bio panel that
+   flips into view on click. Satellites are node connections either side,
+   linked to center with circuit-style trace lines. Center auto-advances,
+   pauses on interaction.
    ===================== */
 :root{
-  --orbit-wrap-size:640px;
-  --orbit-wrap-height:420px;
-  --orbit-center-size:280px;
+  --orbit-wrap-size:680px;
+  --orbit-wrap-height:460px;
+  --orbit-center-size:340px;
   --orbit-sat-size:112px;
 }
-#team{overflow:hidden;}
+#team{}
 .team-section-inner{max-width:var(--max-w);margin:0 auto;padding:100px var(--pad-x);}
 
 .orbit-wrap{
@@ -278,15 +279,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
   width:min(var(--orbit-wrap-size),94vw);
   height:var(--orbit-wrap-height);
   margin:64px auto 30px;
+  background-image:linear-gradient(rgba(75,163,199,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(75,163,199,.05) 1px,transparent 1px);
+  background-size:28px 28px;
+  background-position:center;
 }
-.orbit-dashring{
-  position:absolute;top:8%;bottom:8%;left:4%;right:4%;border-radius:50%;
-  border:1px dashed rgba(255,107,43,.16);
-  animation:orbitSpin 90s linear infinite;pointer-events:none;
-}
-.orbit-dashring.r2{top:3%;bottom:3%;left:1.5%;right:1.5%;border-color:rgba(75,163,199,.10);animation-duration:130s;animation-direction:reverse;}
-@keyframes orbitSpin{to{transform:rotate(360deg);}}
-.orbit-glow{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(255,107,43,.10),transparent 62%);pointer-events:none;}
+.orbit-links{position:absolute;inset:0;width:100%;height:100%;z-index:1;pointer-events:none;overflow:visible;}
+.orbit-links line{stroke:var(--accent);stroke-width:1;stroke-dasharray:4 5;opacity:.28;transition:opacity .3s;}
+.orbit-links line.lit{stroke:var(--cyan);opacity:.55;}
 
 .satellite{
   position:absolute;top:50%;left:50%;
@@ -312,30 +311,42 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .orbit-wrap.transitioning .satellite:not(.is-flying-source){opacity:.3;pointer-events:none;}
 
 .orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--orbit-center-size);z-index:5;text-align:center;}
-.center-ring{
-  width:var(--orbit-center-size);height:var(--orbit-center-size);border-radius:50%;padding:5px;position:relative;cursor:pointer;
-  background:conic-gradient(from var(--ang,0deg),var(--cyan),var(--blue),var(--cyan));
-  animation:ringSpin 6s linear infinite;transition:box-shadow .3s,opacity .25s;
-}
-@property --ang{syntax:'<angle>';inherits:true;initial-value:0deg;}
-@keyframes ringSpin{to{--ang:360deg;}}
-.center-ring:hover,.center-ring.expanded{box-shadow:0 0 50px rgba(255,107,43,.34);}
-.center-avatar-wrap{width:100%;height:100%;border-radius:50%;overflow:hidden;background:var(--dark3);position:relative;}
-.center-avatar-wrap img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
-.center-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--text);font-size:calc(var(--orbit-center-size) * 0.16);background:linear-gradient(150deg,rgba(255,107,43,.16),rgba(245,158,11,.1));}
-.center-name{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.15rem;margin-top:18px;transition:opacity .2s;}
-.center-role{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-top:6px;transition:opacity .2s;}
-.orbit-center.is-fading .center-name,.orbit-center.is-fading .center-role{opacity:0;}
 
-.center-detail{
-  position:absolute;top:calc(100% + 16px);left:50%;transform:translateX(-50%) translateY(-6px);
-  width:300px;background:var(--dark3);border:1px solid rgba(255,107,43,.22);border-radius:12px;padding:18px 20px;
-  opacity:0;pointer-events:none;transition:opacity .28s ease,transform .28s ease;box-shadow:0 20px 50px rgba(0,0,0,.5);z-index:10;text-align:left;
-}
-.orbit-center.expanded .center-detail{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0);}
-.center-detail::before{content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:var(--dark3);border-left:1px solid rgba(255,107,43,.22);border-top:1px solid rgba(255,107,43,.22);}
-.center-detail p{font-size:.88rem;color:rgba(205,214,244,.75);line-height:1.65;}
-.center-detail .cd-link{display:inline-block;margin-top:12px;padding:6px 14px;background:var(--grad);color:#000;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.05em;border-radius:3px;text-decoration:none;}
+.flip-scene{width:var(--orbit-center-size);height:var(--orbit-center-size);margin:0 auto;perspective:1400px;}
+.flip-card{position:relative;width:100%;height:100%;cursor:pointer;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.4,0,.2,1);}
+.flip-card.flipped{transform:rotateY(180deg);}
+.flip-face{position:absolute;inset:0;backface-visibility:hidden;border-radius:20px;border:1px solid rgba(255,107,43,.25);background:var(--dark3);}
+.flip-front{display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.flip-back{transform:rotateY(180deg);overflow:hidden;display:flex;flex-direction:column;}
+
+/* corner-bracket reticle sits over the full-bleed photo — tech viewfinder accent */
+.tech-frame{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.tech-frame .corner{position:absolute;width:20px;height:20px;border:2px solid var(--cyan);opacity:.7;transition:opacity .3s;z-index:2;}
+.tech-frame .corner.tl{top:12px;left:12px;border-right:none;border-bottom:none;}
+.tech-frame .corner.tr{top:12px;right:12px;border-left:none;border-bottom:none;}
+.tech-frame .corner.bl{bottom:12px;left:12px;border-right:none;border-top:none;}
+.tech-frame .corner.br{bottom:12px;right:12px;border-left:none;border-top:none;}
+.flip-card:hover .tech-frame .corner{opacity:1;}
+.tech-scan{position:absolute;left:0;right:0;top:50%;height:2px;background:linear-gradient(90deg,transparent,var(--cyan),transparent);opacity:.55;animation:techScan 3.2s ease-in-out infinite;pointer-events:none;z-index:2;}
+@keyframes techScan{0%,100%{top:8%;opacity:0;}10%{opacity:.6;}50%{top:92%;opacity:.6;}60%{opacity:0;}}
+
+.center-avatar-wrap{width:100%;height:100%;border-radius:0;overflow:hidden;background:var(--dark2);position:relative;}
+.center-avatar-wrap img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
+.center-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--text);font-size:calc(var(--orbit-center-size) * 0.13);background:linear-gradient(150deg,rgba(255,107,43,.16),rgba(245,158,11,.1));}
+
+.flip-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text);opacity:.85;pointer-events:none;z-index:2;background:rgba(6,8,16,.55);padding:3px 9px;border-radius:3px;backdrop-filter:blur(2px);}
+
+.term-bar{background:var(--dark2);padding:10px 14px;display:flex;align-items:center;gap:6px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.term-bar .td{width:8px;height:8px;}
+.term-bar .term-title{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--muted);margin-left:6px;}
+.term-body{padding:16px 18px;overflow-y:auto;flex:1;text-align:left;}
+.term-body p{font-family:'JetBrains Mono',monospace;font-size:.74rem;line-height:1.75;color:rgba(205,214,244,.82);}
+.term-body p::before{content:'// ';color:var(--cyan);}
+.term-link{display:inline-block;margin-top:12px;padding:6px 14px;background:var(--grad);color:#000;font-family:'JetBrains Mono',monospace;font-size:.6rem;font-weight:700;letter-spacing:.05em;border-radius:3px;text-decoration:none;}
+
+.center-name{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.2rem;margin-top:18px;transition:opacity .2s;}
+.center-role{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-top:6px;transition:opacity .2s;}
+.orbit-center.is-fading .center-name,.orbit-center.is-fading .center-role{opacity:0;}
 
 .orbit-dots{display:flex;justify-content:center;gap:9px;margin-top:20px;}
 .orbit-dot{width:7px;height:7px;border-radius:50%;background:var(--border);border:1px solid var(--accent-border);cursor:pointer;transition:background .3s,transform .3s,width .3s;}
@@ -352,21 +363,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .orbit-flyer img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
 
 @media(max-width:1024px){
-  :root{ --orbit-wrap-size:500px; --orbit-wrap-height:320px; --orbit-center-size:210px; --orbit-sat-size:86px; }
-  .center-detail{width:270px;}
+  :root{ --orbit-wrap-size:540px; --orbit-wrap-height:360px; --orbit-center-size:260px; --orbit-sat-size:86px; }
 }
 @media(max-width:640px){
-  :root{ --orbit-wrap-size:380px; --orbit-wrap-height:260px; --orbit-center-size:160px; --orbit-sat-size:68px; }
+  :root{ --orbit-wrap-size:400px; --orbit-wrap-height:300px; --orbit-center-size:200px; --orbit-sat-size:68px; }
   .center-name{font-size:1rem;}
-  .center-detail{width:86vw;max-width:290px;padding:16px 18px;}
   .sat-label{display:none;}
+  .tech-frame .corner{width:14px;height:14px;}
 }
 @media (prefers-reduced-motion: reduce){
-  .center-ring{animation:none;}
-  .orbit-dashring{animation:none;}
-  .satellite{transition:none;}
   .orbit-flyer{transition:none;}
+  .tech-scan{animation:none;display:none;}
+  .flip-card{transition:none;}
 }
+
 
 /* CONTACT */
 .contact-section{padding:100px var(--pad-x);background:var(--dark2);border-top:1px solid var(--border);}
@@ -800,30 +810,43 @@ footer{background:var(--dark2);padding:60px var(--pad-x) 28px;border-top:1px sol
   </div>
 </div>
 
-<!-- TEAM — orbit layout -->
+<!-- TEAM — node/network layout with a flip-card center -->
 <div id="team">
   <div class="team-section-inner">
     <div style="text-align:center;" class="reveal">
       <div class="label-tag" style="justify-content:center;">The Team</div>
       <h2 class="section-title">The People Behind<br><span class="hl">DevEdge Digital</span></h2>
-      <p style="color:rgba(205,214,244,.7);max-width:500px;margin:14px auto 0;line-height:1.8;font-size:1.02rem;">Click a face in orbit to bring them to the center — or hover the center for their full story.</p>
+      <p style="color:rgba(205,214,244,.7);max-width:500px;margin:14px auto 0;line-height:1.8;font-size:1.02rem;">Click a node to bring them to the center. Click the center card to flip it and read their bio.</p>
     </div>
 
     <div class="orbit-wrap" id="orbitWrap">
-      <div class="orbit-glow"></div>
-      <div class="orbit-dashring"></div>
-      <div class="orbit-dashring r2"></div>
+      <svg class="orbit-links" id="orbitLinks"></svg>
 
       <div class="orbit-center" id="orbitCenter">
-        <div class="center-ring" id="centerRing">
-          <div class="center-avatar-wrap" id="centerAvatarWrap">
-            <div class="center-fallback" id="centerFallback"></div>
-            <img id="centerImg" alt="" onerror="this.style.display='none'">
+        <div class="flip-scene">
+          <div class="flip-card" id="flipCard">
+            <div class="flip-face flip-front">
+              <div class="tech-frame">
+                <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+                <div class="tech-scan"></div>
+                <div class="center-avatar-wrap" id="centerAvatarWrap">
+                  <div class="center-fallback" id="centerFallback"></div>
+                  <img id="centerImg" alt="" onerror="this.style.display='none'">
+                </div>
+              </div>
+              <div class="flip-hint">click to flip</div>
+            </div>
+            <div class="flip-face flip-back">
+              <div class="term-bar"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="term-title" id="backTitle"></span></div>
+              <div class="term-body">
+                <p id="backBio"></p>
+                <a id="backLink" class="term-link" target="_blank" style="display:none;"></a>
+              </div>
+            </div>
           </div>
         </div>
         <div class="center-name" id="centerName"></div>
         <div class="center-role" id="centerRole"></div>
-        <div class="center-detail" id="centerDetail"></div>
       </div>
       <!-- satellite buttons are injected by the orbit script below -->
     </div>
@@ -1070,8 +1093,10 @@ document.getElementById('lightbox').addEventListener('click',function(e){if(e.ta
 document.addEventListener("keydown",function(e){var lb=document.getElementById("lightbox");if(!lb.classList.contains("open"))return;if(e.key==="Escape")closeLB();if(e.key==="ArrowLeft")lbMove(-1);if(e.key==="ArrowRight")lbMove(1);});
 
 /* ===============================================================
-   TEAM ORBIT — center node + satellites, click/auto swap with a
-   flying grow/shrink transition, scroll-linked ring drift.
+   TEAM NETWORK — center flip-card + satellite nodes, connected by
+   circuit-trace lines. Click a node to swap it into the center
+   (flying grow/shrink transition). Click the center card to flip it
+   and reveal a terminal-style bio panel on the back.
    =============================================================== */
 (function(){
   var team = [
@@ -1095,21 +1120,25 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
      bio:"Video production specialist focused on storytelling and high-impact content for social and web platforms.", link:null}
   ];
 
-  var wrap    = document.getElementById('orbitWrap');
-  var center  = document.getElementById('orbitCenter');
-  var ring2   = document.getElementById('centerRing');
-  var avWrap  = document.getElementById('centerAvatarWrap');
-  var img     = document.getElementById('centerImg');
-  var fb      = document.getElementById('centerFallback');
-  var nameEl  = document.getElementById('centerName');
-  var roleEl  = document.getElementById('centerRole');
-  var detail  = document.getElementById('centerDetail');
-  var dotsEl  = document.getElementById('orbitDots');
+  var wrap     = document.getElementById('orbitWrap');
+  var center   = document.getElementById('orbitCenter');
+  var flipCard = document.getElementById('flipCard');
+  var avWrap   = document.getElementById('centerAvatarWrap');
+  var img      = document.getElementById('centerImg');
+  var fb       = document.getElementById('centerFallback');
+  var nameEl   = document.getElementById('centerName');
+  var roleEl   = document.getElementById('centerRole');
+  var backTitle= document.getElementById('backTitle');
+  var backBio  = document.getElementById('backBio');
+  var backLink = document.getElementById('backLink');
+  var dotsEl   = document.getElementById('orbitDots');
+  var linksSvg = document.getElementById('orbitLinks');
   if(!wrap) return; // team section not present on this page
 
   var n = team.length;
   var centerIndex = 0;
   var satEls = [];
+  var lineEls = [];
   var timer;
   var scrollDrift = 0;
   var animating = false;
@@ -1126,6 +1155,10 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
       '<div class="sat-label"></div>';
     wrap.appendChild(btn);
     satEls.push(btn);
+
+    var line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    linksSvg.appendChild(line);
+    lineEls.push(line);
   }
 
   team.forEach(function(_, i){
@@ -1138,8 +1171,13 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 
   function positionSatellites(){
     var wrapW    = wrap.offsetWidth;
+    var wrapH    = wrap.offsetHeight;
     var satR     = satEls[0].offsetWidth / 2;
-    var centerR  = ring2.offsetWidth / 2;
+    var centerR  = flipCard.offsetWidth / 2;
+
+    linksSvg.setAttribute('viewBox', '0 0 ' + wrapW + ' ' + wrapH);
+    linksSvg.setAttribute('width', wrapW);
+    linksSvg.setAttribute('height', wrapH);
 
     // columns anchored near the left/right edges of the wrap
     var colX = Math.max(centerR + satR + 20, wrapW / 2 - satR - 10);
@@ -1147,7 +1185,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     var rowGap = satR * 2 + 26;
     var rowOffsets = [-rowGap, 0, rowGap];
     // pull the top/bottom rows in slightly and let the middle row sit furthest
-    // out — turns a stiff straight column into a gentle arc, more orbit-like
+    // out — turns a stiff straight column into a gentle arc
     var rowArcFactor = [0.86, 1, 0.86];
 
     satEls.forEach(function(el, k){
@@ -1157,6 +1195,13 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
       var y = rowOffsets[row] + scrollDrift;
       el.style.left = 'calc(50% + ' + x + 'px)';
       el.style.top  = 'calc(50% + ' + y + 'px)';
+
+      // draw the circuit-trace line from this node to the center
+      var line = lineEls[k];
+      line.setAttribute('x1', wrapW / 2);
+      line.setAttribute('y1', wrapH / 2);
+      line.setAttribute('x2', wrapW / 2 + x);
+      line.setAttribute('y2', wrapH / 2 + y);
     });
   }
 
@@ -1164,16 +1209,23 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     img.style.display = '';
     img.src = data.photo;
     img.alt = data.name;
-    fb.textContent = ''; // no initials in the center — photo or plain gradient only
+    fb.textContent = '';
     nameEl.textContent = data.name;
     roleEl.textContent = data.role;
-    detail.innerHTML =
-      '<p>' + data.bio + '</p>' +
-      (data.link ? '<a class="cd-link" href="' + data.link + '" target="_blank">' + data.linkLabel + ' →</a>' : '');
+    backTitle.textContent = data.name.toLowerCase().replace(/[^a-z]/g, '') + '.bio';
+    backBio.textContent = data.bio;
+    if (data.link) {
+      backLink.href = data.link;
+      backLink.textContent = data.linkLabel + ' →';
+      backLink.style.display = '';
+    } else {
+      backLink.style.display = 'none';
+    }
   }
 
   function render(immediate){
     var data = team[centerIndex];
+    flipCard.classList.remove('flipped'); // always show the new person face-first
     if (immediate) {
       applyCenterContent(data);
     } else {
@@ -1213,6 +1265,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     el.style.top    = fromRect.top + 'px';
     el.style.width  = fromRect.width + 'px';
     el.style.height = fromRect.height + 'px';
+    el.style.borderRadius = growing ? '50%' : '20px';
     el.style.boxShadow   = growing ? '0 0 0 rgba(255,107,43,0)' : '0 0 26px rgba(255,107,43,.28)';
     el.style.borderColor = growing ? 'rgba(255,255,255,.15)' : 'rgba(255,107,43,.4)';
     el.innerHTML = '<img src="' + photoSrc + '" onerror="this.style.display=\'none\'">';
@@ -1223,6 +1276,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
         el.style.top    = toRect.top + 'px';
         el.style.width  = toRect.width + 'px';
         el.style.height = toRect.height + 'px';
+        el.style.borderRadius = growing ? '20px' : '50%';
         el.style.boxShadow    = growing ? '0 0 40px rgba(255,107,43,.35)' : '0 0 0 rgba(255,107,43,0)';
         el.style.borderColor   = growing ? 'rgba(255,107,43,.4)' : 'rgba(255,255,255,.15)';
       });
@@ -1232,7 +1286,9 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 
   function goTo(idx){
     if (animating) return;
-    if (idx === centerIndex) { toggleDetail(); return; }
+    if (idx === centerIndex) { toggleFlip(); return; }
+
+    flipCard.classList.remove('flipped');
 
     if (reduceMotion) {
       centerIndex = idx;
@@ -1242,13 +1298,13 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     }
 
     animating = true;
-    clearInterval(timer);
+    clearTimeout(timer);
 
     var k = (idx - centerIndex - 1 + n) % n;
     var satEl = satEls[k];
 
     var satRect    = relRect(satEl);
-    var centerRect = relRect(ring2);
+    var centerRect = relRect(flipCard);
 
     satEl.classList.add('is-flying-source');
     wrap.classList.add('transitioning');
@@ -1279,21 +1335,26 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     }, 600);
   }
 
-  function toggleDetail(){
-    center.classList.toggle('expanded');
-    ring2.classList.toggle('expanded');
+  function toggleFlip(){
+    flipCard.classList.toggle('flipped');
   }
-  ring2.addEventListener('mouseenter', function(){ center.classList.add('expanded'); ring2.classList.add('expanded'); });
-  ring2.addEventListener('mouseleave', function(){ center.classList.remove('expanded'); ring2.classList.remove('expanded'); });
-  ring2.addEventListener('click', toggleDetail);
+  flipCard.addEventListener('click', toggleFlip);
+  // flip back to the front if you tap/click anywhere else
+  document.addEventListener('click', function(e){
+    if (!center.contains(e.target)) {
+      flipCard.classList.remove('flipped');
+    }
+  });
 
   function resetTimer(){
-    clearInterval(timer);
-    timer = setInterval(function(){
+    clearTimeout(timer);
+    // index 0 is Enald — let him linger; everyone else gets a quick turn
+    var dwell = (centerIndex === 0) ? 22000 : 6000;
+    timer = setTimeout(function(){
       goTo((centerIndex + 1) % n);
-    }, 14000);
+    }, dwell);
   }
-  wrap.addEventListener('mouseenter', function(){ clearInterval(timer); });
+  wrap.addEventListener('mouseenter', function(){ clearTimeout(timer); });
   wrap.addEventListener('mouseleave', resetTimer);
 
   var ticking = false;
