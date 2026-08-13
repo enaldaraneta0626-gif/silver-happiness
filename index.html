@@ -291,11 +291,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .satellite{
   position:absolute;top:50%;left:50%;
   width:var(--orbit-sat-size);height:var(--orbit-sat-size);
-  transform:translate(-50%,-50%);
+  transform:translate(-50%,-50%) scale(1);
   border-radius:50%;cursor:pointer;background:none;border:none;padding:0;
-  transition:left .5s cubic-bezier(.22,1,.36,1),top .5s cubic-bezier(.22,1,.36,1),opacity .3s;
+  transition:left .5s cubic-bezier(.22,1,.36,1),top .5s cubic-bezier(.22,1,.36,1),opacity .5s ease,transform .5s cubic-bezier(.22,1,.36,1);
   z-index:2;will-change:left,top;
 }
+.satellite.pre-mount{opacity:0;transform:translate(-50%,-50%) scale(.5);}
 .satellite-inner{
   width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;
   border:2px solid var(--border);background:var(--dark3);
@@ -1116,7 +1117,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 
   for (var i = 0; i < n - 1; i++) {
     var btn = document.createElement('button');
-    btn.className = 'satellite';
+    btn.className = 'satellite pre-mount';
     btn.innerHTML =
       '<div class="satellite-inner">' +
         '<div class="sat-fallback"></div>' +
@@ -1137,20 +1138,22 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 
   function positionSatellites(){
     var wrapW    = wrap.offsetWidth;
-    var wrapH    = wrap.offsetHeight;
     var satR     = satEls[0].offsetWidth / 2;
     var centerR  = ring2.offsetWidth / 2;
 
     // columns anchored near the left/right edges of the wrap
     var colX = Math.max(centerR + satR + 20, wrapW / 2 - satR - 10);
     // vertical spacing between the 3 stacked satellites in each column
-    var rowGap = satR * 2 + 14;
+    var rowGap = satR * 2 + 26;
     var rowOffsets = [-rowGap, 0, rowGap];
+    // pull the top/bottom rows in slightly and let the middle row sit furthest
+    // out — turns a stiff straight column into a gentle arc, more orbit-like
+    var rowArcFactor = [0.86, 1, 0.86];
 
     satEls.forEach(function(el, k){
       var side = k < 3 ? -1 : 1;          // first 3 = left column, last 3 = right column
       var row  = k % 3;                    // 0 = top, 1 = middle, 2 = bottom
-      var x = side * colX;
+      var x = side * colX * rowArcFactor[row];
       var y = rowOffsets[row] + scrollDrift;
       el.style.left = 'calc(50% + ' + x + 'px)';
       el.style.top  = 'calc(50% + ' + y + 'px)';
@@ -1288,7 +1291,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     clearInterval(timer);
     timer = setInterval(function(){
       goTo((centerIndex + 1) % n);
-    }, 8000);
+    }, 14000);
   }
   wrap.addEventListener('mouseenter', function(){ clearInterval(timer); });
   wrap.addEventListener('mouseleave', resetTimer);
@@ -1314,7 +1317,10 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
   window.addEventListener('resize', positionSatellites);
   positionSatellites();
   updateScrollAngle();
-  render();
+  render(true);
+  satEls.forEach(function(el, k){
+    setTimeout(function(){ el.classList.remove('pre-mount'); }, 80 + k * 70);
+  });
   resetTimer();
 })();
 </script>
