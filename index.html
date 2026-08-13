@@ -188,7 +188,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .proj-dot{width:9px;height:9px;border-radius:50%;}
 .proj-dot.r{background:#FF5F57;}.proj-dot.y{background:#FFBD2E;}.proj-dot.g{background:#28C840;}
 .proj-url{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted);margin-left:8px;}
-.proj-img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;display:block;transition:transform .4s ease;filter:url(#crispShot);image-rendering:-webkit-optimize-contrast;}
+.proj-img{width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;display:block;transition:transform .4s ease;}
 
 /* Nomonomo — flip card revealing the loading screen on the back */
 .proj-flip-scene{width:100%;perspective:1600px;}
@@ -216,14 +216,14 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 /* LIGHTBOX */
 #lightbox{display:none;position:fixed;inset:0;z-index:5000;background:rgba(6,8,16,.96);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:20px;}
 #lightbox.open{display:flex;}
-.lb-inner{max-width:1000px;width:100%;animation:fadeU .3s ease;}
+.lb-inner{max-width:640px;width:100%;animation:fadeU .3s ease;}
 .lb-box{background:var(--dark2);border:1px solid rgba(255,107,43,.2);border-radius:10px;overflow:hidden;}
 .lb-bar{background:var(--dark3);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);}
 .lb-dots{display:flex;align-items:center;gap:8px;}
 .lb-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer;line-height:1;padding:0 4px;transition:color .2s;}
 .lb-close:hover{color:var(--accent);}
 .lb-scroll{max-height:65vh;overflow-y:auto;}
-.lb-scroll img{width:100%;display:block;filter:url(#crispShot);}
+.lb-scroll img{width:100%;display:block;}
 .lb-footer{padding:20px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;border-top:1px solid var(--border);}
 .lb-nav{display:flex;justify-content:center;gap:12px;margin-top:14px;}
 .lb-btn{background:var(--dark2);border:1px solid var(--accent-border);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.8rem;padding:8px 20px;border-radius:3px;cursor:pointer;transition:all .2s;}
@@ -492,15 +492,6 @@ footer{background:var(--dark2);padding:60px var(--pad-x) 28px;border-top:1px sol
 </head>
 <body>
 
-<!-- Reusable render-time sharpen filter for project screenshots — the source
-     images are untouched; this just applies a light unsharp-mask pass at
-     display time so downscaled full-page screenshots read crisper. -->
-<svg width="0" height="0" style="position:absolute;pointer-events:none;">
-  <filter id="crispShot">
-    <feConvolveMatrix order="3" kernelMatrix="0 -1 0 -1 5 -1 0 -1 0" preserveAlpha="true"/>
-  </filter>
-</svg>
-
 <!-- PRELOADER -->
 <div id="preloader">
   <div class="pre-grid"></div>
@@ -726,16 +717,16 @@ footer{background:var(--dark2);padding:60px var(--pad-x) 28px;border-top:1px sol
       <img class="proj-img" loading="lazy" src="proj_freedom.png" alt="Freedom Direct Rx"/>
       <div class="proj-overlay"><div class="proj-info"><div class="proj-title">Freedom Direct Rx</div><div class="proj-tags"><span class="proj-tag">Landing Page</span><span class="proj-tag">Health</span><span class="proj-tag">Conversion</span></div><div class="proj-actions"><button class="proj-preview-btn" onclick="openLB(this)">⤢ Preview</button><a href="https://freedomdirectrx.com" target="_blank" class="proj-link">Visit →</a></div></div></div>
     </div>
-    <div class="proj-card proj-card-flip" data-tags="Restaurant,WordPress,Branding" data-title="Nomonomo" data-url="https://nomonomo.ca" data-img="nomo_page.png" data-desc="Atmospheric restaurant website for a Korean-Japanese bar in Vancouver, BC. Full-screen cinematic design with moody photography, plus an animated loading screen on entry.">
+    <div class="proj-card proj-card-flip" data-tags="Restaurant,WordPress,Branding" data-title="Nomonomo" data-url="https://nomonomo.ca" data-img="nomo%20page.png" data-desc="Atmospheric restaurant website for a Korean-Japanese bar in Vancouver, BC. Full-screen cinematic design with moody photography, plus an animated loading screen on entry.">
       <div class="proj-flip-scene">
         <div class="proj-flip-inner" id="nomoFlip">
           <div class="proj-flip-face proj-flip-front">
             <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">nomonomo.ca</span></div>
-            <img class="proj-img" loading="lazy" src="nomo_page.png" alt="Nomonomo"/>
+            <img class="proj-img" loading="lazy" src="nomo%20page.png" alt="Nomonomo"/>
           </div>
           <div class="proj-flip-face proj-flip-back">
             <div class="proj-browser-bar"><span class="proj-dot r"></span><span class="proj-dot y"></span><span class="proj-dot g"></span><span class="proj-url">nomonomo.ca/loading</span></div>
-            <img class="proj-img" loading="lazy" src="nomo_loading_screen.png" alt="Nomonomo loading screen"/>
+            <img class="proj-img" loading="lazy" src="nomo%20loading%20screen.png" alt="Nomonomo loading screen"/>
           </div>
         </div>
       </div>
