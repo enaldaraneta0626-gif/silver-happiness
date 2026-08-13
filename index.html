@@ -265,8 +265,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
    Ring also drifts subtly as the section scrolls through the viewport.
    ===================== */
 :root{
-  --orbit-wrap-size:700px;
-  --orbit-center-size:250px;
+  --orbit-wrap-size:640px;
+  --orbit-wrap-height:420px;
+  --orbit-center-size:280px;
   --orbit-sat-size:112px;
 }
 #team{overflow:hidden;}
@@ -275,15 +276,15 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .orbit-wrap{
   position:relative;
   width:min(var(--orbit-wrap-size),94vw);
-  aspect-ratio:1;
+  height:var(--orbit-wrap-height);
   margin:64px auto 30px;
 }
 .orbit-dashring{
-  position:absolute;inset:8%;border-radius:50%;
+  position:absolute;top:8%;bottom:8%;left:4%;right:4%;border-radius:50%;
   border:1px dashed rgba(255,107,43,.16);
   animation:orbitSpin 90s linear infinite;pointer-events:none;
 }
-.orbit-dashring.r2{inset:3%;border-color:rgba(75,163,199,.10);animation-duration:130s;animation-direction:reverse;}
+.orbit-dashring.r2{top:3%;bottom:3%;left:1.5%;right:1.5%;border-color:rgba(75,163,199,.10);animation-duration:130s;animation-direction:reverse;}
 @keyframes orbitSpin{to{transform:rotate(360deg);}}
 .orbit-glow{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(255,107,43,.10),transparent 62%);pointer-events:none;}
 
@@ -350,11 +351,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .orbit-flyer img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
 
 @media(max-width:1024px){
-  :root{ --orbit-wrap-size:520px; --orbit-center-size:190px; --orbit-sat-size:86px; }
+  :root{ --orbit-wrap-size:500px; --orbit-wrap-height:320px; --orbit-center-size:210px; --orbit-sat-size:86px; }
   .center-detail{width:270px;}
 }
 @media(max-width:640px){
-  :root{ --orbit-wrap-size:360px; --orbit-center-size:150px; --orbit-sat-size:68px; }
+  :root{ --orbit-wrap-size:380px; --orbit-wrap-height:260px; --orbit-center-size:160px; --orbit-sat-size:68px; }
   .center-name{font-size:1rem;}
   .center-detail{width:86vw;max-width:290px;padding:16px 18px;}
   .sat-label{display:none;}
@@ -1109,7 +1110,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
   var centerIndex = 0;
   var satEls = [];
   var timer;
-  var scrollAngle = 0;
+  var scrollDrift = 0;
   var animating = false;
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1135,38 +1136,50 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
   var dotEls = dotsEl.querySelectorAll('.orbit-dot');
 
   function positionSatellites(){
-    var wrapSize = wrap.offsetWidth;
-    var centerR  = ring2.offsetWidth / 2;
+    var wrapW    = wrap.offsetWidth;
+    var wrapH    = wrap.offsetHeight;
     var satR     = satEls[0].offsetWidth / 2;
-    var maxR     = wrapSize / 2 - satR - 4;
-    var minR     = centerR + satR + 18;
-    var R        = Math.min(maxR, Math.max(minR, wrapSize / 2 * 0.8));
+    var centerR  = ring2.offsetWidth / 2;
+
+    // columns anchored near the left/right edges of the wrap
+    var colX = Math.max(centerR + satR + 20, wrapW / 2 - satR - 10);
+    // vertical spacing between the 3 stacked satellites in each column
+    var rowGap = satR * 2 + 14;
+    var rowOffsets = [-rowGap, 0, rowGap];
 
     satEls.forEach(function(el, k){
-      var baseAngle = -90 + (k + 1) * (360 / n);
-      var angle = (baseAngle + scrollAngle) * Math.PI / 180;
-      var x = Math.cos(angle) * R;
-      var y = Math.sin(angle) * R;
+      var side = k < 3 ? -1 : 1;          // first 3 = left column, last 3 = right column
+      var row  = k % 3;                    // 0 = top, 1 = middle, 2 = bottom
+      var x = side * colX;
+      var y = rowOffsets[row] + scrollDrift;
       el.style.left = 'calc(50% + ' + x + 'px)';
       el.style.top  = 'calc(50% + ' + y + 'px)';
     });
   }
 
-  function render(){
+  function applyCenterContent(data){
+    img.style.display = '';
+    img.src = data.photo;
+    img.alt = data.name;
+    fb.textContent = ''; // no initials in the center — photo or plain gradient only
+    nameEl.textContent = data.name;
+    roleEl.textContent = data.role;
+    detail.innerHTML =
+      '<p>' + data.bio + '</p>' +
+      (data.link ? '<a class="cd-link" href="' + data.link + '" target="_blank">' + data.linkLabel + ' →</a>' : '');
+  }
+
+  function render(immediate){
     var data = team[centerIndex];
-    center.classList.add('is-fading');
-    setTimeout(function(){
-      img.style.display = '';
-      img.src = data.photo;
-      img.alt = data.name;
-      fb.textContent = data.initials;
-      nameEl.textContent = data.name;
-      roleEl.textContent = data.role;
-      detail.innerHTML =
-        '<p>' + data.bio + '</p>' +
-        (data.link ? '<a class="cd-link" href="' + data.link + '" target="_blank">' + data.linkLabel + ' →</a>' : '');
-      center.classList.remove('is-fading');
-    }, 120);
+    if (immediate) {
+      applyCenterContent(data);
+    } else {
+      center.classList.add('is-fading');
+      setTimeout(function(){
+        applyCenterContent(data);
+        center.classList.remove('is-fading');
+      }, 120);
+    }
 
     satEls.forEach(function(el, k){
       var idx = (centerIndex + 1 + k) % n;
@@ -1220,7 +1233,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
 
     if (reduceMotion) {
       centerIndex = idx;
-      render();
+      render(true);
       resetTimer();
       return;
     }
@@ -1244,15 +1257,20 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     makeFlyer(team[centerIndex].photo,  centerRect, satRect,    false);
 
     setTimeout(function(){
+      // apply the new photo/name/bio FIRST, while the center is still hidden
+      // (avWrap opacity 0) — otherwise the old photo flashes back into view
+      // for a frame before the swap, which reads as a twitch.
+      centerIndex = idx;
+      render(true);
+
       var flyers = wrap.querySelectorAll('.orbit-flyer');
       flyers.forEach(function(f){ f.remove(); });
       satEl.classList.remove('is-flying-source');
       wrap.classList.remove('transitioning');
       satEl.style.opacity = '';
       avWrap.style.opacity = '';
+      center.classList.remove('is-fading');
 
-      centerIndex = idx;
-      render();
       animating = false;
       resetTimer();
     }, 600);
@@ -1283,7 +1301,7 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     var centerY = rect.top + rect.height / 2;
     var progress = (vh / 2 - centerY) / vh;
     progress = Math.max(-1, Math.min(1, progress));
-    scrollAngle = progress * 55;
+    scrollDrift = progress * 14; // small vertical bob, not a full spin — keeps the flanking layout intact
     positionSatellites();
   }
   window.addEventListener('scroll', function(){
