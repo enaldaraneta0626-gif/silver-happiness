@@ -258,96 +258,112 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 @media(max-width:768px){.testi-grid{grid-template-columns:1fr;}}
 
 /* =====================
-   TEAM — DESKTOP GRID / MOBILE CAROUSEL
+   TEAM — ORBIT LAYOUT
+   Center node = the person in focus. Satellites orbit around them.
+   Click a satellite to swap it into the center (with a flying grow/shrink
+   transition). Center auto-advances every 8s, pauses on interaction.
+   Ring also drifts subtly as the section scrolls through the viewport.
    ===================== */
-#team { overflow: hidden; }
-.team-section-inner { max-width: var(--max-w); margin: 0 auto; padding: 100px var(--pad-x); }
-
-/* ---- DESKTOP: 4-col grid ---- */
-.team-grid-desktop {
-  display: grid;
-  gap: 20px;
-  margin-top: 52px;
-  justify-items: stretch;
+:root{
+  --orbit-wrap-size:700px;
+  --orbit-center-size:250px;
+  --orbit-sat-size:112px;
 }
-/* Offset row 2 by half a column to visually center 3 cards under 4 */
-@media(min-width:769px){
-  .team-grid-desktop {
-    /* 7 cards in 4-col = row1: 4, row2: 3. Center row 2 with col offset */
-    grid-template-columns: repeat(8, 1fr);
-  }
-  .team-grid-desktop .team-card { grid-column: span 2; }
-  .team-grid-desktop .team-card:nth-child(5) { grid-column: 2 / span 2; }
-  .team-grid-desktop .team-card:nth-child(6) { grid-column: 4 / span 2; }
-  .team-grid-desktop .team-card:nth-child(7) { grid-column: 6 / span 2; }
-}
+#team{overflow:hidden;}
+.team-section-inner{max-width:var(--max-w);margin:0 auto;padding:100px var(--pad-x);}
 
-/* ---- MOBILE CAROUSEL (hidden on desktop) ---- */
-.team-carousel-wrap { display: none; }
-.team-dots { display: none; }
-
-/* ---- Shared card styles ---- */
-.team-card {
-  background:var(--dark3);
-  border:1px solid var(--border);
-  border-radius:10px;
-  overflow:hidden;
-  transition:border-color .3s,transform .3s,box-shadow .3s;
+.orbit-wrap{
   position:relative;
-  cursor: default;
+  width:min(var(--orbit-wrap-size),94vw);
+  aspect-ratio:1;
+  margin:64px auto 30px;
 }
-.team-card:hover{border-color:rgba(255,107,43,.35);transform:translateY(-6px);box-shadow:0 0 30px rgba(255,107,43,.12);}
-.team-card-photo{width:100%;height:320px;object-fit:cover;object-position:center top;display:block;filter:grayscale(20%);transition:filter .4s;}
-.team-card:hover .team-card-photo{filter:grayscale(0%);}
-.team-placeholder{width:100%;height:320px;background:linear-gradient(160deg,var(--dark2),var(--dark3));display:flex;align-items:center;justify-content:center;font-size:4rem;border-bottom:1px solid var(--border);}
-.team-info{padding:18px;}
-.team-info h3{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;margin-bottom:4px;}
-.team-role{font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--accent);letter-spacing:.13em;text-transform:uppercase;margin-bottom:10px;line-height:1.5;}
-.team-info p{font-size:.88rem;color:rgba(205,214,244,.68);line-height:1.7;}
-.team-socials{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
-.team-socials a{font-family:'JetBrains Mono',monospace;font-size:.58rem;color:var(--muted);text-decoration:none;padding:3px 7px;border:1px solid var(--border);border-radius:2px;transition:color .2s,border-color .2s;}
-.team-socials a:hover{color:var(--accent);border-color:var(--accent-border);}
+.orbit-dashring{
+  position:absolute;inset:8%;border-radius:50%;
+  border:1px dashed rgba(255,107,43,.16);
+  animation:orbitSpin 90s linear infinite;pointer-events:none;
+}
+.orbit-dashring.r2{inset:3%;border-color:rgba(75,163,199,.10);animation-duration:130s;animation-direction:reverse;}
+@keyframes orbitSpin{to{transform:rotate(360deg);}}
+.orbit-glow{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 50% 50%,rgba(255,107,43,.10),transparent 62%);pointer-events:none;}
 
-/* ---- MOBILE: carousel layout ---- */
-@media(max-width:768px){
-  .team-grid-desktop { display: none; }
-  .team-carousel-wrap {
-    display: block;
-    position: relative;
-    margin-top: 52px;
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
-  }
-  .team-carousel-track-outer { overflow: hidden; width: 100%; }
-  .team-carousel-track {
-    display: flex;
-    gap: 16px;
-    width: max-content;
-    will-change: transform;
-    animation: teamScroll 28s linear infinite;
-  }
-  .team-carousel-track:hover { animation-play-state: paused; }
-  @keyframes teamScroll {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-  /* carousel card sizing */
-  .team-carousel-wrap .team-card { flex: 0 0 250px; width: 250px; }
-  .team-dots {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    margin-top: 22px;
-  }
-  .team-dot {
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--border);
-    border: 1px solid var(--accent-border);
-    cursor: pointer;
-    transition: background .3s, transform .3s;
-  }
-  .team-dot.active { background: var(--accent); transform: scale(1.4); }
+.satellite{
+  position:absolute;top:50%;left:50%;
+  width:var(--orbit-sat-size);height:var(--orbit-sat-size);
+  transform:translate(-50%,-50%);
+  border-radius:50%;cursor:pointer;background:none;border:none;padding:0;
+  transition:left .5s cubic-bezier(.22,1,.36,1),top .5s cubic-bezier(.22,1,.36,1),opacity .3s;
+  z-index:2;will-change:left,top;
+}
+.satellite-inner{
+  width:100%;height:100%;border-radius:50%;overflow:hidden;position:relative;
+  border:2px solid var(--border);background:var(--dark3);
+  transition:border-color .25s,box-shadow .25s,transform .25s;
+}
+.satellite:hover .satellite-inner{border-color:rgba(255,107,43,.55);box-shadow:0 0 26px rgba(255,107,43,.24);transform:scale(1.08);}
+.satellite img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;filter:grayscale(30%);transition:filter .3s;}
+.satellite:hover img{filter:grayscale(0%);}
+.sat-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);font-size:calc(var(--orbit-sat-size) * 0.22);background:linear-gradient(135deg,rgba(75,163,199,.14),rgba(255,107,43,.08));}
+.sat-label{position:absolute;bottom:-24px;left:50%;transform:translateX(-50%);font-family:'JetBrains Mono',monospace;font-size:.62rem;color:var(--muted);white-space:nowrap;opacity:0;transition:opacity .2s;letter-spacing:.04em;}
+.satellite:hover .sat-label{opacity:1;color:var(--cyan);}
+
+.orbit-wrap.transitioning .satellite:not(.is-flying-source){opacity:.3;pointer-events:none;}
+
+.orbit-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:var(--orbit-center-size);z-index:5;text-align:center;}
+.center-ring{
+  width:var(--orbit-center-size);height:var(--orbit-center-size);border-radius:50%;padding:5px;position:relative;cursor:pointer;
+  background:conic-gradient(from var(--ang,0deg),var(--cyan),var(--blue),var(--cyan));
+  animation:ringSpin 6s linear infinite;transition:box-shadow .3s,opacity .25s;
+}
+@property --ang{syntax:'<angle>';inherits:true;initial-value:0deg;}
+@keyframes ringSpin{to{--ang:360deg;}}
+.center-ring:hover,.center-ring.expanded{box-shadow:0 0 50px rgba(255,107,43,.34);}
+.center-avatar-wrap{width:100%;height:100%;border-radius:50%;overflow:hidden;background:var(--dark3);position:relative;}
+.center-avatar-wrap img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
+.center-fallback{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--text);font-size:calc(var(--orbit-center-size) * 0.16);background:linear-gradient(150deg,rgba(255,107,43,.16),rgba(245,158,11,.1));}
+.center-name{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.15rem;margin-top:18px;transition:opacity .2s;}
+.center-role{font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-top:6px;transition:opacity .2s;}
+.orbit-center.is-fading .center-name,.orbit-center.is-fading .center-role{opacity:0;}
+
+.center-detail{
+  position:absolute;top:calc(100% + 16px);left:50%;transform:translateX(-50%) translateY(-6px);
+  width:300px;background:var(--dark3);border:1px solid rgba(255,107,43,.22);border-radius:12px;padding:18px 20px;
+  opacity:0;pointer-events:none;transition:opacity .28s ease,transform .28s ease;box-shadow:0 20px 50px rgba(0,0,0,.5);z-index:10;text-align:left;
+}
+.orbit-center.expanded .center-detail{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0);}
+.center-detail::before{content:'';position:absolute;top:-6px;left:50%;transform:translateX(-50%) rotate(45deg);width:12px;height:12px;background:var(--dark3);border-left:1px solid rgba(255,107,43,.22);border-top:1px solid rgba(255,107,43,.22);}
+.center-detail p{font-size:.88rem;color:rgba(205,214,244,.75);line-height:1.65;}
+.center-detail .cd-link{display:inline-block;margin-top:12px;padding:6px 14px;background:var(--grad);color:#000;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.05em;border-radius:3px;text-decoration:none;}
+
+.orbit-dots{display:flex;justify-content:center;gap:9px;margin-top:20px;}
+.orbit-dot{width:7px;height:7px;border-radius:50%;background:var(--border);border:1px solid var(--accent-border);cursor:pointer;transition:background .3s,transform .3s,width .3s;}
+.orbit-dot.active{background:var(--grad);transform:scale(1.15);width:20px;border-radius:4px;border-color:transparent;}
+
+.orbit-flyer{
+  position:absolute;border-radius:50%;overflow:hidden;z-index:50;
+  border:2px solid rgba(255,255,255,.15);
+  transition:left .55s cubic-bezier(.22,1,.36,1),top .55s cubic-bezier(.22,1,.36,1),
+             width .55s cubic-bezier(.22,1,.36,1),height .55s cubic-bezier(.22,1,.36,1),
+             box-shadow .55s ease,border-color .55s ease;
+  pointer-events:none;
+}
+.orbit-flyer img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
+
+@media(max-width:1024px){
+  :root{ --orbit-wrap-size:520px; --orbit-center-size:190px; --orbit-sat-size:86px; }
+  .center-detail{width:270px;}
+}
+@media(max-width:640px){
+  :root{ --orbit-wrap-size:360px; --orbit-center-size:150px; --orbit-sat-size:68px; }
+  .center-name{font-size:1rem;}
+  .center-detail{width:86vw;max-width:290px;padding:16px 18px;}
+  .sat-label{display:none;}
+}
+@media (prefers-reduced-motion: reduce){
+  .center-ring{animation:none;}
+  .orbit-dashring{animation:none;}
+  .satellite{transition:none;}
+  .orbit-flyer{transition:none;}
 }
 
 /* CONTACT */
@@ -446,45 +462,12 @@ footer{background:var(--dark2);padding:60px var(--pad-x) 28px;border-top:1px sol
   .process-grid{grid-template-columns:1fr;}
 }
 
-/* MASCOT */
+/* MASCOT (legacy — dead CSS, no HTML uses this; safe to delete when convenient) */
 #mascot-wrap{position:fixed;bottom:24px;right:24px;z-index:1000;display:flex;flex-direction:column;align-items:flex-end;gap:10px;cursor:pointer;}
 #mascot-speech{background:#1a1f2e;border:1px solid #FF6B2B;border-radius:12px 12px 0 12px;padding:8px 14px;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:#FF6B2B;white-space:nowrap;opacity:0;transform:translateY(6px) scale(.95);transition:opacity .3s,transform .3s;pointer-events:none;}
 #mascot-speech.show{opacity:1;transform:translateY(0) scale(1);}
 .mascot-bot{width:72px;height:96px;position:relative;animation:botBobble 3s ease-in-out infinite;}
 @keyframes botBobble{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-@keyframes mSpin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-@keyframes mJump{0%,100%{transform:translateY(0)}40%{transform:translateY(-20px) scale(1.1)}70%{transform:translateY(-8px)}}
-@keyframes mExcited{0%,100%{transform:rotate(0)}25%{transform:rotate(-10deg) translateY(-4px)}75%{transform:rotate(10deg) translateY(-4px)}}
-.m-head{position:absolute;top:0;left:50%;transform:translateX(-50%);width:44px;height:38px;background:#1a1f2e;border:2px solid #FF6B2B;border-radius:8px;}
-.m-ant{position:absolute;top:-12px;left:50%;transform:translateX(-50%);width:2px;height:10px;background:#FF6B2B;}
-.m-ant-ball{position:absolute;top:-16px;left:50%;transform:translateX(-50%);width:6px;height:6px;border-radius:50%;background:#FF6B2B;animation:antPulse 2s ease-in-out infinite;}
-@keyframes antPulse{0%,100%{box-shadow:0 0 0 0 rgba(255,107,43,.6)}50%{box-shadow:0 0 0 5px rgba(255,107,43,0)}}
-.m-eyes{display:flex;gap:8px;justify-content:center;padding-top:9px;}
-.m-eye{width:10px;height:10px;background:#0D1117;border:1.5px solid #FF6B2B;border-radius:3px;position:relative;overflow:hidden;}
-.m-pupil{width:5px;height:5px;background:#FF6B2B;border-radius:1px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);animation:mEyeMove 4s ease-in-out infinite;}
-@keyframes mEyeMove{0%,40%,100%{transform:translate(-50%,-50%)}45%{transform:translate(-20%,-50%)}55%{transform:translate(-80%,-50%)}60%,95%{transform:translate(-50%,-50%)}}
-.m-eye.bl .m-pupil{animation:mBlink 5s ease-in-out infinite;}
-@keyframes mBlink{0%,48%,52%,100%{height:5px}50%{height:1px}}
-.m-mouth{width:20px;height:7px;background:#0D1117;border:1.5px solid #FF6B2B;border-radius:0 0 6px 6px;margin:4px auto 0;overflow:hidden;position:relative;}
-.m-mouth-i{position:absolute;bottom:0;left:0;right:0;height:4px;background:#FF6B2B;animation:mTalk 2.5s ease-in-out infinite;}
-@keyframes mTalk{0%,100%{height:1px}25%{height:4px}50%{height:3px}75%{height:5px}}
-.m-neck{width:10px;height:6px;background:#FF6B2B;margin:0 auto;}
-.m-body{position:absolute;top:46px;left:50%;transform:translateX(-50%);width:50px;height:38px;background:#1a1f2e;border:2px solid #FF6B2B;border-radius:7px;}
-.m-screen{width:28px;height:18px;background:#0D1117;border:1px solid rgba(255,107,43,.4);border-radius:4px;margin:7px auto 0;overflow:hidden;display:flex;align-items:center;justify-content:center;}
-.m-scan{width:18px;height:1.5px;background:#FF6B2B;border-radius:1px;animation:mScan 1.5s linear infinite;}
-@keyframes mScan{0%{transform:translateY(-12px);opacity:0}30%{opacity:1}70%{opacity:1}100%{transform:translateY(12px);opacity:0}}
-.m-arm-l{position:absolute;top:48px;left:8px;width:9px;height:26px;background:#1a1f2e;border:2px solid #FF6B2B;border-radius:5px;transform-origin:top center;animation:mWave 2s ease-in-out infinite;}
-@keyframes mWave{0%,100%{transform:rotate(-10deg)}25%{transform:rotate(-45deg)}50%{transform:rotate(-10deg)}75%{transform:rotate(-50deg)}}
-.m-arm-r{position:absolute;top:48px;right:8px;width:9px;height:26px;background:#1a1f2e;border:2px solid #FF6B2B;border-radius:5px;transform-origin:top center;animation:mType 1.2s ease-in-out infinite;}
-@keyframes mType{0%,100%{transform:rotate(8deg)}50%{transform:rotate(20deg)}}
-.m-legs{position:absolute;top:82px;left:50%;transform:translateX(-50%);display:flex;gap:8px;}
-.m-leg{width:12px;height:14px;background:#1a1f2e;border:2px solid #FF6B2B;border-radius:3px 3px 4px 4px;}
-.m-leg.ml{animation:mWalkL .8s ease-in-out infinite;}
-.m-leg.mr{animation:mWalkR .8s ease-in-out infinite;}
-@keyframes mWalkL{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
-@keyframes mWalkR{0%,100%{transform:translateY(-3px)}50%{transform:translateY(0)}}
-.m-shadow{width:54px;height:8px;background:rgba(255,107,43,.12);border-radius:50%;margin:4px auto 0;animation:mShadow 3s ease-in-out infinite;}
-@keyframes mShadow{0%,100%{transform:scaleX(1);opacity:.5}50%{transform:scaleX(.65);opacity:.2}}
 </style>
 </head>
 <body>
@@ -815,118 +798,35 @@ footer{background:var(--dark2);padding:60px var(--pad-x) 28px;border-top:1px sol
   </div>
 </div>
 
-<!-- TEAM — 4-col desktop grid / mobile carousel -->
+<!-- TEAM — orbit layout -->
 <div id="team">
   <div class="team-section-inner">
     <div style="text-align:center;" class="reveal">
       <div class="label-tag" style="justify-content:center;">The Team</div>
       <h2 class="section-title">The People Behind<br><span class="hl">DevEdge Digital</span></h2>
-      <p style="color:rgba(205,214,244,.7);max-width:500px;margin:14px auto 0;line-height:1.8;font-size:1.02rem;">A passionate crew of developers, designers, editors, and strategists committed to delivering exceptional results.</p>
+      <p style="color:rgba(205,214,244,.7);max-width:500px;margin:14px auto 0;line-height:1.8;font-size:1.02rem;">Click a face in orbit to bring them to the center — or hover the center for their full story.</p>
     </div>
 
-    <!-- DESKTOP: 4-column grid -->
-    <div class="team-grid-desktop">
-      <div class="team-card reveal">
-        <img class="team-card-photo" loading="lazy" src="photo_enald.webp" alt="Enald A."/>
-        <div class="team-info">
-          <h3>Enald A.</h3>
-          <div class="team-role">Founder & Lead Developer</div>
-          <p>Full-stack web developer & creative director with 11+ years building high-performance brands and digital experiences.</p>
-          <div class="team-socials"><a href="#">LinkedIn</a><a href="#">GitHub</a><a href="#">Twitter</a></div>
-          <a href="https://devedge.digital/enaldportfolio" target="_blank" style="display:inline-block;margin-top:12px;padding:7px 14px;background:var(--grad);color:#000;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;border-radius:3px;text-decoration:none;">View Portfolio →</a>
+    <div class="orbit-wrap" id="orbitWrap">
+      <div class="orbit-glow"></div>
+      <div class="orbit-dashring"></div>
+      <div class="orbit-dashring r2"></div>
+
+      <div class="orbit-center" id="orbitCenter">
+        <div class="center-ring" id="centerRing">
+          <div class="center-avatar-wrap" id="centerAvatarWrap">
+            <div class="center-fallback" id="centerFallback"></div>
+            <img id="centerImg" alt="" onerror="this.style.display='none'">
+          </div>
         </div>
+        <div class="center-name" id="centerName"></div>
+        <div class="center-role" id="centerRole"></div>
+        <div class="center-detail" id="centerDetail"></div>
       </div>
-      <div class="team-card reveal">
-        <img class="team-card-photo" loading="lazy" src="Screenshot_17.png" alt="Jericho M."/>
-        <div class="team-info">
-          <h3>Jericho M.</h3>
-          <div class="team-role">Full-Stack Developer</div>
-          <p>Building robust, scalable web applications from front to back — turning complex requirements into clean, high-performance code.</p>
-          <div class="team-socials"><a href="#">LinkedIn</a><a href="#">GitHub</a><a href="#">Portfolio</a></div>
-          <a href="https://webvado.com" target="_blank" style="display:inline-block;margin-top:12px;padding:7px 14px;background:var(--grad);color:#000;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;border-radius:3px;text-decoration:none;">View Portfolio →</a>
-        </div>
-      </div>
-      <div class="team-card reveal">
-        <img class="team-card-photo" loading="lazy" src="judy2.webp" alt="Judy N." style="object-position:center top;"/>
-        <div class="team-info">
-          <h3>Judy N.</h3>
-          <div class="team-role">Operations Manager &amp; Executive Assistant</div>
-          <p>The backbone of DevEdge Digital — keeping projects on track, clients informed, and the studio running like clockwork.</p>
-          <div class="team-socials"><a href="#">LinkedIn</a></div>
-          <a href="https://devedge.digital/judyportfolio" target="_blank" style="display:inline-block;margin-top:12px;padding:7px 14px;background:var(--grad);color:#000;font-family:'JetBrains Mono',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;border-radius:3px;text-decoration:none;">View Portfolio →</a>
-        </div>
-      </div>
-      <div class="team-card reveal">
-        <img class="team-card-photo" loading="lazy" src="jade.webp" alt="Jade M." style="object-position:center top;"/>
-        <div class="team-info">
-          <h3>Jade M.</h3>
-          <div class="team-role">Senior Graphic Designer &amp; Senior Video Editor</div>
-          <p>Creative powerhouse specialising in brand visuals, motion graphics, and high-impact video content that stops the scroll.</p>
-          <div class="team-socials"><a href="https://www.behance.net/aldinejade" target="_blank">Portfolio ↗</a><a href="#">LinkedIn</a></div>
-        </div>
-      </div>
-      <div class="team-card reveal">
-        <img class="team-card-photo" loading="lazy" src="photo_rozendo.jpg" alt="Rozendo DR." style="object-position:center 20%;"/>
-        <div class="team-info">
-          <h3>Rozendo DR.</h3>
-          <div class="team-role">Video Editor</div>
-          <p>Crafting compelling video narratives and motion graphics that bring brands to life across all digital platforms.</p>
-          <div class="team-socials"><a href="#">LinkedIn</a><a href="#">Portfolio</a></div>
-        </div>
-      </div>
-      <div class="team-card reveal">
-        <img class="team-card-photo" loading="lazy" src="photo_ian.png" alt="Ian I." style="object-position:center 20%;"/>
-        <div class="team-info">
-          <h3>Ian I.</h3>
-          <div class="team-role">Digital Marketing Strategist</div>
-          <p>Data-driven specialist driving growth through SEO, paid ads, and social campaigns that deliver measurable ROI.</p>
-          <div class="team-socials"><a href="#">LinkedIn</a><a href="#">Twitter</a></div>
-        </div>
-      </div>
-      <div class="team-card reveal">
-        <img class="team-card-photo" loading="lazy" src="photo_2026-04-09_21-49-34.jpg" alt="Alexis R." style="object-position:center 20%;"/>
-        <div class="team-info">
-          <h3>Alexis R.</h3>
-          <div class="team-role">Video Editor</div>
-          <p>Video production specialist focused on storytelling and high-impact content for social and web platforms.</p>
-          <div class="team-socials"><a href="#">LinkedIn</a><a href="#">Portfolio</a></div>
-        </div>
-      </div>
+      <!-- satellite buttons are injected by the orbit script below -->
     </div>
 
-    <!-- MOBILE: auto-scroll carousel -->
-    <div class="team-carousel-wrap">
-      <div class="team-carousel-track-outer">
-        <div class="team-carousel-track" id="teamTrack">
-          <!-- Original set -->
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="photo_enald.webp" alt="Enald A."/><div class="team-info"><h3>Enald A.</h3><div class="team-role">Founder & Lead Developer</div><p>Full-stack developer & creative director with 11+ years building high-performance brands.</p><div class="team-socials"><a href="#">LinkedIn</a><a href="#">GitHub</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="Screenshot_17.png" alt="Jericho M."/><div class="team-info"><h3>Jericho M.</h3><div class="team-role">Full-Stack Developer</div><p>Building robust, scalable web applications from front to back.</p><div class="team-socials"><a href="#">LinkedIn</a><a href="#">GitHub</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="judy2.webp" alt="Judy N." style="object-position:center top;"/><div class="team-info"><h3>Judy N.</h3><div class="team-role">Operations Manager</div><p>The backbone of DevEdge Digital — keeping projects on track and running like clockwork.</p><div class="team-socials"><a href="#">LinkedIn</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="jade.webp" alt="Jade M." style="object-position:center top;"/><div class="team-info"><h3>Jade M.</h3><div class="team-role">Senior Designer &amp; Video Editor</div><p>Creative powerhouse in brand visuals, motion graphics, and high-impact video content.</p><div class="team-socials"><a href="#">LinkedIn</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="photo_rozendo.jpg" alt="Rozendo DR." style="object-position:center 20%;"/><div class="team-info"><h3>Rozendo DR.</h3><div class="team-role">Video Editor</div><p>Crafting compelling video narratives that bring brands to life across all platforms.</p><div class="team-socials"><a href="#">LinkedIn</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="photo_ian.png" alt="Ian I." style="object-position:center 20%;"/><div class="team-info"><h3>Ian I.</h3><div class="team-role">Digital Marketing Strategist</div><p>Data-driven specialist in SEO, paid ads, and social campaigns that deliver real ROI.</p><div class="team-socials"><a href="#">LinkedIn</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="photo_2026-04-09_21-49-34.jpg" alt="Alexis R." style="object-position:center 20%;"/><div class="team-info"><h3>Alexis R.</h3><div class="team-role">Video Editor</div><p>Video production specialist focused on high-impact storytelling for social and web.</p><div class="team-socials"><a href="#">LinkedIn</a></div></div></div>
-          <!-- Duplicate set for seamless loop -->
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="photo_enald.webp" alt="Enald A."/><div class="team-info"><h3>Enald A.</h3><div class="team-role">Founder & Lead Developer</div><p>Full-stack developer & creative director with 11+ years building high-performance brands.</p><div class="team-socials"><a href="#">LinkedIn</a><a href="#">GitHub</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="Screenshot_17.png" alt="Jericho M."/><div class="team-info"><h3>Jericho M.</h3><div class="team-role">Full-Stack Developer</div><p>Building robust, scalable web applications from front to back.</p><div class="team-socials"><a href="#">LinkedIn</a><a href="#">GitHub</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="judy2.webp" alt="Judy N." style="object-position:center top;"/><div class="team-info"><h3>Judy N.</h3><div class="team-role">Operations Manager</div><p>The backbone of DevEdge Digital — keeping projects on track and running like clockwork.</p><div class="team-socials"><a href="#">LinkedIn</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="jade.webp" alt="Jade M." style="object-position:center top;"/><div class="team-info"><h3>Jade M.</h3><div class="team-role">Senior Designer &amp; Video Editor</div><p>Creative powerhouse in brand visuals, motion graphics, and high-impact video content.</p><div class="team-socials"><a href="#">LinkedIn</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="photo_rozendo.jpg" alt="Rozendo DR." style="object-position:center 20%;"/><div class="team-info"><h3>Rozendo DR.</h3><div class="team-role">Video Editor</div><p>Crafting compelling video narratives that bring brands to life across all platforms.</p><div class="team-socials"><a href="#">LinkedIn</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="photo_ian.png" alt="Ian I." style="object-position:center 20%;"/><div class="team-info"><h3>Ian I.</h3><div class="team-role">Digital Marketing Strategist</div><p>Data-driven specialist in SEO, paid ads, and social campaigns that deliver real ROI.</p><div class="team-socials"><a href="#">LinkedIn</a></div></div></div>
-          <div class="team-card"><img class="team-card-photo" loading="lazy" src="photo_2026-04-09_21-49-34.jpg" alt="Alexis R." style="object-position:center 20%;"/><div class="team-info"><h3>Alexis R.</h3><div class="team-role">Video Editor</div><p>Video production specialist focused on high-impact storytelling for social and web.</p><div class="team-socials"><a href="#">LinkedIn</a></div></div></div>
-        </div>
-      </div>
-    </div>
-    <div class="team-dots" id="teamDots">
-      <div class="team-dot active" data-idx="0"></div>
-      <div class="team-dot" data-idx="1"></div>
-      <div class="team-dot" data-idx="2"></div>
-      <div class="team-dot" data-idx="3"></div>
-      <div class="team-dot" data-idx="4"></div>
-      <div class="team-dot" data-idx="5"></div>
-      <div class="team-dot" data-idx="6"></div>
-    </div>
-
+    <div class="orbit-dots" id="orbitDots"></div>
   </div>
 </div>
 
@@ -1053,7 +953,7 @@ footer{background:var(--dark2);padding:60px var(--pad-x) 28px;border-top:1px sol
 var cur=document.getElementById('cur'),ring=document.getElementById('ring'),mx=0,my=0,rx=0,ry=0;
 document.addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;cur.style.transform='translate('+mx+'px,'+my+'px) translate(-50%,-50%)';});
 (function aR(){rx+=(mx-rx)*.1;ry+=(my-ry)*.1;ring.style.transform='translate('+rx+'px,'+ry+'px) translate(-50%,-50%)';requestAnimationFrame(aR);})();
-document.querySelectorAll('a,button,.service-card,.brand-card,.pillar,.team-card,.stat-item,.proj-card,.faq-q,.process-step').forEach(function(el){
+document.querySelectorAll('a,button,.service-card,.brand-card,.pillar,.stat-item,.proj-card,.faq-q,.process-step').forEach(function(el){
   el.addEventListener('mouseenter',function(){document.body.classList.add('ch');});
   el.addEventListener('mouseleave',function(){document.body.classList.remove('ch');});
 });
@@ -1167,1377 +1067,239 @@ function lbMove(d){lbIdx+=d;if(lbIdx>=0&&lbIdx<lbList.length)showLB();}
 document.getElementById('lightbox').addEventListener('click',function(e){if(e.target===this)closeLB();});
 document.addEventListener("keydown",function(e){var lb=document.getElementById("lightbox");if(!lb.classList.contains("open"))return;if(e.key==="Escape")closeLB();if(e.key==="ArrowLeft")lbMove(-1);if(e.key==="ArrowRight")lbMove(1);});
 
-/* TEAM CAROUSEL — dot sync */
+/* ===============================================================
+   TEAM ORBIT — center node + satellites, click/auto swap with a
+   flying grow/shrink transition, scroll-linked ring drift.
+   =============================================================== */
 (function(){
-  var track = document.getElementById('teamTrack');
-  var outer = track.parentElement;
-  var dots = document.querySelectorAll('.team-dot');
-  var cardCount = 7; // original cards count
-  var cardW = 300 + 20; // width + gap
+  var team = [
+    {name:"Enald A.", role:"Founder & Lead Developer", initials:"EA", photo:"photo_enald.webp",
+     bio:"Full-stack web developer & creative director with 11+ years building high-performance brands and digital experiences.",
+     link:"https://devedge.digital/enaldportfolio", linkLabel:"View Portfolio"},
+    {name:"Jericho M.", role:"Full-Stack Developer", initials:"JM", photo:"Screenshot_17.png",
+     bio:"Building robust, scalable web applications from front to back — turning complex requirements into clean, high-performance code.",
+     link:"https://webvado.com", linkLabel:"View Portfolio"},
+    {name:"Judy N.", role:"Operations Manager & EA", initials:"JN", photo:"judy2.webp",
+     bio:"The backbone of DevEdge Digital — keeping projects on track, clients informed, and the studio running like clockwork.",
+     link:"https://devedge.digital/judyportfolio", linkLabel:"View Portfolio"},
+    {name:"Jade M.", role:"Senior Designer & Video Editor", initials:"JM", photo:"jade.webp",
+     bio:"Creative powerhouse specialising in brand visuals, motion graphics, and high-impact video content that stops the scroll.",
+     link:"https://www.behance.net/aldinejade", linkLabel:"Behance Portfolio"},
+    {name:"Rozendo DR.", role:"Video Editor", initials:"RD", photo:"photo_rozendo.jpg",
+     bio:"Crafting compelling video narratives and motion graphics that bring brands to life across all digital platforms.", link:null},
+    {name:"Ian I.", role:"Digital Marketing Strategist", initials:"II", photo:"photo_ian.png",
+     bio:"Data-driven specialist driving growth through SEO, paid ads, and social campaigns that deliver measurable ROI.", link:null},
+    {name:"Alexis R.", role:"Video Editor", initials:"AR", photo:"photo_2026-04-09_21-49-34.jpg",
+     bio:"Video production specialist focused on storytelling and high-impact content for social and web platforms.", link:null}
+  ];
 
-  function updateDots(){
-    // Calculate which card is most visible (CSS animation driven)
-    var style = window.getComputedStyle(track);
-    var matrix = new WebKitCSSMatrix(style.transform);
-    var x = Math.abs(matrix.m41);
-    var idx = Math.round(x / cardW) % cardCount;
-    dots.forEach(function(d,i){d.classList.toggle('active', i===idx);});
+  var wrap    = document.getElementById('orbitWrap');
+  var center  = document.getElementById('orbitCenter');
+  var ring2   = document.getElementById('centerRing');
+  var avWrap  = document.getElementById('centerAvatarWrap');
+  var img     = document.getElementById('centerImg');
+  var fb      = document.getElementById('centerFallback');
+  var nameEl  = document.getElementById('centerName');
+  var roleEl  = document.getElementById('centerRole');
+  var detail  = document.getElementById('centerDetail');
+  var dotsEl  = document.getElementById('orbitDots');
+  if(!wrap) return; // team section not present on this page
+
+  var n = team.length;
+  var centerIndex = 0;
+  var satEls = [];
+  var timer;
+  var scrollAngle = 0;
+  var animating = false;
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  for (var i = 0; i < n - 1; i++) {
+    var btn = document.createElement('button');
+    btn.className = 'satellite';
+    btn.innerHTML =
+      '<div class="satellite-inner">' +
+        '<div class="sat-fallback"></div>' +
+        '<img alt="" onerror="this.style.display=\'none\'">' +
+      '</div>' +
+      '<div class="sat-label"></div>';
+    wrap.appendChild(btn);
+    satEls.push(btn);
   }
-  // Poll every 300ms (lightweight)
-  setInterval(updateDots, 300);
 
-  // Dots click: jump to card by pausing animation and setting offset
-  dots.forEach(function(dot){
-    dot.addEventListener('click',function(){
-      var idx = parseInt(dot.dataset.idx);
-      var offset = -(idx * cardW);
-      track.style.animation = 'none';
-      track.style.transform = 'translateX('+offset+'px)';
-      dots.forEach(function(d,i){d.classList.toggle('active',i===idx);});
-      setTimeout(function(){
-        track.style.animation = '';
-        track.style.transform = '';
-        // Restart animation from the right position using animation-delay trick
-        var totalW = cardCount * cardW;
-        var pct = (idx * cardW) / totalW;
-        var dur = 32;
-        track.style.animation = 'teamScroll '+dur+'s linear infinite';
-        track.style.animationDelay = '-'+(pct * dur)+'s';
-      }, 50);
-    });
+  team.forEach(function(_, i){
+    var d = document.createElement('div');
+    d.className = 'orbit-dot';
+    d.addEventListener('click', function(){ goTo(i); });
+    dotsEl.appendChild(d);
   });
-})();
-</script>
+  var dotEls = dotsEl.querySelectorAll('.orbit-dot');
 
+  function positionSatellites(){
+    var wrapSize = wrap.offsetWidth;
+    var centerR  = ring2.offsetWidth / 2;
+    var satR     = satEls[0].offsetWidth / 2;
+    var maxR     = wrapSize / 2 - satR - 4;
+    var minR     = centerR + satR + 18;
+    var R        = Math.min(maxR, Math.max(minR, wrapSize / 2 * 0.8));
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DevEdge AI Chat Widget</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-/* ============================================================
-   DEVEDGE DIGITAL — AI CHAT WIDGET
-   Drop this entire file just before </body> on your site.
-   Replace YOUR_ANTHROPIC_API_KEY below with your real key.
-   Lead emails are sent to: hello@devedge.digital
-   ============================================================ */
-
-#de-chat-launcher {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FF6B2B 0%, #F59E0B 100%);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 0 0 rgba(255, 107, 43, 0.4);
-  animation: dePulse 2.5s infinite;
-  transition: transform 0.2s, box-shadow 0.2s;
-  z-index: 99999;
-}
-#de-chat-launcher:hover {
-  transform: scale(1.08);
-  box-shadow: 0 8px 30px rgba(255, 107, 43, 0.5);
-}
-#de-chat-launcher .de-icon-chat,
-#de-chat-launcher .de-icon-close {
-  width: 26px;
-  height: 26px;
-  fill: #000;
-  transition: opacity 0.2s, transform 0.2s;
-  position: absolute;
-}
-#de-chat-launcher .de-icon-close { opacity: 0; transform: rotate(-90deg); }
-#de-chat-launcher.de-open .de-icon-chat { opacity: 0; transform: rotate(90deg); }
-#de-chat-launcher.de-open .de-icon-close { opacity: 1; transform: rotate(0deg); }
-
-.de-notif-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 18px;
-  height: 18px;
-  background: #EF4444;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.52rem;
-  font-weight: 700;
-  color: #fff;
-  border: 2px solid #060810;
-}
-
-@keyframes dePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 43, 0.4); }
-  50%       { box-shadow: 0 0 0 12px rgba(255, 107, 43, 0); }
-}
-
-/* CHAT WINDOW */
-#de-chat-window {
-  position: fixed;
-  bottom: 104px;
-  right: 28px;
-  width: 390px;
-  height: 580px;
-  background: #0B0F1A;
-  border: 1px solid rgba(255, 107, 43, 0.22);
-  border-radius: 18px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.75), 0 0 60px rgba(255, 107, 43, 0.07);
-  transform: scale(0.85) translateY(20px);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease;
-  z-index: 99998;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-#de-chat-window.de-open {
-  transform: scale(1) translateY(0);
-  opacity: 1;
-  pointer-events: auto;
-}
-@media (max-width: 480px) {
-  #de-chat-window {
-    right: 0; bottom: 0;
-    width: 100vw; height: 100dvh;
-    border-radius: 0;
-  }
-  #de-chat-launcher { bottom: 20px; right: 20px; }
-}
-
-/* HEADER */
-.de-header {
-  background: #131929;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: relative;
-  flex-shrink: 0;
-}
-.de-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(135deg, #FF6B2B, #F59E0B);
-  opacity: 0.45;
-}
-.de-bot-avatar {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FF6B2B, #F59E0B);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem; font-weight: 800; color: #000;
-  flex-shrink: 0; position: relative;
-}
-.de-status-dot {
-  position: absolute; bottom: 1px; right: 1px;
-  width: 9px; height: 9px;
-  background: #22C55E; border-radius: 50%;
-  border: 2px solid #131929;
-}
-.de-header-info { flex: 1; }
-.de-header-name {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem; font-weight: 700; color: #CDD6F4;
-}
-.de-header-sub {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.58rem; color: #22C55E; letter-spacing: 0.1em; margin-top: 2px;
-}
-.de-header-btns { display: flex; gap: 7px; }
-.de-hbtn {
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  color: #5A6A80; width: 28px; height: 28px;
-  border-radius: 6px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: border-color 0.2s, color 0.2s; font-size: 0.8rem;
-  font-family: 'JetBrains Mono', monospace;
-}
-.de-hbtn:hover { border-color: rgba(255, 107, 43, 0.35); color: #FF6B2B; }
-
-/* MESSAGES */
-.de-messages {
-  flex: 1; overflow-y: auto;
-  padding: 16px 14px;
-  display: flex; flex-direction: column; gap: 12px;
-  scroll-behavior: smooth;
-}
-.de-messages::-webkit-scrollbar { width: 3px; }
-.de-messages::-webkit-scrollbar-track { background: transparent; }
-.de-messages::-webkit-scrollbar-thumb { background: rgba(255,107,43,0.2); border-radius: 3px; }
-
-/* BUBBLES */
-.de-msg {
-  display: flex; gap: 8px; align-items: flex-end;
-  animation: deMsgIn 0.28s ease;
-}
-@keyframes deMsgIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: none; }
-}
-.de-msg.de-user { flex-direction: row-reverse; }
-.de-msg-av {
-  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; font-weight: 700;
-}
-.de-msg.de-bot .de-msg-av {
-  background: linear-gradient(135deg, #FF6B2B, #F59E0B); color: #000;
-}
-.de-msg.de-user .de-msg-av {
-  background: rgba(75,163,199,0.12);
-  border: 1px solid rgba(75,163,199,0.25); color: #4BA3C7;
-}
-.de-bubble {
-  max-width: 79%; padding: 10px 13px;
-  border-radius: 14px; font-size: 0.875rem; line-height: 1.65; position: relative;
-}
-.de-msg.de-bot .de-bubble {
-  background: #131929;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-bottom-left-radius: 4px; color: #CDD6F4;
-}
-.de-msg.de-user .de-bubble {
-  background: linear-gradient(135deg, rgba(255,107,43,0.16), rgba(245,158,11,0.1));
-  border: 1px solid rgba(255,107,43,0.22);
-  border-bottom-right-radius: 4px; color: #CDD6F4;
-}
-.de-msg-time {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.5rem; color: #5A6A80; margin-top: 4px;
-}
-.de-msg.de-user .de-msg-time { text-align: right; }
-
-/* RICH TEXT */
-.de-bubble strong { color: #FF6B2B; font-weight: 600; }
-.de-bubble em     { color: #F59E0B; font-style: italic; }
-.de-bubble code {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.77rem;
-  background: rgba(255,107,43,0.08); border: 1px solid rgba(255,107,43,0.16);
-  padding: 1px 5px; border-radius: 3px; color: #FF6B2B;
-}
-.de-bubble ul { margin: 6px 0 4px 16px; display: flex; flex-direction: column; gap: 3px; }
-.de-bubble ul li { font-size: 0.85rem; color: rgba(205,214,244,0.85); }
-.de-bubble ul li::marker { color: #FF6B2B; }
-
-/* ROUTE CARD */
-.de-route-card {
-  background: rgba(255,107,43,0.05);
-  border: 1px solid rgba(255,107,43,0.18);
-  border-radius: 10px; padding: 10px 12px; margin-top: 8px;
-}
-.de-route-hdr {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem; color: #FF6B2B; letter-spacing: 0.1em; margin-bottom: 5px;
-  display: flex; align-items: center; gap: 5px;
-}
-.de-route-name { font-size: 0.87rem; font-weight: 600; color: #CDD6F4; }
-.de-route-role {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.58rem; color: #4BA3C7; margin-top: 2px;
-}
-
-/* LEAD FORM CARD */
-.de-lead-card {
-  background: #131929;
-  border: 1px solid rgba(255,107,43,0.22);
-  border-radius: 12px; padding: 14px; margin-top: 8px;
-}
-.de-lead-card h4 {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem; color: #FF6B2B;
-  margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
-}
-.de-linput {
-  width: 100%;
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 6px; padding: 8px 10px;
-  color: #CDD6F4; font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.82rem; outline: none;
-  transition: border-color 0.2s; margin-bottom: 7px;
-  box-sizing: border-box;
-}
-.de-linput:focus { border-color: rgba(255,107,43,0.38); }
-.de-linput::placeholder { color: #5A6A80; }
-.de-lbtn {
-  width: 100%; padding: 9px;
-  background: linear-gradient(135deg, #FF6B2B, #F59E0B);
-  color: #000; font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em;
-  border: none; border-radius: 6px; cursor: pointer;
-  transition: opacity 0.2s;
-}
-.de-lbtn:hover { opacity: 0.85; }
-.de-lbtn:disabled { opacity: 0.45; cursor: default; }
-
-/* SUGGESTION CHIPS */
-.de-chips {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  padding: 0 14px 10px; flex-shrink: 0;
-}
-.de-chip {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
-  padding: 5px 11px;
-  background: #131929;
-  border: 1px solid rgba(255,107,43,0.18);
-  color: rgba(205,214,244,0.7);
-  border-radius: 20px; cursor: pointer;
-  transition: all 0.2s; letter-spacing: 0.04em; white-space: nowrap;
-}
-.de-chip:hover { border-color: #FF6B2B; color: #FF6B2B; background: rgba(255,107,43,0.05); }
-
-/* TYPING INDICATOR */
-.de-typing {
-  display: flex; align-items: center; gap: 4px;
-  padding: 10px 13px;
-  background: #131929;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 14px; border-bottom-left-radius: 4px;
-  width: fit-content;
-}
-.de-typing span {
-  width: 6px; height: 6px;
-  background: #FF6B2B; border-radius: 50%;
-  animation: deTyping 1.2s infinite;
-}
-.de-typing span:nth-child(2) { animation-delay: 0.2s; }
-.de-typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes deTyping {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30%            { transform: translateY(-5px); opacity: 1; }
-}
-
-/* INPUT AREA */
-.de-input-area {
-  border-top: 1px solid rgba(255,255,255,0.07);
-  padding: 12px 14px;
-  background: #131929;
-  flex-shrink: 0;
-}
-.de-input-row { display: flex; gap: 8px; align-items: flex-end; }
-.de-textarea {
-  flex: 1;
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 10px; padding: 9px 12px;
-  color: #CDD6F4; font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.85rem; resize: none; outline: none;
-  min-height: 38px; max-height: 100px; line-height: 1.5;
-  transition: border-color 0.2s; overflow-y: auto;
-}
-.de-textarea:focus { border-color: rgba(255,107,43,0.32); }
-.de-textarea::placeholder { color: #5A6A80; }
-.de-send {
-  width: 38px; height: 38px;
-  background: linear-gradient(135deg, #FF6B2B, #F59E0B);
-  border: none; border-radius: 8px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: opacity 0.2s, transform 0.15s; flex-shrink: 0;
-}
-.de-send:hover { opacity: 0.85; transform: scale(1.05); }
-.de-send:disabled { opacity: 0.38; cursor: default; transform: none; }
-.de-send svg { width: 16px; height: 16px; fill: #000; }
-.de-input-tools {
-  display: flex; gap: 10px; margin-top: 8px; align-items: center;
-}
-.de-tool-btn {
-  background: none; border: none; cursor: pointer;
-  font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
-  color: #5A6A80; display: flex; align-items: center; gap: 4px;
-  padding: 3px 6px; border-radius: 4px;
-  transition: color 0.2s, background 0.2s;
-}
-.de-tool-btn:hover { color: #FF6B2B; background: rgba(255,107,43,0.05); }
-.de-char { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: #5A6A80; margin-left: auto; }
-
-/* FOOTER */
-.de-footer {
-  text-align: center; padding: 6px;
-  font-family: 'JetBrains Mono', monospace; font-size: 0.5rem;
-  color: #5A6A80; letter-spacing: 0.08em;
-  background: #0B0F1A; border-top: 1px solid rgba(255,255,255,0.05);
-  flex-shrink: 0;
-}
-.de-footer span { color: rgba(255,107,43,0.55); }
-</style>
-</head>
-<body>
-
-<!-- ============================================================
-     DEVEDGE DIGITAL — AI CHAT WIDGET (EMBED-READY)
-     
-     HOW TO ADD TO YOUR SITE:
-     Paste everything below just before </body> in your index.html
-     
-     SETUP (2 steps):
-     1. Replace YOUR_ANTHROPIC_API_KEY with your key from console.anthropic.com
-     2. Replace WEB3FORMS_ACCESS_KEY at web3forms.com with your email
-     
-     Leads go to: hello@devedge.digital (shown in chat)
-     Actual delivery: enald.araneta0626@gmail.com (via Web3Forms)
-     
-     FIXES IN THIS VERSION:
-     - "Email us directly" opens mailto without navigating away
-     - Mascot robot removed (use this widget instead)
-     - Lead form triggers automatically (no chat asking for details)
-     - Web3Forms response parsed correctly
-     ============================================================ -->
-
-<style>
-/* ============================================================
-   DEVEDGE DIGITAL — AI CHAT WIDGET
-   Drop this entire file just before </body> on your site.
-   Replace YOUR_ANTHROPIC_API_KEY below with your real key.
-   Lead emails are sent to: hello@devedge.digital
-   ============================================================ */
-
-#de-chat-launcher {
-  position: fixed;
-  bottom: 28px;
-  right: 28px;
-  width: 62px;
-  height: 62px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FF6B2B 0%, #F59E0B 100%);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 0 0 0 rgba(255, 107, 43, 0.4);
-  animation: dePulse 2.5s infinite;
-  transition: transform 0.2s, box-shadow 0.2s;
-  z-index: 99999;
-}
-#de-chat-launcher:hover {
-  transform: scale(1.08);
-  box-shadow: 0 8px 30px rgba(255, 107, 43, 0.5);
-}
-#de-chat-launcher .de-icon-chat,
-#de-chat-launcher .de-icon-close {
-  width: 26px;
-  height: 26px;
-  fill: #000;
-  transition: opacity 0.2s, transform 0.2s;
-  position: absolute;
-}
-#de-chat-launcher .de-icon-close { opacity: 0; transform: rotate(-90deg); }
-#de-chat-launcher.de-open .de-icon-chat { opacity: 0; transform: rotate(90deg); }
-#de-chat-launcher.de-open .de-icon-close { opacity: 1; transform: rotate(0deg); }
-
-.de-notif-badge {
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 18px;
-  height: 18px;
-  background: #EF4444;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.52rem;
-  font-weight: 700;
-  color: #fff;
-  border: 2px solid #060810;
-}
-
-@keyframes dePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 43, 0.4); }
-  50%       { box-shadow: 0 0 0 12px rgba(255, 107, 43, 0); }
-}
-
-/* CHAT WINDOW */
-#de-chat-window {
-  position: fixed;
-  bottom: 104px;
-  right: 28px;
-  width: 390px;
-  height: 580px;
-  background: #0B0F1A;
-  border: 1px solid rgba(255, 107, 43, 0.22);
-  border-radius: 18px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.75), 0 0 60px rgba(255, 107, 43, 0.07);
-  transform: scale(0.85) translateY(20px);
-  opacity: 0;
-  pointer-events: none;
-  transition: transform 0.32s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.22s ease;
-  z-index: 99998;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-}
-#de-chat-window.de-open {
-  transform: scale(1) translateY(0);
-  opacity: 1;
-  pointer-events: auto;
-}
-@media (max-width: 480px) {
-  #de-chat-window {
-    right: 0; bottom: 0;
-    width: 100vw; height: 100dvh;
-    border-radius: 0;
-  }
-  #de-chat-launcher { bottom: 20px; right: 20px; }
-}
-
-/* HEADER */
-.de-header {
-  background: #131929;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-  padding: 14px 16px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: relative;
-  flex-shrink: 0;
-}
-.de-header::after {
-  content: '';
-  position: absolute;
-  bottom: 0; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(135deg, #FF6B2B, #F59E0B);
-  opacity: 0.45;
-}
-.de-bot-avatar {
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #FF6B2B, #F59E0B);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem; font-weight: 800; color: #000;
-  flex-shrink: 0; position: relative;
-}
-.de-status-dot {
-  position: absolute; bottom: 1px; right: 1px;
-  width: 9px; height: 9px;
-  background: #22C55E; border-radius: 50%;
-  border: 2px solid #131929;
-}
-.de-header-info { flex: 1; }
-.de-header-name {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.85rem; font-weight: 700; color: #CDD6F4;
-}
-.de-header-sub {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.58rem; color: #22C55E; letter-spacing: 0.1em; margin-top: 2px;
-}
-.de-header-btns { display: flex; gap: 7px; }
-.de-hbtn {
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.07);
-  color: #5A6A80; width: 28px; height: 28px;
-  border-radius: 6px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: border-color 0.2s, color 0.2s; font-size: 0.8rem;
-  font-family: 'JetBrains Mono', monospace;
-}
-.de-hbtn:hover { border-color: rgba(255, 107, 43, 0.35); color: #FF6B2B; }
-
-/* MESSAGES */
-.de-messages {
-  flex: 1; overflow-y: auto;
-  padding: 16px 14px;
-  display: flex; flex-direction: column; gap: 12px;
-  scroll-behavior: smooth;
-}
-.de-messages::-webkit-scrollbar { width: 3px; }
-.de-messages::-webkit-scrollbar-track { background: transparent; }
-.de-messages::-webkit-scrollbar-thumb { background: rgba(255,107,43,0.2); border-radius: 3px; }
-
-/* BUBBLES */
-.de-msg {
-  display: flex; gap: 8px; align-items: flex-end;
-  animation: deMsgIn 0.28s ease;
-}
-@keyframes deMsgIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: none; }
-}
-.de-msg.de-user { flex-direction: row-reverse; }
-.de-msg-av {
-  width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; font-weight: 700;
-}
-.de-msg.de-bot .de-msg-av {
-  background: linear-gradient(135deg, #FF6B2B, #F59E0B); color: #000;
-}
-.de-msg.de-user .de-msg-av {
-  background: rgba(75,163,199,0.12);
-  border: 1px solid rgba(75,163,199,0.25); color: #4BA3C7;
-}
-.de-bubble {
-  max-width: 79%; padding: 10px 13px;
-  border-radius: 14px; font-size: 0.875rem; line-height: 1.65; position: relative;
-}
-.de-msg.de-bot .de-bubble {
-  background: #131929;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-bottom-left-radius: 4px; color: #CDD6F4;
-}
-.de-msg.de-user .de-bubble {
-  background: linear-gradient(135deg, rgba(255,107,43,0.16), rgba(245,158,11,0.1));
-  border: 1px solid rgba(255,107,43,0.22);
-  border-bottom-right-radius: 4px; color: #CDD6F4;
-}
-.de-msg-time {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.5rem; color: #5A6A80; margin-top: 4px;
-}
-.de-msg.de-user .de-msg-time { text-align: right; }
-
-/* RICH TEXT */
-.de-bubble strong { color: #FF6B2B; font-weight: 600; }
-.de-bubble em     { color: #F59E0B; font-style: italic; }
-.de-bubble code {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.77rem;
-  background: rgba(255,107,43,0.08); border: 1px solid rgba(255,107,43,0.16);
-  padding: 1px 5px; border-radius: 3px; color: #FF6B2B;
-}
-.de-bubble ul { margin: 6px 0 4px 16px; display: flex; flex-direction: column; gap: 3px; }
-.de-bubble ul li { font-size: 0.85rem; color: rgba(205,214,244,0.85); }
-.de-bubble ul li::marker { color: #FF6B2B; }
-
-/* ROUTE CARD */
-.de-route-card {
-  background: rgba(255,107,43,0.05);
-  border: 1px solid rgba(255,107,43,0.18);
-  border-radius: 10px; padding: 10px 12px; margin-top: 8px;
-}
-.de-route-hdr {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.6rem; color: #FF6B2B; letter-spacing: 0.1em; margin-bottom: 5px;
-  display: flex; align-items: center; gap: 5px;
-}
-.de-route-name { font-size: 0.87rem; font-weight: 600; color: #CDD6F4; }
-.de-route-role {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.58rem; color: #4BA3C7; margin-top: 2px;
-}
-
-/* LEAD FORM CARD */
-.de-lead-card {
-  background: #131929;
-  border: 1px solid rgba(255,107,43,0.22);
-  border-radius: 12px; padding: 14px; margin-top: 8px;
-}
-.de-lead-card h4 {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem; color: #FF6B2B;
-  margin-bottom: 10px; display: flex; align-items: center; gap: 6px;
-}
-.de-linput {
-  width: 100%;
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 6px; padding: 8px 10px;
-  color: #CDD6F4; font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.82rem; outline: none;
-  transition: border-color 0.2s; margin-bottom: 7px;
-  box-sizing: border-box;
-}
-.de-linput:focus { border-color: rgba(255,107,43,0.38); }
-.de-linput::placeholder { color: #5A6A80; }
-.de-lbtn {
-  width: 100%; padding: 9px;
-  background: linear-gradient(135deg, #FF6B2B, #F59E0B);
-  color: #000; font-family: 'JetBrains Mono', monospace;
-  font-size: 0.72rem; font-weight: 700; letter-spacing: 0.05em;
-  border: none; border-radius: 6px; cursor: pointer;
-  transition: opacity 0.2s;
-}
-.de-lbtn:hover { opacity: 0.85; }
-.de-lbtn:disabled { opacity: 0.45; cursor: default; }
-
-/* SUGGESTION CHIPS */
-.de-chips {
-  display: flex; flex-wrap: wrap; gap: 6px;
-  padding: 0 14px 10px; flex-shrink: 0;
-}
-.de-chip {
-  font-family: 'JetBrains Mono', monospace; font-size: 0.6rem;
-  padding: 5px 11px;
-  background: #131929;
-  border: 1px solid rgba(255,107,43,0.18);
-  color: rgba(205,214,244,0.7);
-  border-radius: 20px; cursor: pointer;
-  transition: all 0.2s; letter-spacing: 0.04em; white-space: nowrap;
-}
-.de-chip:hover { border-color: #FF6B2B; color: #FF6B2B; background: rgba(255,107,43,0.05); }
-
-/* TYPING INDICATOR */
-.de-typing {
-  display: flex; align-items: center; gap: 4px;
-  padding: 10px 13px;
-  background: #131929;
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 14px; border-bottom-left-radius: 4px;
-  width: fit-content;
-}
-.de-typing span {
-  width: 6px; height: 6px;
-  background: #FF6B2B; border-radius: 50%;
-  animation: deTyping 1.2s infinite;
-}
-.de-typing span:nth-child(2) { animation-delay: 0.2s; }
-.de-typing span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes deTyping {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30%            { transform: translateY(-5px); opacity: 1; }
-}
-
-/* INPUT AREA */
-.de-input-area {
-  border-top: 1px solid rgba(255,255,255,0.07);
-  padding: 12px 14px;
-  background: #131929;
-  flex-shrink: 0;
-}
-.de-input-row { display: flex; gap: 8px; align-items: flex-end; }
-.de-textarea {
-  flex: 1;
-  background: rgba(0,0,0,0.4);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 10px; padding: 9px 12px;
-  color: #CDD6F4; font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 0.85rem; resize: none; outline: none;
-  min-height: 38px; max-height: 100px; line-height: 1.5;
-  transition: border-color 0.2s; overflow-y: auto;
-}
-.de-textarea:focus { border-color: rgba(255,107,43,0.32); }
-.de-textarea::placeholder { color: #5A6A80; }
-.de-send {
-  width: 38px; height: 38px;
-  background: linear-gradient(135deg, #FF6B2B, #F59E0B);
-  border: none; border-radius: 8px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  transition: opacity 0.2s, transform 0.15s; flex-shrink: 0;
-}
-.de-send:hover { opacity: 0.85; transform: scale(1.05); }
-.de-send:disabled { opacity: 0.38; cursor: default; transform: none; }
-.de-send svg { width: 16px; height: 16px; fill: #000; }
-.de-input-tools {
-  display: flex; gap: 10px; margin-top: 8px; align-items: center;
-}
-.de-tool-btn {
-  background: none; border: none; cursor: pointer;
-  font-family: 'JetBrains Mono', monospace; font-size: 0.58rem;
-  color: #5A6A80; display: flex; align-items: center; gap: 4px;
-  padding: 3px 6px; border-radius: 4px;
-  transition: color 0.2s, background 0.2s;
-}
-.de-tool-btn:hover { color: #FF6B2B; background: rgba(255,107,43,0.05); }
-.de-char { font-family: 'JetBrains Mono', monospace; font-size: 0.55rem; color: #5A6A80; margin-left: auto; }
-
-/* FOOTER */
-.de-footer {
-  text-align: center; padding: 6px;
-  font-family: 'JetBrains Mono', monospace; font-size: 0.5rem;
-  color: #5A6A80; letter-spacing: 0.08em;
-  background: #0B0F1A; border-top: 1px solid rgba(255,255,255,0.05);
-  flex-shrink: 0;
-}
-.de-footer span { color: rgba(255,107,43,0.55); }
-/* MOBILE CHAT FIX — launcher stays visible when closed, hides only when chat is open */
-@media (max-width: 600px) {
-
-  #de-chat-window {
-    left: 8px !important;
-    right: 8px !important;
-    bottom: 10px !important;
-    width: auto !important;
-    height: 84dvh !important;
-    max-height: calc(100dvh - 20px) !important;
-    border-radius: 16px !important;
+    satEls.forEach(function(el, k){
+      var baseAngle = -90 + (k + 1) * (360 / n);
+      var angle = (baseAngle + scrollAngle) * Math.PI / 180;
+      var x = Math.cos(angle) * R;
+      var y = Math.sin(angle) * R;
+      el.style.left = 'calc(50% + ' + x + 'px)';
+      el.style.top  = 'calc(50% + ' + y + 'px)';
+    });
   }
 
-  /* Keep floating chat icon visible when closed */
-  #de-chat-launcher {
-    display: flex !important;
-    width: 54px !important;
-    height: 54px !important;
-    right: 16px !important;
-    bottom: 16px !important;
-    z-index: 100000 !important;
+  function render(){
+    var data = team[centerIndex];
+    center.classList.add('is-fading');
+    setTimeout(function(){
+      img.style.display = '';
+      img.src = data.photo;
+      img.alt = data.name;
+      fb.textContent = data.initials;
+      nameEl.textContent = data.name;
+      roleEl.textContent = data.role;
+      detail.innerHTML =
+        '<p>' + data.bio + '</p>' +
+        (data.link ? '<a class="cd-link" href="' + data.link + '" target="_blank">' + data.linkLabel + ' →</a>' : '');
+      center.classList.remove('is-fading');
+    }, 120);
+
+    satEls.forEach(function(el, k){
+      var idx = (centerIndex + 1 + k) % n;
+      var p = team[idx];
+      var im = el.querySelector('img');
+      im.style.display = '';
+      im.src = p.photo;
+      im.alt = p.name;
+      el.querySelector('.sat-fallback').textContent = p.initials;
+      el.querySelector('.sat-label').textContent = p.name.split(' ')[0];
+      el.dataset.idx = idx;
+      el.onclick = function(){ goTo(idx); };
+    });
+
+    dotEls.forEach(function(d, i){ d.classList.toggle('active', i === centerIndex); });
   }
 
-  /* Hide floating icon only while chat is open */
-  body.chat-open #de-chat-launcher {
-    display: none !important;
+  function relRect(el){
+    var w = wrap.getBoundingClientRect();
+    var r = el.getBoundingClientRect();
+    return { left: r.left - w.left, top: r.top - w.top, width: r.width, height: r.height };
   }
 
-  .de-messages {
-    padding: 14px !important;
+  function makeFlyer(photoSrc, fromRect, toRect, growing){
+    var el = document.createElement('div');
+    el.className = 'orbit-flyer';
+    el.style.left   = fromRect.left + 'px';
+    el.style.top    = fromRect.top + 'px';
+    el.style.width  = fromRect.width + 'px';
+    el.style.height = fromRect.height + 'px';
+    el.style.boxShadow   = growing ? '0 0 0 rgba(255,107,43,0)' : '0 0 26px rgba(255,107,43,.28)';
+    el.style.borderColor = growing ? 'rgba(255,255,255,.15)' : 'rgba(255,107,43,.4)';
+    el.innerHTML = '<img src="' + photoSrc + '" onerror="this.style.display=\'none\'">';
+    wrap.appendChild(el);
+    requestAnimationFrame(function(){
+      requestAnimationFrame(function(){
+        el.style.left   = toRect.left + 'px';
+        el.style.top    = toRect.top + 'px';
+        el.style.width  = toRect.width + 'px';
+        el.style.height = toRect.height + 'px';
+        el.style.boxShadow    = growing ? '0 0 40px rgba(255,107,43,.35)' : '0 0 0 rgba(255,107,43,0)';
+        el.style.borderColor   = growing ? 'rgba(255,107,43,.4)' : 'rgba(255,255,255,.15)';
+      });
+    });
+    return el;
   }
 
-  .de-msg {
-    max-width: 94% !important;
-  }
+  function goTo(idx){
+    if (animating) return;
+    if (idx === centerIndex) { toggleDetail(); return; }
 
-  .de-lead-card {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 14px !important;
-  }
-
-  .de-linput,
-  .de-lbtn {
-    width: 100% !important;
-    max-width: 100% !important;
-    font-size: 14px !important;
-  }
-
-  .de-input-area {
-    padding: 10px !important;
-  }
-
-  .de-input-row {
-    gap: 8px !important;
-  }
-
-  #deInput {
-    font-size: 14px !important;
-    padding: 13px !important;
-    min-height: 48px !important;
-  }
-
-  #deSendBtn,
-  .de-send {
-    width: 48px !important;
-    height: 48px !important;
-    min-width: 48px !important;
-  }
-
-  .de-input-tools {
-    gap: 8px !important;
-    flex-wrap: wrap !important;
-  }
-
-  .de-footer {
-    font-size: 0.5rem !important;
-    padding: 6px !important;
-  }
-}
-</style>
-
-<!-- LAUNCHER -->
-<button id="de-chat-launcher" onclick="deToggleChat()" aria-label="Open DevBot chat">
-  <div class="de-notif-badge" id="deNotifBadge">1</div>
-  <svg class="de-icon-chat" viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
-  <svg class="de-icon-close" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-</button>
-
-<!-- CHAT WINDOW -->
-<div id="de-chat-window" role="dialog" aria-label="DevBot AI Chat">
-
-  <!-- Header -->
-  <div class="de-header">
-    <div class="de-bot-avatar">DE<div class="de-status-dot"></div></div>
-    <div class="de-header-info">
-      <div class="de-header-name">&lt;DevBot /&gt;</div>
-      <div class="de-header-sub">&#9679; Online · DevEdge Digital</div>
-    </div>
-    <div class="de-header-btns">
-      <button class="de-hbtn" onclick="deClearChat()" title="Clear chat" aria-label="Clear chat">&#8635;</button>
-      <button class="de-hbtn" onclick="deToggleChat()" title="Close" aria-label="Close chat">&#10005;</button>
-    </div>
-  </div>
-
-  <!-- Messages -->
-  <div class="de-messages" id="deMessages" aria-live="polite"></div>
-
-  <!-- Suggestion Chips -->
-  <div class="de-chips" id="deChips">
-    <button class="de-chip" onclick="deSendChip(this)">&#128187; Web development</button>
-    <button class="de-chip" onclick="deSendChip(this)">&#127912; Branding &amp; logo</button>
-    <button class="de-chip" onclick="deSendChip(this)">&#128226; Digital marketing</button>
-    <button class="de-chip" onclick="deSendChip(this)">&#128269; SEO services</button>
-    <button class="de-chip" onclick="deSendChip(this)">&#128176; Pricing &amp; timeline</button>
-    <button class="de-chip" onclick="deSendChip(this)">&#128222; Talk to the team</button>
-  </div>
-
-  <!-- Input -->
-  <div class="de-input-area">
-    <div class="de-input-row">
-      <textarea
-        class="de-textarea"
-        id="deInput"
-        placeholder="Ask about our services..."
-        rows="1"
-        maxlength="500"
-        onkeydown="deHandleKey(event)"
-        oninput="deCharCount(this)"
-        aria-label="Type your message"
-      ></textarea>
-      <button class="de-send" id="deSendBtn" onclick="deSendMessage()" aria-label="Send message">
-        <svg viewBox="0 0 24 24"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
-      </button>
-    </div>
-    <div class="de-input-tools">
-      <button class="de-tool-btn" onclick="deShowLeadCapture()">&#128203; Start a project</button>
-      <button class="de-tool-btn" onclick="deOpenEmail()">&#128140; Email us directly</button>
-      <span class="de-char" id="deChar">0 / 500</span>
-    </div>
-  </div>
-
-  <div class="de-footer">Fixed Answer Mode &nbsp;·&nbsp; DevEdge Digital &copy; 2026</div>
-</div>
-
-<script>
-(function () {
-  // ============================================================
-  //  CONFIG — fixed-answer mode, no AI API required
-  // ============================================================
-  var LEAD_EMAIL = 'hello@devedge.digital';
-
-  // ============================================================
-  //  FIXED RESPONSE KNOWLEDGE BASE
-  // ============================================================
-  var SYSTEM = 'Fixed-answer mode enabled. DevBot uses predefined responses instead of an external AI API.';
-
-  function deFixedReply(text) {
-    var msg = (text || '').toLowerCase();
-
-    function has(words) {
-      return words.some(function (w) { return msg.indexOf(w) !== -1; });
-    }
-
-    if (has(['price', 'pricing', 'cost', 'quote', 'estimate', 'budget', 'how much', 'package'])) {
-      return 'Pricing depends on the project scope, timeline, and deliverables. Share your project details through the quick form and our team will send you a custom quote.\n\n[SHOW_LEAD_FORM]';
-    }
-
-    if (has(['start', 'get started', 'book', 'call', 'consultation', 'inquire', 'inquiry', 'contact', 'talk to the team', 'hire', 'proposal'])) {
-      return 'Sounds good — our team can review your request and get back to you within 24 hours.\n\n[SHOW_LEAD_FORM]';
-    }
-
-    if (has(['website', 'web development', 'web design', 'wordpress', 'landing page', 'shopify', 'react', 'next.js', 'cms'])) {
-      return 'We build fast, responsive, conversion-focused websites using **WordPress**, **React**, **Next.js**, Shopify, and other CMS platforms. Typical timelines range from **2–6 weeks**, depending on scope and complexity.';
-    }
-
-    if (has(['seo', 'rank', 'ranking', 'google search', 'organic', 'local seo', 'technical seo'])) {
-      return 'Our **SEO services** cover on-page SEO, technical SEO, local SEO, content optimization, metadata, page structure, and performance improvements to help your site get found more easily on search.';
-    }
-
-    if (has(['branding', 'brand', 'logo', 'identity', 'guidelines', 'visual'])) {
-      return 'We help with **branding and identity design**, including logo concepts, brand guidelines, visual assets, color systems, typography, and print-ready collateral.';
-    }
-
-    if (has(['marketing', 'ads', 'meta', 'facebook ads', 'google ads', 'ppc', 'paid ads', 'campaign'])) {
-      return 'We support **digital marketing** through paid ads strategy, Meta Ads, Google Ads, funnel planning, landing pages, tracking setup, and conversion-focused campaign assets.';
-    }
-
-    if (has(['video', 'editing', 'motion', 'reels', 'shorts', 'tiktok', 'youtube'])) {
-      return 'We provide **video marketing and editing** for social content, brand storytelling, motion graphics, short-form videos, campaign creatives, and platform-ready assets.';
-    }
-
-    if (has(['team', 'who', 'developer', 'designer', 'founder'])) {
-      return 'DevEdge Digital is a digital creative studio with specialists across web development, branding, marketing, SEO, operations, and video production. We route each project to the right team member based on the scope.';
-    }
-
-    if (has(['timeline', 'how long', 'duration', 'launch'])) {
-      return 'Most website projects take around **2–6 weeks**, depending on the number of pages, content readiness, design complexity, integrations, and revision rounds.';
-    }
-
-    if (has(['email', 'support'])) {
-      return 'You can email us directly at **hello@devedge.digital**. You can also submit the quick project form here and our team will reply within 24 hours.\n\n[SHOW_LEAD_FORM]';
-    }
-
-    return 'Thanks for reaching out to **DevEdge Digital**. We specialize in **web development**, **branding**, **SEO**, **digital marketing**, and **video editing**. Ask about a service, pricing, timeline, or starting a project.';
-  }
-
-  // ============================================================
-  //  STATE
-  // ============================================================
-  var history  = [];
-  var busy     = false;
-  var isOpen   = false;
-  var chipsHidden = false;
-
-  // ============================================================
-  //  TOGGLE
-  // ============================================================
-  window.deToggleChat = function () {
-    isOpen = !isOpen;
-    var win  = document.getElementById('de-chat-window');
-    var btn  = document.getElementById('de-chat-launcher');
-    var bdg  = document.getElementById('deNotifBadge');
-    win.classList.toggle('de-open', isOpen);
-    btn.classList.toggle('de-open', isOpen);
-    document.body.classList.toggle('chat-open', isOpen);
-    if (isOpen) {
-      if (bdg) bdg.style.display = 'none';
-      if (history.length === 0) deInitWelcome();
-      setTimeout(function () {
-        var inp = document.getElementById('deInput');
-        if (inp) inp.focus();
-      }, 320);
-    }
-  };
-
-  // ============================================================
-  //  WELCOME MESSAGE
-  // ============================================================
-  function deInitWelcome() {
-    deBotMsg(
-      'Hey there! \uD83D\uDC4B I\'m **DevBot**, your guide to everything **DevEdge Digital**.\n\n' +
-      'We\'re a full-service digital studio — web dev, branding, marketing, SEO, and video. **11 years** of craft, **200+ projects** delivered globally.\n\n' +
-      'What can I help you with today? Pick a topic below or just type away!',
-      nowTime()
-    );
-  }
-
-  // ============================================================
-  //  SEND USER MESSAGE
-  // ============================================================
-  window.deSendMessage = function () {
-    var inp  = document.getElementById('deInput');
-    var text = inp.value.trim();
-    if (!text || busy) return;
-
-    var t = nowTime();
-    inp.value = '';
-    deCharCount(inp);
-    inp.style.height = 'auto';
-
-    history.push({ role: 'user', content: text });
-    deUserMsg(text, t);
-    deHideChips();
-
-    busy = true;
-    document.getElementById('deSendBtn').disabled = true;
-    deShowTyping();
-
-    window.setTimeout(function () {
-      deRemoveTyping();
-
-      var reply = deFixedReply(text);
-      history.push({ role: 'assistant', content: reply });
-
-      var showForm = reply.indexOf('[SHOW_LEAD_FORM]') !== -1;
-      var cleanReply = reply.replace(/\[SHOW_LEAD_FORM\]/g, '').trim();
-
-      var extra = deDetectRoute(text + ' ' + reply);
-      if (cleanReply) deBotMsg(cleanReply, nowTime(), extra);
-      if (showForm) setTimeout(deShowLeadCapture, 400);
-
-      busy = false;
-      document.getElementById('deSendBtn').disabled = false;
-      var inp2 = document.getElementById('deInput');
-      if (inp2) inp2.focus();
-    }, 650);
-  };
-
-  // ============================================================
-  //  KEYBOARD HANDLER
-  // ============================================================
-  window.deHandleKey = function (e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      deSendMessage();
-    }
-    var ta = e.target;
-    ta.style.height = 'auto';
-    ta.style.height = Math.min(ta.scrollHeight, 100) + 'px';
-  };
-
-  // ============================================================
-  //  CHAR COUNT
-  // ============================================================
-  window.deCharCount = function (ta) {
-    var el = document.getElementById('deChar');
-    if (el) el.textContent = ta.value.length + ' / 500';
-  };
-
-  // ============================================================
-  //  SUGGESTION CHIPS
-  // ============================================================
-  window.deSendChip = function (btn) {
-    var raw  = btn.textContent.trim();
-    // Strip leading emoji + space
-    var text = raw.replace(/^[\u{1F000}-\u{1FFFF}\u{2600}-\u{27BF}\s]+/u, '').trim();
-    document.getElementById('deInput').value = 'Tell me about your ' + text + ' services';
-    deSendMessage();
-  };
-
-  function deHideChips() {
-    if (chipsHidden) return;
-    chipsHidden = true;
-    var c = document.getElementById('deChips');
-    if (c) c.style.display = 'none';
-  }
-
-  // ============================================================
-  //  LEAD CAPTURE FORM (rendered as a bot message)
-  // ============================================================
-  window.deShowLeadCapture = function () {
-    deHideChips();
-    var msgs = document.getElementById('deMessages');
-    var div  = document.createElement('div');
-    div.className = 'de-msg de-bot';
-    div.innerHTML =
-      '<div class="de-msg-av">DE</div>' +
-      '<div>' +
-        '<div class="de-bubble">Let\'s get your project rolling! Fill in your details and I\'ll forward them to the right specialist.' +
-          '<div class="de-lead-card">' +
-            '<h4>&#128203; // start_project()</h4>' +
-            '<input class="de-linput" type="text"  id="deLeadName"    placeholder="Your name" />' +
-            '<input class="de-linput" type="email" id="deLeadEmail"   placeholder="Email address" />' +
-            '<input class="de-linput" type="text"  id="deLeadCompany" placeholder="Company / brand (optional)" />' +
-            '<select class="de-linput" id="deLeadService" style="cursor:pointer;">' +
-              '<option value="" disabled selected>Service needed...</option>' +
-              '<option>Web Design &amp; Development</option>' +
-              '<option>Branding &amp; Identity Design</option>' +
-              '<option>Digital Marketing</option>' +
-              '<option>SEO Optimisation</option>' +
-              '<option>Video Marketing &amp; Editing</option>' +
-              '<option>Full Package (Multiple Services)</option>' +
-              '<option>Other / Not Sure Yet</option>' +
-            '</select>' +
-            '<textarea class="de-linput" id="deLeadMsg" rows="2" placeholder="Brief project description..."></textarea>' +
-            '<button class="de-lbtn" id="deLeadSubmitBtn" onclick="deSubmitLead()">$ submit_inquiry &#8594;</button>' +
-          '</div>' +
-        '</div>' +
-        '<div class="de-msg-time">' + nowTime() + '</div>' +
-      '</div>';
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-  };
-
-  window.deSubmitLead = function () {
-    var name    = (document.getElementById('deLeadName')    || {}).value || '';
-    var email   = (document.getElementById('deLeadEmail')   || {}).value || '';
-    var company = (document.getElementById('deLeadCompany') || {}).value || '';
-    var service = (document.getElementById('deLeadService') || {}).value || '';
-    var message = (document.getElementById('deLeadMsg')     || {}).value || '';
-
-    name    = name.trim();
-    email   = email.trim();
-    service = service.trim();
-
-    if (!name || !email || !service) {
-      alert('Please fill in your name, email, and the service you need!');
+    if (reduceMotion) {
+      centerIndex = idx;
+      render();
+      resetTimer();
       return;
     }
 
-    var btn = document.getElementById('deLeadSubmitBtn');
-    if (btn) { btn.textContent = '$ sending...'; btn.disabled = true; }
+    animating = true;
+    clearInterval(timer);
 
-    // ── Send via Web3Forms — free, no account needed for basic use ──────
-    // Uses your email directly. No Formspree account required.
-    // Get a free access key at https://web3forms.com (takes 30 seconds)
-    // Then replace WEB3FORMS_ACCESS_KEY below with your key.
-    // ─────────────────────────────────────────────────────────────────────
-    var WEB3FORMS_KEY = '80f01d47-957f-4e40-b0cb-e9d49a0297df'; // <-- replace this
+    var k = (idx - centerIndex - 1 + n) % n;
+    var satEl = satEls[k];
 
-    var payload = {
-      access_key:  WEB3FORMS_KEY,
-      from_name:   'DevBot — DevEdge Digital',
-      subject:     '\uD83E\uDD16 DevBot Lead: ' + service + ' \u2014 ' + name,
-      to_email:    LEAD_EMAIL,
-      replyto:     email,
-      name:        name,
-      email:       email,
-      company:     company || '\u2014',
-      service:     service,
-      message:     message || '\u2014',
-      source:      'DevBot AI Chat Widget',
-      botcheck:    ''
-    };
+    var satRect    = relRect(satEl);
+    var centerRect = relRect(ring2);
 
-    fetch('https://api.web3forms.com/submit', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body:    JSON.stringify(payload)
-    })
-    .then(function (r) { return r.json(); })
-    .then(function (data) {
-      if (data.success) {
-        if (btn) { btn.textContent = '$ sent \u2713'; btn.style.opacity = '0.6'; }
-        history.push({ role: 'user', content: 'I want to start a project. Name: ' + name + ', Email: ' + email + ', Service: ' + service + (message ? ', Details: ' + message : '') });
-        var extra = deDetectRoute(service);
-        deBotMsg(
-          '\u2705 Got it, **' + name + '**! Your inquiry has been sent to **' + LEAD_EMAIL + '**.\n\n' +
-          'Expect a reply within **24 hours**. We\'re routing you to the right specialist for **' + service + '**.\n\n' +
-          'Anything else I can help with?',
-          nowTime(),
-          extra
-        );
-      } else {
-        if (btn) { btn.textContent = '$ try again'; btn.disabled = false; }
-        deBotMsg('Hmm, the form had a hiccup. Email us directly at **hello@devedge.digital** and we\'ll respond promptly!', nowTime());
-      }
-    })
-    .catch(function () {
-      if (btn) { btn.textContent = '$ try again'; btn.disabled = false; }
-      deBotMsg('Network error. Please email **hello@devedge.digital** directly — we reply within 24 hours!', nowTime());
-    });
-  };
+    satEl.classList.add('is-flying-source');
+    wrap.classList.add('transitioning');
+    satEl.style.opacity = '0';
+    avWrap.style.opacity = '0';
+    center.classList.add('is-fading');
 
-  // ============================================================
-  //  EMAIL DIRECT LINK
-  // ============================================================
-  window.deOpenEmail = function () {
-    window.open('mailto:' + LEAD_EMAIL + '?subject=Project%20Inquiry%20%E2%80%94%20DevEdge%20Digital');
-  };
+    makeFlyer(team[idx].photo,          satRect,    centerRect, true);
+    makeFlyer(team[centerIndex].photo,  centerRect, satRect,    false);
 
-  // ============================================================
-  //  ROUTING DETECTION
-  // ============================================================
-  function deDetectRoute(text) {
-    var t = text.toLowerCase();
-    var p = null;
+    setTimeout(function(){
+      var flyers = wrap.querySelectorAll('.orbit-flyer');
+      flyers.forEach(function(f){ f.remove(); });
+      satEl.classList.remove('is-flying-source');
+      wrap.classList.remove('transitioning');
+      satEl.style.opacity = '';
+      avWrap.style.opacity = '';
 
-    if (/(web|wordpress|develop|site|landing page|react|next\.js)/.test(t)) {
-      p = { name: 'Jericho M. / Enald A.', role: 'Web Development Team', icon: '\uD83D\uDCBB' };
-    } else if (/(brand|logo|identity|visual|graphic|design)/.test(t)) {
-      p = { name: 'Jade M.', role: 'Senior Graphic Designer', icon: '\uD83C\uDFA8' };
-    } else if (/(video|editing|motion|reel|youtube|tiktok)/.test(t)) {
-      p = { name: 'Jade M. / Rozendo DR. / Alexis R.', role: 'Video Production Team', icon: '\uD83C\uDFAC' };
-    } else if (/(seo|search|rank|keyword|google)/.test(t)) {
-      p = { name: 'Ian I.', role: 'SEO Specialist', icon: '\uD83D\uDD0D' };
-    } else if (/(marketing|ads|ppc|social|paid|campaign|tiktok shop|amazon)/.test(t)) {
-      p = { name: 'Ian I.', role: 'Digital Marketing Strategist', icon: '\uD83D\uDCE3' };
-    } else if (/(start|project|quote|price|cost|hire|budget|timeline|package|full)/.test(t)) {
-      p = { name: 'Judy N.', role: 'Operations Manager', icon: '\uD83D\uDCCB' };
+      centerIndex = idx;
+      render();
+      animating = false;
+      resetTimer();
+    }, 600);
+  }
+
+  function toggleDetail(){
+    center.classList.toggle('expanded');
+    ring2.classList.toggle('expanded');
+  }
+  ring2.addEventListener('mouseenter', function(){ center.classList.add('expanded'); ring2.classList.add('expanded'); });
+  ring2.addEventListener('mouseleave', function(){ center.classList.remove('expanded'); ring2.classList.remove('expanded'); });
+  ring2.addEventListener('click', toggleDetail);
+
+  function resetTimer(){
+    clearInterval(timer);
+    timer = setInterval(function(){
+      goTo((centerIndex + 1) % n);
+    }, 8000);
+  }
+  wrap.addEventListener('mouseenter', function(){ clearInterval(timer); });
+  wrap.addEventListener('mouseleave', resetTimer);
+
+  var ticking = false;
+  function updateScrollAngle(){
+    if (reduceMotion) return;
+    var rect = wrap.getBoundingClientRect();
+    var vh = window.innerHeight;
+    var centerY = rect.top + rect.height / 2;
+    var progress = (vh / 2 - centerY) / vh;
+    progress = Math.max(-1, Math.min(1, progress));
+    scrollAngle = progress * 55;
+    positionSatellites();
+  }
+  window.addEventListener('scroll', function(){
+    if (!ticking){
+      ticking = true;
+      requestAnimationFrame(function(){ updateScrollAngle(); ticking = false; });
     }
+  }, {passive:true});
 
-    if (!p) return '';
-
-    return '<div class="de-route-card">' +
-             '<div class="de-route-hdr">\uD83D\uDD00 ROUTING TO SPECIALIST</div>' +
-             '<div class="de-route-name">' + p.icon + ' ' + p.name + '</div>' +
-             '<div class="de-route-role">' + p.role + '</div>' +
-           '</div>';
-  }
-
-  // ============================================================
-  //  CLEAR CHAT
-  // ============================================================
-  window.deClearChat = function () {
-    history = [];
-    chipsHidden = false;
-    document.getElementById('deMessages').innerHTML = '';
-    var c = document.getElementById('deChips');
-    if (c) c.style.display = 'flex';
-    deInitWelcome();
-  };
-
-  // ============================================================
-  //  DOM HELPERS
-  // ============================================================
-  function deBotMsg(text, time, extra) {
-    var msgs = document.getElementById('deMessages');
-    var div  = document.createElement('div');
-    div.className = 'de-msg de-bot';
-    div.innerHTML =
-      '<div class="de-msg-av">DE</div>' +
-      '<div>' +
-        '<div class="de-bubble">' + deParseRich(text) + (extra || '') + '</div>' +
-        '<div class="de-msg-time">' + time + '</div>' +
-      '</div>';
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  function deUserMsg(text, time) {
-    var msgs = document.getElementById('deMessages');
-    var div  = document.createElement('div');
-    div.className = 'de-msg de-user';
-    div.innerHTML =
-      '<div class="de-msg-av">YOU</div>' +
-      '<div>' +
-        '<div class="de-bubble">' + deEscape(text) + '</div>' +
-        '<div class="de-msg-time">' + time + '</div>' +
-      '</div>';
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  function deShowTyping() {
-    var msgs = document.getElementById('deMessages');
-    var div  = document.createElement('div');
-    div.className = 'de-msg de-bot';
-    div.id = 'deTyping';
-    div.innerHTML = '<div class="de-msg-av">DE</div><div class="de-typing"><span></span><span></span><span></span></div>';
-    msgs.appendChild(div);
-    msgs.scrollTop = msgs.scrollHeight;
-  }
-
-  function deRemoveTyping() {
-    var t = document.getElementById('deTyping');
-    if (t) t.remove();
-  }
-
-  function deParseRich(t) {
-    return t
-      .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g,    '<em>$1</em>')
-      .replace(/`(.*?)`/g,      '<code>$1</code>')
-      .replace(/^- (.+)$/gm,    '<li>$1</li>')
-      .replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>')
-      .replace(/\n\n/g, '</p><p style="margin-top:6px;">')
-      .replace(/\n/g,  '<br>');
-  }
-
-  function deEscape(t) {
-    return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  function nowTime() {
-    return new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-  }
-
-  // ============================================================
-  //  AUTO-OPEN with a slight delay on page load
-  // ============================================================
-  setTimeout(function () {
-    var bdg = document.getElementById('deNotifBadge');
-    if (bdg) bdg.style.display = 'flex'; // ensure badge shows on load
-  }, 3000);
-
-  // Optional: auto-open when user reaches the contact section
-  (function () {
-    var contact = document.getElementById('contact');
-    if (!contact || !('IntersectionObserver' in window)) return;
-    var triggered = false;
-    new IntersectionObserver(function (entries) {
-      entries.forEach(function (e) {
-        if (e.isIntersecting && !triggered && !isOpen) {
-          triggered = true;
-          deToggleChat();
-        }
-      });
-    }, { threshold: 0.4 }).observe(contact);
-  })();
-
+  window.addEventListener('resize', positionSatellites);
+  positionSatellites();
+  updateScrollAngle();
+  render();
+  resetTimer();
 })();
 </script>
 
-</body>
-</html>
 </body>
 </html>
