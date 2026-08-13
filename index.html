@@ -266,8 +266,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
    pauses on interaction.
    ===================== */
 :root{
-  --orbit-wrap-size:680px;
-  --orbit-wrap-height:460px;
+  --orbit-wrap-size:820px;
+  --orbit-wrap-height:520px;
   --orbit-center-size:340px;
   --orbit-sat-size:112px;
 }
@@ -363,10 +363,10 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:cen
 .orbit-flyer img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
 
 @media(max-width:1024px){
-  :root{ --orbit-wrap-size:540px; --orbit-wrap-height:360px; --orbit-center-size:260px; --orbit-sat-size:86px; }
+  :root{ --orbit-wrap-size:600px; --orbit-wrap-height:400px; --orbit-center-size:260px; --orbit-sat-size:86px; }
 }
 @media(max-width:640px){
-  :root{ --orbit-wrap-size:400px; --orbit-wrap-height:300px; --orbit-center-size:200px; --orbit-sat-size:68px; }
+  :root{ --orbit-wrap-size:420px; --orbit-wrap-height:300px; --orbit-center-size:170px; --orbit-sat-size:56px; }
   .center-name{font-size:1rem;}
   .sat-label{display:none;}
   .tech-frame .corner{width:14px;height:14px;}
@@ -600,6 +600,52 @@ footer{background:var(--dark2);padding:60px var(--pad-x) 28px;border-top:1px sol
   </div>
 </div></div>
 
+<!-- TEAM — node/network layout with a flip-card center -->
+<div id="team">
+  <div class="team-section-inner">
+    <div style="text-align:center;" class="reveal">
+      <div class="label-tag" style="justify-content:center;">The Team</div>
+      <h2 class="section-title">The People Behind<br><span class="hl">DevEdge Digital</span></h2>
+      <p style="color:rgba(205,214,244,.7);max-width:500px;margin:14px auto 0;line-height:1.8;font-size:1.02rem;">Click a node to bring them to the center. Click the center card to flip it and read their bio.</p>
+    </div>
+
+    <div class="orbit-wrap" id="orbitWrap">
+      <svg class="orbit-links" id="orbitLinks"></svg>
+
+      <div class="orbit-center" id="orbitCenter">
+        <div class="flip-scene">
+          <div class="flip-card" id="flipCard">
+            <div class="flip-face flip-front">
+              <div class="tech-frame">
+                <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+                <div class="tech-scan"></div>
+                <div class="center-avatar-wrap" id="centerAvatarWrap">
+                  <div class="center-fallback" id="centerFallback"></div>
+                  <img id="centerImg" alt="" onerror="this.style.display='none'">
+                </div>
+              </div>
+              <div class="flip-hint">click to flip</div>
+            </div>
+            <div class="flip-face flip-back">
+              <div class="term-bar"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="term-title" id="backTitle"></span></div>
+              <div class="term-body">
+                <p id="backBio"></p>
+                <a id="backLink" class="term-link" target="_blank" style="display:none;"></a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="center-name" id="centerName"></div>
+        <div class="center-role" id="centerRole"></div>
+      </div>
+      <!-- satellite buttons are injected by the orbit script below -->
+    </div>
+
+    <div class="orbit-dots" id="orbitDots"></div>
+  </div>
+</div>
+
+
 <!-- PROCESS -->
 <div class="section-bg"><div class="section">
   <div class="reveal" style="text-align:center;">
@@ -807,51 +853,6 @@ footer{background:var(--dark2);padding:60px var(--pad-x) 28px;border-top:1px sol
         </div>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- TEAM — node/network layout with a flip-card center -->
-<div id="team">
-  <div class="team-section-inner">
-    <div style="text-align:center;" class="reveal">
-      <div class="label-tag" style="justify-content:center;">The Team</div>
-      <h2 class="section-title">The People Behind<br><span class="hl">DevEdge Digital</span></h2>
-      <p style="color:rgba(205,214,244,.7);max-width:500px;margin:14px auto 0;line-height:1.8;font-size:1.02rem;">Click a node to bring them to the center. Click the center card to flip it and read their bio.</p>
-    </div>
-
-    <div class="orbit-wrap" id="orbitWrap">
-      <svg class="orbit-links" id="orbitLinks"></svg>
-
-      <div class="orbit-center" id="orbitCenter">
-        <div class="flip-scene">
-          <div class="flip-card" id="flipCard">
-            <div class="flip-face flip-front">
-              <div class="tech-frame">
-                <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
-                <div class="tech-scan"></div>
-                <div class="center-avatar-wrap" id="centerAvatarWrap">
-                  <div class="center-fallback" id="centerFallback"></div>
-                  <img id="centerImg" alt="" onerror="this.style.display='none'">
-                </div>
-              </div>
-              <div class="flip-hint">click to flip</div>
-            </div>
-            <div class="flip-face flip-back">
-              <div class="term-bar"><span class="td r"></span><span class="td y"></span><span class="td g"></span><span class="term-title" id="backTitle"></span></div>
-              <div class="term-body">
-                <p id="backBio"></p>
-                <a id="backLink" class="term-link" target="_blank" style="display:none;"></a>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="center-name" id="centerName"></div>
-        <div class="center-role" id="centerRole"></div>
-      </div>
-      <!-- satellite buttons are injected by the orbit script below -->
-    </div>
-
-    <div class="orbit-dots" id="orbitDots"></div>
   </div>
 </div>
 
@@ -1179,10 +1180,15 @@ document.addEventListener("keydown",function(e){var lb=document.getElementById("
     linksSvg.setAttribute('width', wrapW);
     linksSvg.setAttribute('height', wrapH);
 
-    // columns anchored near the left/right edges of the wrap
-    var colX = Math.max(centerR + satR + 20, wrapW / 2 - satR - 10);
+    // columns anchored near the edges of the wrap, with a generous gap from
+    // the center card — but never pushed further out than the wrap itself
+    // allows, so it can't overflow on narrow screens
+    var idealGap   = centerR + satR + 70;
+    var maxAllowed = wrapW / 2 - satR - 6;
+    var colX = Math.min(idealGap, maxAllowed);
+    colX = Math.max(colX, centerR + satR + 8); // always at least clear of the center card
     // vertical spacing between the 3 stacked satellites in each column
-    var rowGap = satR * 2 + 26;
+    var rowGap = satR * 2 + 44;
     var rowOffsets = [-rowGap, 0, rowGap];
     // pull the top/bottom rows in slightly and let the middle row sit furthest
     // out — turns a stiff straight column into a gentle arc
